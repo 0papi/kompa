@@ -18,44 +18,44 @@ export default function Features() {
         {/* Bento Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {/* Large Card 1 - Powerful Search (2 cols) */}
-          <div className="lg:col-span-2 bg-gray-50 rounded-3xl p-10 relative overflow-hidden min-h-[420px]">
+          <div className="lg:col-span-2 bg-gray-50 rounded-3xl p-6 sm:p-8 lg:p-10 relative overflow-hidden min-h-[420px]">
             <div className="relative z-10">
-              <div className="w-14 h-14 rounded-2xl flex items-center justify-center mb-6" style={{ backgroundColor: '#4a4a5c' }}>
-                <Search className="h-7 w-7 text-white" />
+              <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl flex items-center justify-center mb-4 sm:mb-6" style={{ backgroundColor: '#4a4a5c' }}>
+                <Search className="h-6 w-6 sm:h-7 sm:w-7 text-white" />
               </div>
-              <h3 className="text-3xl font-bold text-black mb-4">
+              <h3 className="text-2xl sm:text-3xl font-bold text-black mb-3 sm:mb-4">
                 Advanced Property Search
               </h3>
-              <p className="text-base text-gray-600 leading-relaxed max-w-xl mb-8">
-                Search through 10M+ properties with precision filters. Find exact matches by address, neighborhood, property type, price range, square footage, and more.
+              <p className="text-sm sm:text-base text-gray-600 leading-relaxed max-w-xl mb-6 sm:mb-8">
+                Search and find exact matches by address, neighborhood, property type, price range, and square footage.
               </p>
             </div>
-            
-            
-            <div className="absolute bottom-4 right-8 left-8">
-              <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-4 max-w-2xl">
-                <div className="flex items-center gap-3 mb-5">
-                  <div className="flex-1 bg-gradient-to-br from-gray-50 to-white rounded-xl px-5 py-4 text-base text-gray-800 border border-gray-200 font-medium">
+
+
+            <div className="absolute bottom-4 right-4 left-4 sm:right-6 sm:left-6 lg:right-8 lg:left-8">
+              <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-3 sm:p-4 max-w-2xl">
+                <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-5">
+                  <div className="flex-1 bg-gradient-to-br from-gray-50 to-white rounded-xl px-3 py-3 sm:px-5 sm:py-4 text-sm sm:text-base text-gray-800 border border-gray-200 font-medium">
                     48 Sunrise Drive, East Legon Heights, Accra
                   </div>
-                  <div className="w-12 h-12 rounded-xl flex items-center justify-center shadow-lg" style={{ backgroundColor: '#4a4a5c' }}>
-                    <Search className="h-6 w-6 text-white" />
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: '#4a4a5c' }}>
+                    <Search className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
                   </div>
                 </div>
-                <div className="flex flex-wrap gap-2">
-                  <div className="px-4 py-2 bg-gray-900 text-white rounded-xl text-sm font-semibold shadow-sm">
+                <div className="flex flex-wrap gap-1.5 sm:gap-2">
+                  <div className="px-3 py-1.5 sm:px-4 sm:py-2 bg-gray-900 text-white rounded-xl text-xs sm:text-sm font-semibold shadow-sm">
                     Single Family
                   </div>
-                  <div className="px-4 py-2 bg-white border border-gray-300 rounded-xl text-sm font-medium text-gray-700">
+                  <div className="px-3 py-1.5 sm:px-4 sm:py-2 bg-white border border-gray-300 rounded-xl text-xs sm:text-sm font-medium text-gray-700">
                     3+ beds
                   </div>
-                  <div className="px-4 py-2 bg-white border border-gray-300 rounded-xl text-sm font-medium text-gray-700">
+                  <div className="px-3 py-1.5 sm:px-4 sm:py-2 bg-white border border-gray-300 rounded-xl text-xs sm:text-sm font-medium text-gray-700">
                     2+ baths
                   </div>
-                  <div className="px-4 py-2 bg-white border border-gray-300 rounded-xl text-sm font-medium text-gray-700">
+                  <div className="md:block hidden px-3 py-1.5 sm:px-4 sm:py-2 bg-white border border-gray-300 rounded-xl text-xs sm:text-sm font-medium text-gray-700">
                     $1M - $2M
                   </div>
-                  <div className="px-4 py-2 bg-white border border-gray-300 rounded-xl text-sm font-medium text-gray-700">
+                  <div className="md:block hidden px-3 py-1.5 sm:px-4 sm:py-2 bg-white border border-gray-300 rounded-xl text-xs sm:text-sm font-medium text-gray-700">
                     1,500+ sqft
                   </div>
                 </div>
@@ -63,40 +63,41 @@ export default function Features() {
             </div>
           </div>
 
-          {/* Card 2 - Market Analysis */}
-          <div className="bg-gray-50 rounded-3xl p-8 relative overflow-hidden min-h-[420px]">
-            <div className="w-14 h-14 rounded-2xl flex items-center justify-center mb-6" style={{ backgroundColor: '#4a4a5c' }}>
-              <TrendingUp className="h-7 w-7 text-white" />
+          {/* Card 2 - Quick Comparables */}
+          <div className="bg-gray-50 rounded-3xl p-6 sm:p-8 relative overflow-hidden min-h-[420px]">
+            <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl flex items-center justify-center mb-4 sm:mb-6" style={{ backgroundColor: '#4a4a5c' }}>
+              <TrendingUp className="h-6 w-6 sm:h-7 sm:w-7 text-white" />
             </div>
-            <h3 className="text-2xl font-bold text-black mb-4">
-              Real-Time Market Trends
+            <h3 className="text-xl sm:text-2xl font-bold text-black mb-3 sm:mb-4">
+              Quick Comparables
             </h3>
-            <p className="text-base text-gray-600 leading-relaxed mb-8">
-              Track price movements, analyze days on market, and understand velocity. Make data-driven decisions with live market intelligence.
+            <p className="text-sm sm:text-base text-gray-600 leading-relaxed mb-6 sm:mb-8">
+              Find similar properties for your next valuation or appraisal project instantly.
             </p>
-            
-            {/* Beautiful chart visualization */}
-            <div className="absolute bottom-4 left-8 right-8">
-              <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-20">
-                <div className="flex items-center justify-between mb-4">
-                  <span className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Median Price</span>
-                  <span className="text-xl font-bold text-black">$1.45M</span>
+
+            {/* Simple comparables list */}
+            <div className="absolute bottom-4 left-4 right-4 sm:left-6 sm:right-6 lg:left-8 lg:right-8">
+              <div className="bg-white rounded-2xl p-3 sm:p-4 shadow-sm border border-gray-200 space-y-2">
+                <div className="md:hidden flex items-center justify-between p-2 sm:p-3 bg-gray-50 rounded-lg">
+                  <div className="flex-1">
+                    <p className="text-xs sm:text-sm font-medium text-gray-900">42 Sunrise Dr</p>
+                    <p className="text-[10px] sm:text-xs text-gray-500">3 bed • 2 bath</p>
+                  </div>
+                  <span className="text-xs sm:text-sm font-bold text-black">$1.75M</span>
                 </div>
-                <div className="flex items-end justify-between h-32 gap-2">
-                  <div className="flex-1 bg-gray-200 rounded-t-lg transition-all hover:bg-gray-300" style={{ height: '35%' }}/>
-                  <div className="flex-1 bg-gray-200 rounded-t-lg transition-all hover:bg-gray-300" style={{ height: '48%' }} />
-                  <div className="flex-1 bg-gray-300 rounded-t-lg transition-all hover:bg-gray-400" style={{ height: '62%' }} />
-                  <div className="flex-1 rounded-t-lg transition-all" style={{ backgroundColor: '#4a4a5c', height: '88%' }} />
-                  <div className="flex-1 bg-gray-300 rounded-t-lg transition-all hover:bg-gray-400" style={{ height: '75%' }} />
-                  <div className="flex-1 bg-gray-200 rounded-t-lg transition-all hover:bg-gray-300" style={{ height: '55%' }} />
+                <div className=" flex items-center justify-between p-2 sm:p-3 bg-gray-50 rounded-lg">
+                  <div className="flex-1">
+                    <p className="text-xs sm:text-sm font-medium text-gray-900">56 Palm Ave</p>
+                    <p className="text-[10px] sm:text-xs text-gray-500">3 bed • 2 bath</p>
+                  </div>
+                  <span className="text-xs sm:text-sm font-bold text-black">$1.82M</span>
                 </div>
-                <div className="flex items-center justify-between mt-3 text-xs text-gray-500">
-                  <span>Jan</span>
-                  <span>Feb</span>
-                  <span>Mar</span>
-                  <span>Apr</span>
-                  <span>May</span>
-                  <span>Jun</span>
+                <div className="flex items-center justify-between p-2 sm:p-3 rounded-lg border-2 border-dashed" style={{ borderColor: '#4a4a5c' }}>
+                  <div className="flex-1">
+                    <p className="text-xs sm:text-sm font-semibold text-gray-900">48 Sunrise Dr</p>
+                    <p className="text-[10px] sm:text-xs font-medium" style={{ color: '#4a4a5c' }}>Subject Property</p>
+                  </div>
+                  <span className="text-xs sm:text-sm font-bold text-black">$1.80M</span>
                 </div>
               </div>
             </div>
@@ -111,22 +112,28 @@ export default function Features() {
               Comprehensive Property Data
             </h3>
             <p className="text-base text-gray-600 leading-relaxed mb-6">
-              Every property includes detailed sales history, tax records, ownership info, and neighborhood insights from 100+ verified sources.
+              Access detailed property information including sales history, tax records, ownership info, and neighborhood insights.
             </p>
-            
+
             {/* Enhanced stats display */}
             <div className="mt-auto space-y-4">
               <div className="flex items-center justify-between p-4 bg-white rounded-xl border border-gray-200 shadow-sm">
-                <span className="text-base font-medium text-gray-700">Total Properties</span>
-                <span className="text-2xl font-bold text-black">10M+</span>
+                <span className="text-base font-medium text-gray-700">Accurate Data</span>
+                <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: '#4a4a5c' }}>
+                  <CheckCircle className="h-5 w-5 text-white" />
+                </div>
               </div>
               <div className="flex items-center justify-between p-4 bg-white rounded-xl border border-gray-200 shadow-sm">
-                <span className="text-base font-medium text-gray-700">States Covered</span>
-                <span className="text-2xl font-bold text-black">50</span>
+                <span className="text-base font-medium text-gray-700">Real-Time Updates</span>
+                <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: '#4a4a5c' }}>
+                  <CheckCircle className="h-5 w-5 text-white" />
+                </div>
               </div>
               <div className="flex items-center justify-between p-4 bg-white rounded-xl border border-gray-200 shadow-sm">
-                <span className="text-base font-medium text-gray-700">Data Sources</span>
-                <span className="text-2xl font-bold text-black">100+</span>
+                <span className="text-base font-medium text-gray-700">Verified Sources</span>
+                <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: '#4a4a5c' }}>
+                  <CheckCircle className="h-5 w-5 text-white" />
+                </div>
               </div>
             </div>
           </div>
@@ -159,7 +166,7 @@ export default function Features() {
                   <div className="h-12 bg-gray-100 rounded" />
                 </div>
               </div>
-              <div className="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm flex-1 max-w-[200px] opacity-70">
+              <div className="hidden md:block bg-white rounded-2xl p-6 border border-gray-200 shadow-sm flex-1 max-w-[200px] opacity-70">
                 <div className="w-full h-4 bg-gray-300 rounded mb-3" />
                 <div className="w-3/4 h-3 bg-gray-200 rounded mb-6" />
                 <div className="space-y-3">
@@ -168,7 +175,7 @@ export default function Features() {
                   <div className="w-full h-2 bg-gray-200 rounded" />
                 </div>
               </div>
-              <div className="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm flex-1 max-w-[200px] opacity-40">
+              <div className="hidden md:block bg-white rounded-2xl p-6 border border-gray-200 shadow-sm flex-1 max-w-[200px] opacity-40">
                 <div className="w-full h-4 bg-gray-300 rounded mb-3" />
                 <div className="w-3/4 h-3 bg-gray-200 rounded" />
               </div>
@@ -344,7 +351,7 @@ export default function Features() {
                 </div>
 
                 {/* Response mockup */}
-                <div className="flex-1 bg-white rounded-2xl p-6 shadow-sm border border-gray-200">
+                <div className="md:flex-1 md:block hidden bg-white rounded-2xl p-6 shadow-sm border border-gray-200">
                   <div className="flex items-center justify-between mb-4 pb-3 border-b border-gray-200">
                     <span className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Response</span>
                     <div className="flex items-center gap-1.5">
