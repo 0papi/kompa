@@ -1,23 +1,16 @@
-import "dotenv/config";
-import cors from "cors";
-import express from "express";
+import app from "./app";
+import { env } from "./config/env";
+import { logger } from "./config/logger";
+import { setupGracefulShutdown } from "./utils/shutdown";
 
-const app = express();
+const port = env.PORT;
 
-app.use(
-	cors({
-		origin: process.env.CORS_ORIGIN || "",
-		methods: ["GET", "POST", "OPTIONS"],
-	}),
-);
-
-app.use(express.json());
-
-app.get("/", (_req, res) => {
-	res.status(200).send("OK");
+const server = app.listen(port, () => {
+	logger.info(`Server is running on port ${port}`, {
+		environment: env.NODE_ENV,
+		port,
+	});
 });
 
-const port = process.env.PORT || 3000;
-app.listen(port, () => {
-	console.log(`Server is running on port ${port}`);
-});
+// Setup graceful shutdown
+setupGracefulShutdown(server);

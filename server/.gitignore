@@ -43,6 +43,10 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# test coverage
+coverage/
+.nyc_output/
+
 # misc
 .DS_Store
 *.pem
