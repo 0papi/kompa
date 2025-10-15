@@ -6,6 +6,10 @@ import { Mail, Lock, Eye, EyeOff, ArrowRight, Search } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { useSignInWithEmailAndPassword } from "react-firebase-hooks/auth";
+import { auth } from "@/lib/firebase";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 const loginSchema = z.object({
 	email: z.string().email("Please enter a valid email address"),
@@ -15,8 +19,10 @@ const loginSchema = z.object({
 type LoginFormData = z.infer<typeof loginSchema>;
 
 export default function Login() {
+	const router = useRouter()
 	const [showPassword, setShowPassword] = useState(false);
-
+ const [signInWithEmailAndPassword, user, loading, error] =
+    useSignInWithEmailAndPassword(auth);
 	const {
 		register,
 		handleSubmit,
@@ -26,9 +32,19 @@ export default function Login() {
 	});
 
 	const onSubmit = async (data: LoginFormData) => {
-		console.log(data);
-		// Handle login logic here
-	};
+  const { email, password } = data;
+
+  try {
+    const user = await signInWithEmailAndPassword(email, password)
+		
+		if(!user) {
+			throw new Error('Invalid email or password')
+		}
+    router.push('/dashboard');
+  } catch (error) {
+    toast.error('Invalid email or password');
+  }
+};
 
 	return (
 		<div className="min-h-screen bg-gray-50 flex items-center justify-center px-6 py-12">
