@@ -34,9 +34,16 @@ import {
   Menu,
 } from "lucide-react"
 import Link from "next/link"
+import { useSession } from "@/lib/hooks/useSession"
+import { ROLE_SPECIFIC_DASHBOARD_ITEMS } from "@/lib/consts"
 
 export function DashboardHeader() {
   const [open, setOpen] = useState(false)
+  const {user, role} = useSession()
+
+  const links = ROLE_SPECIFIC_DASHBOARD_ITEMS[role!]
+
+  console.log('dashboard links', links)
 
   return (
     <>
@@ -64,18 +71,18 @@ export function DashboardHeader() {
                 <LayoutDashboard className="h-4 w-4" />
                 Overview
               </Button>
-              <Button variant="ghost" size="sm" className="gap-2">
-                <BarChart3 className="h-4 w-4" />
-                Analytics
-              </Button>
-              <Button variant="ghost" size="sm" className="gap-2">
-                <Users className="h-4 w-4" />
-                Team
-              </Button>
-              <Button variant="ghost" size="sm" className="gap-2">
-                <FileText className="h-4 w-4" />
-                Reports
-              </Button>
+             
+              {links?.map((link) => {
+                const Icon = link.icon;
+                return (
+                  <Button variant="ghost" size="sm" className="gap-2">
+                    <Icon className="h-4 w-4" />
+                    {link.label}
+                  </Button>
+                )
+              })}
+              
+              
             </nav>
           </div>
 
