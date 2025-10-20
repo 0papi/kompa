@@ -6,6 +6,7 @@ import { helmetMiddleware, rateLimiter } from "./middleware/security";
 import { errorHandler, notFoundHandler } from "./middleware/errorHandler";
 import healthRouter from "./routes/health";
 import userRouter from "./routes/user.routes";
+import listingRouter from "./routes/listing.routes";
 
 // Initialize Firebase
 initializeFirebase();
@@ -32,6 +33,7 @@ app.use(express.urlencoded({ extended: true }));
 // Routes
 app.use("/health", healthRouter);
 app.use("/api/v1/users", userRouter);
+app.use("/api/v1/listings", listingRouter);
 
 app.get("/", (_req, res) => {
   res.status(200).json({

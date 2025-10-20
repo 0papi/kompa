@@ -1,6 +1,14 @@
-import { BarChart3, Building, CreditCard, Landmark, Search, ShoppingCart, type LucideIcon } from "lucide-react"
+import {
+  BarChart3,
+  Building,
+  CreditCard,
+  Landmark,
+  Search,
+  ShoppingCart,
+  type LucideIcon,
+} from "lucide-react";
 
-export type AccountType = "PROVIDER" | "CONSUMER"
+export type AccountType = "PROVIDER" | "CONSUMER";
 
 export type DashboardLink = {
   /** The visible text label for the navigation item. */
@@ -10,7 +18,6 @@ export type DashboardLink = {
   /** The icon component to be displayed next to the label. */
   icon: LucideIcon;
 };
-
 
 export const ROLE_SPECIFIC_DASHBOARD_ITEMS: Record<
   AccountType,
@@ -34,7 +41,6 @@ export const ROLE_SPECIFIC_DASHBOARD_ITEMS: Record<
     },
   ],
 
- 
   PROVIDER: [
     {
       label: "My Listings",
@@ -53,3 +59,75 @@ export const ROLE_SPECIFIC_DASHBOARD_ITEMS: Record<
     },
   ],
 };
+
+export const PROPERTY_TYPES = new Map([
+  [
+    "Residential",
+    [
+      "Apartment / Flat",
+      "Detached House",
+      "Semi-Detached House",
+      "Townhouse",
+      "Duplex",
+      "Bungalow",
+      "Villa",
+      "Condominium",
+      "Studio Apartment",
+      "Shared Room / Co-living Space",
+      "Mansion",
+      "Penthouse",
+      "Farmhouse",
+      "Chalet / Cottage",
+    ],
+  ],
+  [
+    "Commercial",
+    [
+      "Office Space",
+      "Retail Shop / Storefront",
+      "Shopping Mall Unit",
+      "Warehouse",
+      "Industrial / Factory Building",
+      "Cold Storage Facility",
+      "Hotel / Guesthouse",
+      "Restaurant / Bar",
+      "Event Center / Hall",
+      "Medical Facility / Clinic",
+      "Educational Facility / School",
+      "Mixed-use Building",
+    ],
+  ],
+  [
+    "Land",
+    [
+      "Residential Land",
+      "Commercial Land",
+      "Industrial Land",
+      "Agricultural Land / Farmland",
+      "Mixed-use Land",
+      "Waterfront Land",
+      "Bare Land / Plot",
+    ],
+  ],
+  [
+    "Development / Investment",
+    [
+      "Under-construction Property",
+      "Completed Building",
+      "Redevelopment Project",
+      "Joint Venture Opportunity",
+    ],
+  ],
+  [
+    "Special Use / Institutional",
+    [
+      "Religious Building (Church, Mosque, Temple)",
+      "Hospital / Healthcare Facility",
+      "Government Building",
+      "Community Center",
+      "Recreational Facility (Sports Complex, Gym, etc.)",
+    ],
+  ],
+]);
+
+export const PROPERTY_CATEGORIES = Array.from(PROPERTY_TYPES.keys());

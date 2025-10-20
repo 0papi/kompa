@@ -33,6 +33,11 @@ export async function authenticateUser(
 				name: decodedToken.name,
 			};
 
+			// Also set res.locals for easy access in controllers
+			res.locals.uid = decodedToken.uid;
+			res.locals.email = decodedToken.email;
+			res.locals.name = decodedToken.name;
+
 			next();
 		} catch (error) {
 			logger.warn("Invalid Firebase token", { error });

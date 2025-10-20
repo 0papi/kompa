@@ -1,0 +1,68 @@
+"use client";
+
+import { useRouter } from "next/navigation";
+import { ListingForm, type ListingFormData } from "@/components/listings";
+import { ArrowLeft } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import { useMutation } from "@tanstack/react-query";
+import { listingsApi } from "@/lib/api/listings";
+import { toast } from "sonner";
+
+export default function NewListingPage() {
+  const router = useRouter();
+
+  const createListingMutation = useMutation({
+    mutationFn: (data: ListingFormData) => listingsApi.create(data),
+    onSuccess: (response) => {
+      toast.success("Listing created successfully!");
+      router.push("/dashboard/listings");
+    },
+    onError: (error: any) => {
+      const errorMessage =
+        error?.message || "Failed to create listing. Please try again.";
+      toast.error(errorMessage);
+    },
+  });
+
+  const handleSubmit = async (data: ListingFormData) => {
+    createListingMutation.mutate(data);
+  };
+
+  const handleCancel = () => {
+    router.back();
+  };
+
+  return (
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex items-center gap-4">
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => router.back()}
+          className="h-8 w-8"
+        >
+          <ArrowLeft className="h-4 w-4" />
+        </Button>
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight">
+            Create New Listing
+          </h1>
+          <p className="text-muted-foreground mt-1">
+            Add a new property to your listings
+          </p>
+        </div>
+      </div>
+
+      <Separator />
+
+      {/* Form */}
+      <ListingForm
+        onSubmit={handleSubmit}
+        onCancel={handleCancel}
+        isLoading={createListingMutation.isPending}
+      />
+    </div>
+  );
+}
