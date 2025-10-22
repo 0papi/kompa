@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { type ReactNode, useEffect } from "react";
 import { useRouter } from "next/navigation";
@@ -13,7 +13,7 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     if (!loading && !user) {
-      router.replace("/login"); 
+      router.replace("/login");
     }
   }, [user, loading, router]);
 
@@ -25,14 +25,15 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
     );
   }
 
- 
   if (!user) return null;
 
   return (
     <div className="min-h-screen flex flex-col">
       <DashboardHeader />
-      <main className="flex-1 overflow-y-auto bg-background/90">
-        <div className="container mx-auto p-6 md:p-8 lg:p-10">{children}</div>
+      <main className="flex-1 overflow-y-auto bg-background/90 custom-scrollbar">
+        <div className="container mx-auto p-6 md:p-8 lg:p-10 custom-scrollbar">
+          {children}
+        </div>
       </main>
     </div>
   );

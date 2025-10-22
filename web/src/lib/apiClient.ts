@@ -15,7 +15,7 @@ apiClient.interceptors.request.use(
   async (config) => {
     if (typeof window !== "undefined") {
       const user = auth.currentUser;
-      console.log("firebase user:", user);
+
       if (user) {
         const token = await user.getIdToken();
         config.headers.Authorization = `Bearer ${token}`;

@@ -12,7 +12,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import { Plus, X } from "lucide-react";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Plus, X, CalendarIcon } from "lucide-react";
 import {
   listingFormSchema,
   type ListingFormData,
@@ -20,6 +26,8 @@ import {
 import { toast } from "sonner";
 import { Textarea } from "../ui/textarea";
 import { PROPERTY_TYPES, PROPERTY_CATEGORIES } from "@/lib/consts";
+import { format } from "date-fns";
+import { cn } from "@/lib/utils";
 
 interface ListingFormProps {
   onSubmit: (data: ListingFormData) => void | Promise<void>;
@@ -57,7 +65,6 @@ export function ListingForm({
   const onFormSubmit = async (data: ListingFormData) => {
     try {
       await onSubmit(data);
-      toast.success("Listing saved successfully");
     } catch (error) {
       toast.error("Failed to save listing");
       console.error("Form submission error:", error);
@@ -886,11 +893,41 @@ export function ListingForm({
               </div>
             </Label>
             <div className="flex-1 max-w-xl">
-              <Input
-                id="listDate"
-                type="date"
-                {...register("listDate")}
-                disabled={isLoading}
+              <Controller
+                name="listDate"
+                control={control}
+                render={({ field }) => (
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        className={cn(
+                          "w-full justify-start text-left font-normal",
+                          !field.value && "text-muted-foreground"
+                        )}
+                        disabled={isLoading}
+                      >
+                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        {field.value ? (
+                          format(new Date(field.value), "PPP")
+                        ) : (
+                          <span>Pick a date</span>
+                        )}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                      captionLayout="dropdown"
+                        mode="single"
+                        selected={field.value ? new Date(field.value) : undefined}
+                        onSelect={(date) => {
+                          field.onChange(date ? format(date, "yyyy-MM-dd") : undefined);
+                        }}
+                        initialFocus
+                      />
+                    </PopoverContent>
+                  </Popover>
+                )}
               />
               {errors.listDate && (
                 <p className="text-sm text-destructive mt-1">
@@ -913,11 +950,41 @@ export function ListingForm({
               </div>
             </Label>
             <div className="flex-1 max-w-xl">
-              <Input
-                id="saleDate"
-                type="date"
-                {...register("saleDate")}
-                disabled={isLoading}
+              <Controller
+                name="saleDate"
+                control={control}
+                render={({ field }) => (
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        className={cn(
+                          "w-full justify-start text-left font-normal",
+                          !field.value && "text-muted-foreground"
+                        )}
+                        disabled={isLoading}
+                      >
+                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        {field.value ? (
+                          format(new Date(field.value), "PPP")
+                        ) : (
+                          <span>Pick a date</span>
+                        )}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        captionLayout="dropdown"
+                        selected={field.value ? new Date(field.value) : undefined}
+                        onSelect={(date) => {
+                          field.onChange(date ? format(date, "yyyy-MM-dd") : undefined);
+                        }}
+                        initialFocus
+                      />
+                    </PopoverContent>
+                  </Popover>
+                )}
               />
               {errors.saleDate && (
                 <p className="text-sm text-destructive mt-1">

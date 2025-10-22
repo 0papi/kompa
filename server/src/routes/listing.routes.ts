@@ -33,4 +33,6 @@ router.delete("/:id", authenticateUser, listingController.delete);
 
 router.patch("/:id/restore", authenticateUser, listingController.restore);
 
+router.patch("/:id/status", authenticateUser, listingController.updateStatus);
+
 export default router;

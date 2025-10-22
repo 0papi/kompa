@@ -32,6 +32,8 @@ import {
   Calendar,
   MessageSquare,
   Menu,
+  ExternalLink,
+  Bookmark,
 } from "lucide-react";
 import Link from "next/link";
 import { useSession } from "@/lib/hooks/useSession";
@@ -42,19 +44,30 @@ import { auth } from "@/lib/firebase";
 import { SignOutModal } from "./sign-out-modal";
 import { toast } from "sonner";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { Badge } from "@/components/ui/badge";
+import { useQuery } from "@tanstack/react-query";
+import { favoritesApi } from "@/lib/api/favorites";
+import { BookmarksDrawer } from "@/components/bookmarks/bookmarks-drawer";
+import { useBookmarksDrawer } from "@/components/bookmarks/state";
 
 export function DashboardHeader() {
   const [open, setOpen] = useState(false);
   const [signOutModalOpen, setSignOutModalOpen] = useState(false);
   const [isSigningOut, setIsSigningOut] = useState(false);
-  const { user, role } = useSession();
+  const { user, role, isAuthenticated } = useSession();
   const router = useRouter();
-
-  console.log("role ", role);
+  const { isOpen: bookmarksDrawerOpen, openDrawer: openBookmarksDrawer, closeDrawer: closeBookmarksDrawer } = useBookmarksDrawer();
 
   const links = ROLE_SPECIFIC_DASHBOARD_ITEMS[role!];
 
-  console.log("dashboard links", links);
+  // Fetch user's bookmarks count
+  const { data: bookmarksData } = useQuery({
+    queryKey: ["user-bookmarks"],
+    queryFn: () => favoritesApi.getUserBookmarks(),
+    enabled: isAuthenticated,
+  });
+
+  const bookmarksCount = bookmarksData?.data?.length || 0;
 
   const handleSignOut = async () => {
     try {
@@ -122,22 +135,27 @@ export function DashboardHeader() {
 
               {/* Desktop Navigation */}
               <nav className="hidden md:flex items-center gap-1 ml-6">
-                <Button variant="ghost" size="sm" className="gap-2">
+                <Button variant="ghost" size="sm" className="gap-2 text-sm" >
                   <LayoutDashboard className="h-4 w-4 text-muted-foreground" />
                   Overview
                 </Button>
 
                 {links?.map((link) => {
                   const Icon = link.icon;
+                  const id = `${link.label}+${link.href}`
                   return (
                     <Button
+                    
+                    id={id}
                       variant="ghost"
                       size="sm"
-                      className="gap-2"
+                      className="gap-2 "
                       onClick={() => router.push(link.href as any)}
                     >
                       <Icon className="h-4 w-4 text-muted-foreground" />
-                      {link.label}
+                      <span className="text-sm">
+                          {link.label}
+                      </span>
                     </Button>
                   );
                 })}
@@ -146,6 +164,14 @@ export function DashboardHeader() {
 
             <div className="flex items-center gap-2">
               <Button
+                className=""
+                variant="outline"
+                onClick={() => router.push("/marketplace")}
+              >
+                <span>Marketplace</span>
+                <ExternalLink className="h-4 w-4 text-muted-foreground" />
+              </Button>
+              {/*<Button
                 variant="outline"
                 size="sm"
                 className="hidden md:flex gap-2 w-64 justify-start text-muted-foreground bg-transparent"
@@ -156,7 +182,7 @@ export function DashboardHeader() {
                 <kbd className="ml-auto pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
                   <span className="text-xs">⌘</span>K
                 </kbd>
-              </Button>
+              </Button>*/}
 
               <ThemeToggle />
 
@@ -193,6 +219,21 @@ export function DashboardHeader() {
                     </div>
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    onClick={openBookmarksDrawer}
+                    className="cursor-pointer group"
+                  >
+                    <Bookmark className="mr-2 h-4 w-4 text-muted-foreground group-hover:text-foreground transition-colors" />
+                    <span className="flex-1">Bookmarks</span>
+                    {bookmarksCount > 0 && (
+                      <Badge
+                        variant="secondary"
+                        className="ml-2 h-5 min-w-[20px] px-1.5 text-xs font-semibold tabular-nums"
+                      >
+                        {bookmarksCount > 99 ? "99+" : bookmarksCount}
+                      </Badge>
+                    )}
+                  </DropdownMenuItem>
                   <DropdownMenuItem>
                     <User className="mr-2 h-4 w-4 text-muted-foreground" />
                     <span>Profile</span>
@@ -220,9 +261,18 @@ export function DashboardHeader() {
         isLoading={isSigningOut}
       />
 
-      <CommandDialog open={open} onOpenChange={setOpen}>
+      <BookmarksDrawer
+        open={bookmarksDrawerOpen}
+        onOpenChange={closeBookmarksDrawer}
+      />
+
+      {/*<CommandDialog
+        open={open}
+        onOpenChange={setOpen}
+        className="custom-scrollbar"
+      >
         <CommandInput placeholder="Type a command or search..." />
-        <CommandList>
+        <CommandList className="custom-scrollbar">
           <CommandEmpty>No results found.</CommandEmpty>
           <CommandGroup heading="Navigation">
             <CommandItem>
@@ -261,7 +311,7 @@ export function DashboardHeader() {
             </CommandItem>
           </CommandGroup>
         </CommandList>
-      </CommandDialog>
+      </CommandDialog>*/}
     </>
   );
 }

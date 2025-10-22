@@ -2,6 +2,9 @@ import type { Response, NextFunction } from "express";
 import { auth } from "../config/firebase";
 import { logger } from "../config/logger";
 import type { AuthenticatedRequest } from "../types/index";
+import { db } from "../db";
+import { users } from "../models/user.model";
+import { eq } from "drizzle-orm";
 
 export async function authenticateUser(
 	req: AuthenticatedRequest,
@@ -27,16 +30,38 @@ export async function authenticateUser(
 		try {
 			const decodedToken = await auth().verifyIdToken(token);
 
+	
+			const [user] = await db
+				.select()
+				.from(users)
+				.where(eq(users.firebaseUid, decodedToken.uid))
+				.limit(1);
+
+			
+
+			if (!user) {
+				logger.warn("User not found in database", { firebaseUid: decodedToken.uid });
+				res.status(401).json({
+					success: false,
+					error: {
+						message: "User not found",
+						code: "USER_NOT_FOUND",
+					},
+				});
+				return;
+			}
+
 			req.user = {
-				uid: decodedToken.uid,
-				email: decodedToken.email,
-				name: decodedToken.name,
+				uid: user.id, 
+				email: user.email,
+				name: user.name!,
 			};
 
-			// Also set res.locals for easy access in controllers
-			res.locals.uid = decodedToken.uid;
-			res.locals.email = decodedToken.email;
-			res.locals.name = decodedToken.name;
+		
+			res.locals.uid = user.id; 
+			res.locals.firebaseUid = decodedToken.uid; 
+			res.locals.email = user.email;
+			res.locals.name = user.name;
 
 			next();
 		} catch (error) {
@@ -61,11 +86,11 @@ export async function authenticateUser(
 	}
 }
 
-export function optionalAuth(
+export async function optionalAuth(
 	req: AuthenticatedRequest,
 	res: Response,
 	next: NextFunction,
-): void {
+): Promise<void> {
 	const authHeader = req.headers.authorization;
 
 	if (!authHeader?.startsWith("Bearer ")) {
@@ -73,9 +98,35 @@ export function optionalAuth(
 		return;
 	}
 
-	// If auth header is present, use the regular auth middleware
-	authenticateUser(req, res, next).catch((error) => {
-		logger.error("Optional auth error", { error });
-		next();
-	});
+	const token = authHeader.substring(7);
+
+	try {
+		const decodedToken = await auth().verifyIdToken(token);
+
+		// Fetch user from database using Firebase UID
+		const [user] = await db
+			.select()
+			.from(users)
+			.where(eq(users.firebaseUid, decodedToken.uid))
+			.limit(1);
+
+		if (user) {
+			req.user = {
+				uid: user.id, // Database UUID
+				email: user.email,
+				name: user.name!,
+			};
+
+			// Set res.locals with database UUID for easy access in controllers
+			res.locals.uid = user.id; // Database UUID instead of Firebase UID
+			res.locals.firebaseUid = decodedToken.uid; // Keep Firebase UID if needed
+			res.locals.email = user.email;
+			res.locals.name = user.name;
+		}
+	} catch (error) {
+		logger.warn("Optional auth failed, continuing without auth", { error });
+		// Continue without authentication
+	}
+
+	next();
 }

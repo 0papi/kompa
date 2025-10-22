@@ -13,13 +13,18 @@ import {
   Search,
   User,
   CheckCircle2,
+  Store,
+  ShoppingBag,
+  Users,
 } from "lucide-react";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useAccount } from "@/lib/hooks/mutations/account.mutation";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
 
 const signupSchema = z.object({
   firstName: z.string().min(1, "First name is required"),
@@ -30,7 +35,9 @@ const signupSchema = z.object({
     .min(8, "Password must be at least 8 characters")
     .regex(/\d/, "Password must contain a number")
     .regex(/[!@#$%^&*]/, "Password must contain a special character"),
-  account_type: z.enum(["PROVIDER", "CONSUMER"]).default("PROVIDER"),
+  account_type: z
+    .enum(["PROVIDER", "CONSUMER", "CONSUMER_PROVIDER"])
+    .default("PROVIDER"),
 });
 
 type SignupFormData = z.infer<typeof signupSchema>;
@@ -45,16 +52,16 @@ export default function SignUp() {
     register,
     handleSubmit,
     watch,
+    control,
     formState: { errors },
   } = useForm<SignupFormData>({
     // @ts-ignore
     resolver: zodResolver(signupSchema),
   });
 
-	console.log('form errors', errors)
+  console.log("form errors", errors);
 
-
-	const isSubmitting = createUser.isPending
+  const isSubmitting = createUser.isPending;
 
   const password = watch("password", "");
 
@@ -87,12 +94,12 @@ export default function SignUp() {
           toast.success("Account created. Log in to access your account");
           router.push("/login");
         },
-				onError(error, variables, onMutateResult, context) {
-						console.log('error occurred', error)
-						// @ts-ignore
-						toast.error(error?.error?.message)
-				},
-      }
+        onError(error, variables, onMutateResult, context) {
+          console.log("error occurred", error);
+          // @ts-ignore
+          toast.error(error?.error?.message);
+        },
+      },
     );
   };
 
@@ -129,7 +136,7 @@ export default function SignUp() {
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <User className="h-4 w-4 text-gray-400" />
                   </div>
-                  <input
+                  <Input
                     id="firstName"
                     type="text"
                     autoComplete="given-name"
@@ -154,7 +161,7 @@ export default function SignUp() {
                 >
                   Last name
                 </label>
-                <input
+                <Input
                   id="lastName"
                   type="text"
                   autoComplete="family-name"
@@ -174,30 +181,6 @@ export default function SignUp() {
 
             <div>
               <label
-                htmlFor="account_type"
-                className="block text-xs font-semibold text-black mb-1.5"
-              >
-                Account type
-              </label>
-              <select
-                id="account_type"
-                {...register("account_type")}
-                className={`block z-20 w-full px-3 py-2.5 text-sm border rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all ${
-                  errors.account_type ? "border-red-500" : "border-gray-200"
-                }`}
-              >
-                <option value="PROVIDER">Provider</option>
-                <option value="CONSUMER">Consumer</option>
-              </select>
-              {errors.account_type && (
-                <p className="mt-1 text-xs text-red-600">
-                  {errors.account_type.message}
-                </p>
-              )}
-            </div>
-
-            <div>
-              <label
                 htmlFor="email"
                 className="block text-xs font-semibold text-black mb-1.5"
               >
@@ -207,7 +190,7 @@ export default function SignUp() {
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <Mail className="h-4 w-4 text-gray-400" />
                 </div>
-                <input
+                <Input
                   id="email"
                   type="email"
                   autoComplete="email"
@@ -236,7 +219,7 @@ export default function SignUp() {
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <Lock className="h-4 w-4 text-gray-400" />
                 </div>
-                <input
+                <Input
                   id="password"
                   type={showPassword ? "text" : "password"}
                   autoComplete="new-password"
@@ -278,6 +261,181 @@ export default function SignUp() {
                     </div>
                   ))}
                 </div>
+              )}
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-black mb-3">
+                I want to
+              </label>
+              <Controller
+                name="account_type"
+                control={control}
+                defaultValue="PROVIDER"
+                render={({ field }) => (
+                  <div className="grid grid-cols-1 gap-2.5">
+                    <button
+                      type="button"
+                      onClick={() => field.onChange("PROVIDER")}
+                      className={cn(
+                        "relative p-4 rounded-xl border-1 text-left transition-all duration-200 group",
+                        field.value === "PROVIDER"
+                          ? "border-blue-600 bg-blue-50 shadow-sm"
+                          : "border-gray-200 bg-white hover:border-gray-300 hover:bg-gray-50",
+                      )}
+                    >
+                      <div className="flex items-start gap-3">
+                        <div
+                          className={cn(
+                            "flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center transition-colors",
+                            field.value === "PROVIDER"
+                              ? "bg-blue-600 text-white"
+                              : "bg-gray-100 text-gray-600 group-hover:bg-gray-200",
+                          )}
+                        >
+                          <Store className="h-5 w-5" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 mb-1">
+                            <h3
+                              className={cn(
+                                "font-semibold text-sm",
+                                field.value === "PROVIDER"
+                                  ? "text-blue-900"
+                                  : "text-gray-900",
+                              )}
+                            >
+                              Provide Comp Data
+                            </h3>
+                            {field.value === "PROVIDER" && (
+                              <CheckCircle2 className="h-4 w-4 text-blue-600 flex-shrink-0" />
+                            )}
+                          </div>
+                          <p
+                            className={cn(
+                              "text-xs leading-relaxed",
+                              field.value === "PROVIDER"
+                                ? "text-blue-700"
+                                : "text-gray-600",
+                            )}
+                          >
+                            I have property comparable data to share with the
+                            marketplace
+                          </p>
+                        </div>
+                      </div>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => field.onChange("CONSUMER")}
+                      className={cn(
+                        "relative p-4 rounded-xl border-1 text-left transition-all duration-200 group",
+                        field.value === "CONSUMER"
+                          ? "border-green-600 bg-green-50 shadow-sm"
+                          : "border-gray-200 bg-white hover:border-gray-300 hover:bg-gray-50",
+                      )}
+                    >
+                      <div className="flex items-start gap-3">
+                        <div
+                          className={cn(
+                            "flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center transition-colors",
+                            field.value === "CONSUMER"
+                              ? "bg-green-600 text-white"
+                              : "bg-gray-100 text-gray-600 group-hover:bg-gray-200",
+                          )}
+                        >
+                          <ShoppingBag className="h-5 w-5" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 mb-1">
+                            <h3
+                              className={cn(
+                                "font-semibold text-sm",
+                                field.value === "CONSUMER"
+                                  ? "text-green-900"
+                                  : "text-gray-900",
+                              )}
+                            >
+                              Access Comp Data
+                            </h3>
+                            {field.value === "CONSUMER" && (
+                              <CheckCircle2 className="h-4 w-4 text-green-600 flex-shrink-0" />
+                            )}
+                          </div>
+                          <p
+                            className={cn(
+                              "text-xs leading-relaxed",
+                              field.value === "CONSUMER"
+                                ? "text-green-700"
+                                : "text-gray-600",
+                            )}
+                          >
+                            I need property comparable data for analysis and
+                            decision making
+                          </p>
+                        </div>
+                      </div>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => field.onChange("CONSUMER_PROVIDER")}
+                      className={cn(
+                        "relative p-4 rounded-xl border-1 text-left transition-all duration-200 group",
+                        field.value === "CONSUMER_PROVIDER"
+                          ? "border-purple-600 bg-purple-50 shadow-sm"
+                          : "border-gray-200 bg-white hover:border-gray-300 hover:bg-gray-50",
+                      )}
+                    >
+                      <div className="flex items-start gap-3">
+                        <div
+                          className={cn(
+                            "flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center transition-colors",
+                            field.value === "CONSUMER_PROVIDER"
+                              ? "bg-purple-600 text-white"
+                              : "bg-gray-100 text-gray-600 group-hover:bg-gray-200",
+                          )}
+                        >
+                          <Users className="h-5 w-5" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 mb-1">
+                            <h3
+                              className={cn(
+                                "font-semibold text-sm",
+                                field.value === "CONSUMER_PROVIDER"
+                                  ? "text-purple-900"
+                                  : "text-gray-900",
+                              )}
+                            >
+                              Both
+                            </h3>
+                            {field.value === "CONSUMER_PROVIDER" && (
+                              <CheckCircle2 className="h-4 w-4 text-purple-600 flex-shrink-0" />
+                            )}
+                          </div>
+                          <p
+                            className={cn(
+                              "text-xs leading-relaxed",
+                              field.value === "CONSUMER_PROVIDER"
+                                ? "text-purple-700"
+                                : "text-gray-600",
+                            )}
+                          >
+                            I want to both provide and access property
+                            comparable data
+                          </p>
+                        </div>
+                      </div>
+                    </button>
+                  </div>
+                )}
+              />
+              {errors.account_type && (
+                <p className="mt-2 text-xs text-red-600">
+                  {errors.account_type.message}
+                </p>
               )}
             </div>
 

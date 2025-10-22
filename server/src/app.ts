@@ -7,6 +7,7 @@ import { errorHandler, notFoundHandler } from "./middleware/errorHandler";
 import healthRouter from "./routes/health";
 import userRouter from "./routes/user.routes";
 import listingRouter from "./routes/listing.routes";
+import favoriteRouter from "./routes/favorite.routes";
 
 // Initialize Firebase
 initializeFirebase();
@@ -21,7 +22,7 @@ app.use(rateLimiter);
 app.use(
   cors({
     origin: env.CORS_ORIGIN,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
     credentials: true,
   }),
 );
@@ -34,6 +35,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/health", healthRouter);
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/listings", listingRouter);
+app.use("/api/v1/favorites", favoriteRouter);
 
 app.get("/", (_req, res) => {
   res.status(200).json({

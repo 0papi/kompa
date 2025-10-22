@@ -8,7 +8,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 
-export type AccountType = "PROVIDER" | "CONSUMER";
+export type AccountType = "PROVIDER" | "CONSUMER" | "CONSUMER_PROVIDER";
 
 export type DashboardLink = {
   /** The visible text label for the navigation item. */
@@ -56,6 +56,34 @@ export const ROLE_SPECIFIC_DASHBOARD_ITEMS: Record<
       label: "Payouts",
       href: "/dashboard/payouts",
       icon: Landmark,
+    },
+  ],
+
+  CONSUMER_PROVIDER: [
+    {
+      label: "My Listings",
+      href: "/dashboard/listings",
+      icon: Building,
+    },
+    {
+      label: "My Purchases",
+      href: "/dashboard/purchases",
+      icon: ShoppingCart,
+    },
+    {
+      label: "Sales & Analytics",
+      href: "/dashboard/analytics",
+      icon: BarChart3,
+    },
+    {
+      label: "Payouts",
+      href: "/dashboard/payouts",
+      icon: Landmark,
+    },
+    {
+      label: "Billing",
+      href: "/dashboard/billing",
+      icon: CreditCard,
     },
   ],
 };

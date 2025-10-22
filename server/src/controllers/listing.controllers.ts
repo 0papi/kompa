@@ -106,9 +106,47 @@ export class ListingController {
 
   getPublished = async (req: Request, res: Response) => {
     try {
-      const listings = await this.listingService.getPublishedListings();
+      const {
+        page,
+        limit,
+        search,
+        city,
+        state,
+        propertyCategory,
+        propertyType,
+        minPrice,
+        maxPrice,
+        minBedrooms,
+        minBathrooms,
+        minSquareFeet,
+        maxSquareFeet,
+      } = req.query;
 
-      return res.status(200).json(success(listings));
+      const filters = {
+        page: page ? parseInt(page as string, 10) : undefined,
+        limit: limit ? parseInt(limit as string, 10) : undefined,
+        search: search as string | undefined,
+        city: city as string | undefined,
+        state: state as string | undefined,
+        propertyCategory: propertyCategory as string | undefined,
+        propertyType: propertyType as string | undefined,
+        minPrice: minPrice ? parseFloat(minPrice as string) : undefined,
+        maxPrice: maxPrice ? parseFloat(maxPrice as string) : undefined,
+        minBedrooms: minBedrooms ? parseInt(minBedrooms as string, 10) : undefined,
+        minBathrooms: minBathrooms
+          ? parseInt(minBathrooms as string, 10)
+          : undefined,
+        minSquareFeet: minSquareFeet
+          ? parseInt(minSquareFeet as string, 10)
+          : undefined,
+        maxSquareFeet: maxSquareFeet
+          ? parseInt(maxSquareFeet as string, 10)
+          : undefined,
+      };
+
+      const result = await this.listingService.getPublishedListings(filters);
+
+      return res.status(200).json(success(result));
     } catch (error: any) {
       logger.error("Getting published listings failed", error);
       return res.status(400).json(failure(error.message));
@@ -134,6 +172,37 @@ export class ListingController {
       return res.status(200).json(success(restoredListing));
     } catch (error: any) {
       logger.error("Restoring listing failed", error);
+      return res.status(400).json(failure(error.message));
+    }
+  };
+
+  updateStatus = async (req: Request, res: Response) => {
+    try {
+      const { id } = req.params;
+      const userId = res.locals.uid as string;
+      const { status } = req.body;
+
+      if (!status || !["DRAFT", "PUBLISHED", "ARCHIVED"].includes(status)) {
+        return res.status(400).json(failure("Invalid status value"));
+      }
+
+      const updatedListing = await this.listingService.updateListing(
+        id,
+        userId,
+        { status },
+      );
+
+      if (!updatedListing) {
+        return res
+          .status(404)
+          .json(failure("Listing not found or unauthorized"));
+      }
+
+      return res
+        .status(200)
+        .json(success(updatedListing, "Listing status updated successfully"));
+    } catch (error: any) {
+      logger.error("Updating listing status failed", error);
       return res.status(400).json(failure(error.message));
     }
   };

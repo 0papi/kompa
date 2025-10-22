@@ -24,15 +24,22 @@ export const listingFormSchema = z.object({
   bathrooms: z.coerce.number().min(0, "Bathrooms must be 0 or more").max(20, "Invalid number of bathrooms"),
   squareFeet: z.coerce.number().min(1, "Square feet must be greater than 0"),
   lotSize: z.coerce.number().min(0, "Lot size must be 0 or more").optional(),
-  yearBuilt: z.coerce.number().min(1800, "Year built must be after 1800").max(new Date().getFullYear() + 1, "Year built cannot be in the future").optional(),
+  yearBuilt: z.preprocess(
+  (val) => (val === "" || val === undefined ? undefined : Number(val)),
+  z.number()
+    .min(1800, "Year built must be after 1800")
+    .max(new Date().getFullYear() + 1, "Year built cannot be in the future")
+    .optional()
+),
+
 
   // Property Features
-  stories: z.coerce.number().min(1, "Stories must be at least 1").max(10).optional(),
+  stories: z.coerce.number().min(1, "Stories must be at least 1").max(10).optional().default(1),
   garageSpaces: z.coerce.number().min(0, "Garage spaces must be 0 or more").max(10).optional(),
   parkingSpaces: z.coerce.number().min(0, "Parking spaces must be 0 or more").max(20).optional(),
 
   // Property Condition
-  condition: z.string().min(10, "Condition description must be at least 10 characters").max(1000, "Condition description must be less than 1000 characters"),
+  condition: z.string().min(1, "Condition description must be at least 10 characters").max(1000, "Condition description must be less than 1000 characters"),
 
   // Financial Details
   hoaFees: z.coerce.number().min(0, "HOA fees must be 0 or more").optional(),

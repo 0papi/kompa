@@ -15,7 +15,7 @@ export default function NewListingPage() {
   const createListingMutation = useMutation({
     mutationFn: (data: ListingFormData) => listingsApi.create(data),
     onSuccess: (response) => {
-      toast.success("Listing created successfully!");
+      toast.success("Comparable listing added successfully!");
       router.push("/dashboard/listings");
     },
     onError: (error: any) => {
@@ -62,6 +62,7 @@ export default function NewListingPage() {
         onSubmit={handleSubmit}
         onCancel={handleCancel}
         isLoading={createListingMutation.isPending}
+        defaultValues={{stories: 1, condition: 'The property is in good condition'}}
       />
     </div>
   );

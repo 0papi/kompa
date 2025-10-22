@@ -4,8 +4,8 @@ import { auth } from "@/lib/firebase";
 import { type User } from "firebase/auth";
 
 interface CustomClaims {
-  role?: "PROVIDER" | "CONSUMER";
- 
+  role?: "PROVIDER" | "CONSUMER" | "CONSUMER_PROVIDER";
+
 }
 
 export function useSession() {

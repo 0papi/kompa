@@ -26,9 +26,9 @@ export const valuationMethodEnum = pgEnum("valuation_method", [
 
 export const listings = pgTable("listings", {
   id: uuid("id").defaultRandom().primaryKey(),
-  userId: text("user_id")
+  userId: uuid("user_id")
     .notNull()
-    .references(() => users.firebaseUid, { onDelete: "cascade" }),
+    .references(() => users.id, { onDelete: "cascade" }),
 
   // Property Details
   title: text("title").notNull(),
