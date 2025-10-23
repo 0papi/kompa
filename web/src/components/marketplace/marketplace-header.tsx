@@ -61,6 +61,19 @@ export function MarketplaceHeader() {
           {loading ? (
             <div className="h-8 w-8 rounded-full bg-muted animate-pulse" />
           ) : user ? (
+          <>
+            <Button variant="outline" onClick={openBookmarksDrawer}>
+              <Bookmark className="mr-2 h-4 w-4 group-hover:text-foreground transition-colors" />
+                  <span className="flex-1">Saved Items</span>
+                  {bookmarksCount > 0 && (
+                    <Badge
+                      variant="secondary"
+                      className="ml-2 h-5 min-w-[20px] px-1.5 text-xs font-semibold tabular-nums"
+                    >
+                      {bookmarksCount > 99 ? "99+" : bookmarksCount}
+                    </Badge>
+                  )}
+             </Button>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
@@ -95,7 +108,7 @@ export function MarketplaceHeader() {
                     Dashboard
                   </Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem
+                {/* <DropdownMenuItem
                   onClick={openBookmarksDrawer}
                   className="cursor-pointer group"
                 >
@@ -109,7 +122,7 @@ export function MarketplaceHeader() {
                       {bookmarksCount > 99 ? "99+" : bookmarksCount}
                     </Badge>
                   )}
-                </DropdownMenuItem>
+                </DropdownMenuItem> */}
                 <DropdownMenuItem asChild>
                   <Link
                     href="/dashboard/profile"
@@ -129,6 +142,7 @@ export function MarketplaceHeader() {
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
+          </>
           ) : (
             <div className="flex items-center gap-2">
               <Button asChild variant="ghost" size="sm">

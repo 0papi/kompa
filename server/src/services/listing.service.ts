@@ -17,6 +17,7 @@ export class ListingService extends BaseService<typeof listingTable> {
   }
 
   async getListingById(listingId: string, userId?: string) {
+    console.log('listing id', listingId, userId)
     const conditions = userId
       ? and(eq(listingTable.userId, userId), isNull(listingTable.deletedAt))
       : isNull(listingTable.deletedAt);

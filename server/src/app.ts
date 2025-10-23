@@ -8,6 +8,7 @@ import healthRouter from "./routes/health";
 import userRouter from "./routes/user.routes";
 import listingRouter from "./routes/listing.routes";
 import favoriteRouter from "./routes/favorite.routes";
+import commentRouter from "./routes/comments.route";
 
 // Initialize Firebase
 initializeFirebase();
@@ -36,6 +37,7 @@ app.use("/health", healthRouter);
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/listings", listingRouter);
 app.use("/api/v1/favorites", favoriteRouter);
+app.use("/api/v1", commentRouter);
 
 app.get("/", (_req, res) => {
   res.status(200).json({

@@ -52,7 +52,7 @@ export function MarketplaceListingDetail({
     queryFn: () => listingsApi.getById(listingId),
   });
 
-  // Check if listing is bookmarked (only if user is authenticated)
+
   const {
     data: bookmarkResponse,
     isLoading: isCheckingBookmark,
@@ -319,13 +319,13 @@ export function MarketplaceListingDetail({
             <h3 className="font-semibold mb-4">
               Interested in this comparable ?
             </h3>
-            <Button className="w-full mb-3">
+            <Button className="w-full mb-3 gap-x-3">
               <Wallet />
               Purchase
             </Button>
             <Button
               variant="outline"
-              className="w-full"
+              className="w-full gap-x-2"
               onClick={handleBookmarkClick}
               disabled={toggleBookmarkMutation.isPending}
             >
@@ -336,7 +336,7 @@ export function MarketplaceListingDetail({
                   className={isBookmarked ? "fill-current" : ""}
                 />
               )}
-              {isBookmarked ? "Bookmarked" : "Bookmark"}
+              {isBookmarked ? "Saved" : "Save For Later"}
             </Button>
           </div>
 
@@ -417,7 +417,7 @@ export function MarketplaceListingDetail({
             </div>
           )}
 
-          <CommentsSection />
+          <CommentsSection listingId={listingId} listingOwnerId={listing.userId} />
         </motion.div>
       </div>
 

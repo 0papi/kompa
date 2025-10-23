@@ -56,7 +56,11 @@ export function DashboardHeader() {
   const [isSigningOut, setIsSigningOut] = useState(false);
   const { user, role, isAuthenticated } = useSession();
   const router = useRouter();
-  const { isOpen: bookmarksDrawerOpen, openDrawer: openBookmarksDrawer, closeDrawer: closeBookmarksDrawer } = useBookmarksDrawer();
+  const {
+    isOpen: bookmarksDrawerOpen,
+    openDrawer: openBookmarksDrawer,
+    closeDrawer: closeBookmarksDrawer,
+  } = useBookmarksDrawer();
 
   const links = ROLE_SPECIFIC_DASHBOARD_ITEMS[role!];
 
@@ -100,7 +104,7 @@ export function DashboardHeader() {
 
   const userInitials = getInitials(
     user?.displayName || null,
-    user?.email || null,
+    user?.email || null
   );
   const userName = user?.displayName || user?.email?.split("@")[0] || "User";
   const userEmail = user?.email || "";
@@ -135,27 +139,24 @@ export function DashboardHeader() {
 
               {/* Desktop Navigation */}
               <nav className="hidden md:flex items-center gap-1 ml-6">
-                <Button variant="ghost" size="sm" className="gap-2 text-sm" >
+                <Button variant="ghost" size="sm" className="gap-2 text-sm">
                   <LayoutDashboard className="h-4 w-4 text-muted-foreground" />
                   Overview
                 </Button>
 
                 {links?.map((link) => {
                   const Icon = link.icon;
-                  const id = `${link.label}+${link.href}`
+                  const id = `${link.label}+${link.href}`;
                   return (
                     <Button
-                    
-                    id={id}
+                      id={id}
                       variant="ghost"
                       size="sm"
                       className="gap-2 "
                       onClick={() => router.push(link.href as any)}
                     >
                       <Icon className="h-4 w-4 text-muted-foreground" />
-                      <span className="text-sm">
-                          {link.label}
-                      </span>
+                      <span className="text-sm">{link.label}</span>
                     </Button>
                   );
                 })}
@@ -163,14 +164,10 @@ export function DashboardHeader() {
             </div>
 
             <div className="flex items-center gap-2">
-              <Button
-                className=""
-                variant="outline"
-                onClick={() => router.push("/marketplace")}
-              >
+              <Link href={"/marketplace"} className="flex items-center gap-x-2 border rounded-md px-4 py-1" target="_blank">
                 <span>Marketplace</span>
                 <ExternalLink className="h-4 w-4 text-muted-foreground" />
-              </Button>
+              </Link>
               {/*<Button
                 variant="outline"
                 size="sm"

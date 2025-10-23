@@ -67,9 +67,9 @@ export class BaseService<T extends PgTable> {
       if (orderBy) {
         query = query.orderBy(orderBy) as any;
       }
-      console.log("executing query..."); // Add this
+   
       const records = await query;
-      console.log("found records", records);
+    
       return records as TSelect[];
     } catch (error) {
       console.error("Database error:", error);
