@@ -231,6 +231,7 @@ export function ListingsTable() {
 
   // Clear all filters
   const clearAllFilters = () => {
+    //@ts-ignore
     router.push(window.location.pathname, { scroll: false });
   };
 
@@ -341,7 +342,7 @@ export function ListingsTable() {
       {/* Listings Grid */}
       {filteredListings.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-12 gap-2">
-          <NoListings subText={activeFiltersCount > 0
+          <NoListings  subText={activeFiltersCount > 0
               ? "Try adjusting your filters or clear them to see all listings"
               : "Create your first listing to get started"}/>
           {/* <p className="text-muted-foreground text-lg">No listings found</p> */}

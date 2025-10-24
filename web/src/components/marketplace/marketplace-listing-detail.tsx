@@ -26,6 +26,7 @@ import {
   PropertySubcategoryBadge,
 } from "../dashboard-common/property-category-badges";
 import { CommentsSection } from "./comments-section";
+import { ReviewsSection } from "./reviews-section";
 import { useSession } from "@/lib/hooks/useSession";
 import { toast } from "sonner";
 import { SignInModal } from "@/components/auth/sign-in-modal";
@@ -288,6 +289,9 @@ export function MarketplaceListingDetail({
               {listing.condition}
             </p>
           </div>
+
+          {/* Reviews Section */}
+          <ReviewsSection listingId={listingId} />
         </motion.div>
 
         {/* Right Column - Sidebar */}

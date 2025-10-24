@@ -221,7 +221,7 @@ export function DashboardHeader() {
                     className="cursor-pointer group"
                   >
                     <Bookmark className="mr-2 h-4 w-4 text-muted-foreground group-hover:text-foreground transition-colors" />
-                    <span className="flex-1">Bookmarks</span>
+                    <span className="flex-1">Saved Items</span>
                     {bookmarksCount > 0 && (
                       <Badge
                         variant="secondary"
@@ -231,11 +231,11 @@ export function DashboardHeader() {
                       </Badge>
                     )}
                   </DropdownMenuItem>
-                  <DropdownMenuItem>
+                  <DropdownMenuItem className="cursor-pointer" onClick={() => router.push('/dashboard/settings?tab=profile')}>
                     <User className="mr-2 h-4 w-4 text-muted-foreground" />
                     <span>Profile</span>
                   </DropdownMenuItem>
-                  <DropdownMenuItem>
+                  <DropdownMenuItem className="cursor-pointer" onClick={() => router.push('/dashboard/settings?tab=profile')}>
                     <Settings className="mr-2 h-4 w-4 text-muted-foreground" />
                     <span>Settings</span>
                   </DropdownMenuItem>

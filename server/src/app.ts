@@ -9,6 +9,7 @@ import userRouter from "./routes/user.routes";
 import listingRouter from "./routes/listing.routes";
 import favoriteRouter from "./routes/favorite.routes";
 import commentRouter from "./routes/comments.route";
+import reviewRouter from "./routes/review.routes";
 
 // Initialize Firebase
 initializeFirebase();
@@ -38,6 +39,7 @@ app.use("/api/v1/users", userRouter);
 app.use("/api/v1/listings", listingRouter);
 app.use("/api/v1/favorites", favoriteRouter);
 app.use("/api/v1", commentRouter);
+app.use("/api/v1", reviewRouter);
 
 app.get("/", (_req, res) => {
   res.status(200).json({

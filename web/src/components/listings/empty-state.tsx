@@ -16,8 +16,8 @@ export default function NoListings({subText}:{subText?:string}) {
         />
       </svg>
 
-      <h2 className="mt-4 text-lg font-semibold text-gray-900">
-        No listings found
+      <h2 className="mt-4 text-lg font-semibold dark:text-gray-200 text-gray-900">
+        No comparable listings found
       </h2>
 
       <p className="mt-2 text-sm text-gray-500">
