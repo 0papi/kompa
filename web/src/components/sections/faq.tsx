@@ -34,6 +34,11 @@ const faqs = [
     answer:
       "Kompa operates on a commission-based model. For every sale made through the marketplace, we deduct a 30% platform fee to cover operations, security, and distribution — and you receive the remaining 70% directly.",
   },
+  {
+    question: "How do you ensure data integrity?",
+    answer:
+      "Before a report is listed we check it against international and local standards to ensure compliance with the rules",
+  },
 ]
 
 

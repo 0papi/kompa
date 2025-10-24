@@ -5,22 +5,41 @@
   "scripts": {
     "build": "tsdown",
     "check-types": "tsc -b",
-    "compile": "bun build --compile --minify --sourcemap --bytecode ./src/index.ts --outfile server",
-    "dev": "bun run --hot src/index.ts",
-    "start": "bun run dist/index.js"
+    "dev": "tsx watch src/index.ts",
+    "start": "node dist/index.js",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:push": "drizzle-kit push",
+    "db:studio": "drizzle-kit studio",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest --coverage"
   },
   "dependencies": {
-    "express": "^5.1.0",
     "cors": "^2.8.5",
     "dotenv": "^17.2.2",
+    "drizzle-orm": "^0.44.6",
+    "express": "^5.1.0",
+    "express-rate-limit": "^8.1.0",
+    "firebase-admin": "^13.5.0",
+    "helmet": "^8.1.0",
+    "pg": "^8.16.3",
+    "winston": "^3.18.3",
     "zod": "^4.1.11",
-    "@kompa/db": "workspace:*"
+    "zod-express-middleware": "^1.4.0"
   },
   "devDependencies": {
-    "typescript": "^5.8.2",
-    "@types/express": "^5.0.1",
+    "@testcontainers/postgresql": "^11.7.1",
     "@types/cors": "^2.8.17",
-    "@types/bun": "^1.2.6",
-    "tsdown": "^0.15.5"
+    "@types/express": "^5.0.1",
+    "@types/node": "^24.7.2",
+    "@types/pg": "^8.15.5",
+    "@types/supertest": "^6.0.3",
+    "drizzle-kit": "^0.31.5",
+    "supertest": "^7.1.4",
+    "tsdown": "^0.15.5",
+    "tsx": "^4.20.6",
+    "typescript": "^5.8.2",
+    "vitest": "^3.2.4"
   }
 }
