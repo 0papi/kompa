@@ -1,5 +1,5 @@
 import apiClient from "@/lib/apiClient";
-import { ListingFormData } from "@/components/listings";
+import { type ListingFormData } from "@/components/listings";
 
 export interface Listing {
   id: string;

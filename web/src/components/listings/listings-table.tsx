@@ -307,9 +307,16 @@ export function ListingsTable() {
       } = listing;
       await listingsApi.create({
         ...listingData,
+        price: Number(listingData.price),
+        pricePerSquareFoot: listingData.pricePerSquareFoot ? Number(listingData.pricePerSquareFoot) : undefined,
+        bathrooms: Number(listingData.bathrooms),
+        lotSize: listingData.lotSize ? Number(listingData.lotSize) : undefined,
+        hoaFees: listingData.hoaFees ? Number(listingData.hoaFees) : undefined,
+        propertyTaxes: listingData.propertyTaxes ? Number(listingData.propertyTaxes) : undefined,
+        annualInsurance: listingData.annualInsurance ? Number(listingData.annualInsurance) : undefined,
         title: `${listing.title} (Copy)`,
         status: "DRAFT",
-      });
+      } as any);
       toast.success("Listing duplicated successfully");
       refetch();
     } catch (error: any) {

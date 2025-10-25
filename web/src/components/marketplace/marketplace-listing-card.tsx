@@ -14,7 +14,7 @@ interface MarketplaceListingCardProps {
  * This adds crucial visual context and color.
  */
 function StatusBadge({ status }: { status: any }) {
-  const statusConfig = {
+  const statusConfig : Record<string, string> = {
     ACTIVE: "bg-green-100 text-green-800 border-green-200",
     DRAFT: "bg-yellow-100 text-yellow-800 border-yellow-200",
     ARCHIVED: "bg-gray-100 text-gray-700 border-gray-200",

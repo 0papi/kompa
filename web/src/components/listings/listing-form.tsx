@@ -49,7 +49,7 @@ export function ListingForm({
     watch,
     formState: { errors },
   } = useForm<ListingFormData>({
-    resolver: zodResolver(listingFormSchema),
+    resolver: zodResolver(listingFormSchema) as any,
     defaultValues: {
       ...defaultValues,
     },

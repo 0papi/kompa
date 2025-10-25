@@ -13,7 +13,7 @@ function SettingsContent() {
   const activeTab = searchParams.get("tab") || "profile"
 
   const handleTabChange = (tab: string) => {
-    router.push(`./settings?tab=${tab}`)
+    router.push(`./settings?tab=${tab}` as any)
   }
 
   const tabs = [

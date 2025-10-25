@@ -79,7 +79,7 @@ export function BookmarksDrawer({ open, onOpenChange }: BookmarksDrawerProps) {
   });
 
   const handleViewListing = (listingId: string) => {
-    onOpenChange(false);
+    onOpenChange();
     router.push(`/marketplace/listing?listingId=${listingId}`);
   };
 

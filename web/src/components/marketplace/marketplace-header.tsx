@@ -24,7 +24,7 @@ import { BookmarksDrawer } from "@/components/bookmarks/bookmarks-drawer";
 
 export function MarketplaceHeader() {
   const { user, loading, isAuthenticated } = useSession();
-  console.log("user session in marketplace", user);
+ 
   const router = useRouter();
   const { isOpen: bookmarksDrawerOpen, openDrawer: openBookmarksDrawer, closeDrawer: closeBookmarksDrawer } = useBookmarksDrawer();
 

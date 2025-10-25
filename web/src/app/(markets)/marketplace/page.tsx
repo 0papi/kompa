@@ -5,17 +5,15 @@ import { useSearchParams } from "next/navigation";
 import { listingsApi } from "@/lib/api/listings";
 import {
   MarketplaceListingCard,
-  MarketplaceListingDetail,
 } from "@/components/marketplace";
 import { MarketplaceSidebarFilters } from "@/components/marketplace/marketplace-sidebar-filters";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import { useInView } from "react-intersection-observer";
-import { useEffect } from "react";
+import { Suspense, useEffect } from "react";
 
-export default function MarketplacePage() {
+function MarketplaceContent() {
   const searchParams = useSearchParams();
-  const listingId = searchParams.get("listingId");
 
   // Get filter params
   const search = searchParams.get("search") || "";
@@ -163,5 +161,17 @@ export default function MarketplacePage() {
         </main>
       </div>
     </div>
+  );
+}
+
+export default function MarketplacePage() {
+  return (
+    <Suspense fallback={
+      <div className="mx-auto px-4 py-6 max-w-7xl flex justify-center items-center min-h-[50vh]">
+        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+      </div>
+    }>
+      <MarketplaceContent />
+    </Suspense>
   );
 }

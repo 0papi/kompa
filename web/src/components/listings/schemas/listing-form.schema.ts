@@ -1,4 +1,6 @@
-import { z } from "zod";
+import * as z from "zod";
+
+const valuationMethods = ["SALES_COMPARISON", "COST_APPROACH", "INCOME_APPROACH", "MIXED"] as const
 
 export const listingFormSchema = z.object({
   // Property Details
@@ -47,7 +49,8 @@ export const listingFormSchema = z.object({
   annualInsurance: z.coerce.number().min(0, "Annual insurance must be 0 or more").optional(),
 
   // Valuation & Sale Details
-  valuationMethod: z.enum(["SALES_COMPARISON", "COST_APPROACH", "INCOME_APPROACH", "MIXED"], {
+  // @ts-ignore
+  valuationMethod: z.enum(valuationMethods, {
     required_error: "Valuation method is required",
   }),
   saleDate: z.string().optional(),
@@ -66,6 +69,7 @@ export const listingFormSchema = z.object({
   comparableNotes: z.string().max(1000, "Notes must be less than 1000 characters").optional(),
 
   // Status
+  //@ts-ignore
   status: z.enum(["DRAFT", "PUBLISHED", "ARCHIVED"], {
     required_error: "Status is required",
   }).default("DRAFT"),

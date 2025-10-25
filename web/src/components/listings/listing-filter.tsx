@@ -112,7 +112,7 @@ export default function ListingFilter() {
   };
 
   const clearAllFilters = () => {
-    router.push(window.location.pathname, { scroll: false });
+    router.push(window.location.pathname as any, { scroll: false });
   };
 
   const toggleMultiSelectValue = (
