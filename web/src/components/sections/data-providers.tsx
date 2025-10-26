@@ -6,6 +6,7 @@ import {
   CheckCircle,
   ArrowRight,
 } from 'lucide-react'
+import Link from 'next/link'
 
 // NEW: A simple, abstract component to act as a visual placeholder in each card.
 function FeatureGraphic({
@@ -172,13 +173,13 @@ export default function DataProviders() {
             easy-to-use platform. We handle the infrastructure so you can focus on
             quality.
           </p>
-          <button
-            type="button"
+          <Link
+           href="/signup"
               className="mt-6 inline-flex items-center justify-center gap-2 rounded-[8px] bg-black px-6 py-3.5 text-base font-semibold text-white shadow-sm transition-colors duration-300 hover:bg-gray-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
             >
               Become a Provider
               <ArrowRight className="h-4 w-4" />
-            </button>
+            </Link>
         </div>
 
         

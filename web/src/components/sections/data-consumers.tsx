@@ -6,8 +6,10 @@ import {
 	Search,
 	Workflow,
 } from "lucide-react";
+import Link from "next/link";
 
 export default function DataConsumers() {
+	
 	return (
 		<section className="relative overflow-hidden bg-white py-10">
 			<div className="mx-auto max-w-7xl px-6 lg:px-8">
@@ -21,13 +23,16 @@ export default function DataConsumers() {
 						your existing tools. One search, infinite possibilities.
 					</p>
 					<div className="mt-6">
-						<button
-							type="button"
+						<Link
+							href={"/marketplace"}
+							target="_blank"
 							className="group inline-flex items-center justify-center gap-2 rounded-xl bg-gray-900 px-8 py-4 text-base font-semibold text-white transition-all duration-300 hover:bg-gray-800 hover:shadow-xl hover:shadow-gray-900/30"
+
+							
 						>
 							Explore Marketplace
 							<ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
-						</button>
+						</Link>
 					</div>
 				</div>
 
@@ -35,7 +40,7 @@ export default function DataConsumers() {
 				<div className="mt-16">
 					<div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
 						
-						<div className="group relative overflow-hidden rounded-2xl border border-gray-200 bg-white p-8 lg:col-span-6 h-[400px] overflow-hidden">
+						<div className="group relative  rounded-2xl border border-gray-200 bg-white p-8 lg:col-span-6 h-[400px] overflow-hidden">
 							<div className="flex h-12 w-12 items-center justify-center rounded-lg border border-gray-200 bg-black">
 								<Search className="h-6 w-6 text-white" />
 							</div>
