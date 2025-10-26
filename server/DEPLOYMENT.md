@@ -7,7 +7,7 @@ This guide will walk you through deploying the Kompa server to Fly.io.
 - [x] Fly.io CLI installed (flyctl)
 - [x] Fly.io account (sign up at https://fly.io)
 - [x] PostgreSQL database (you already have one on Render!)
-- [ ] Firebase service account credentials
+- [x] Firebase service account credentials
 
 ## Initial Setup
 

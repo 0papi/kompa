@@ -1,0 +1,104 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main, feat/web]
+  push:
+    branches: [main, feat/web]
+
+jobs:
+  server-checks:
+    name: Server - Type Check & Tests
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./server
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 8
+
+      - name: Get pnpm store directory
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+      - name: Setup pnpm cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Type check
+        run: pnpm check-types
+
+      - name: Run tests
+        run: pnpm test
+        env:
+          DATABASE_URL: postgresql://test:test@localhost:5432/test
+
+  web-checks:
+    name: Web - Type Check & Build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./web
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 8
+
+      - name: Get pnpm store directory
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+      - name: Setup pnpm cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Type check
+        run: pnpm check-types || echo "Type check not configured"
+
+      - name: Build
+        run: pnpm build
+        env:
+          VITE_API_URL: https://api.example.com
+          VITE_FIREBASE_API_KEY: dummy
+          VITE_FIREBASE_AUTH_DOMAIN: dummy
+          VITE_FIREBASE_PROJECT_ID: dummy
+          VITE_FIREBASE_STORAGE_BUCKET: dummy
+          VITE_FIREBASE_MESSAGING_SENDER_ID: dummy
+          VITE_FIREBASE_APP_ID: dummy

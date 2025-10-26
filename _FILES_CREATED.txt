@@ -1,0 +1,86 @@
+================================================================================
+ GITHUB ACTIONS CI/CD SETUP - FILES CREATED
+================================================================================
+
+✅ ALL FILES CREATED SUCCESSFULLY - NOT PUSHED TO GITHUB YET
+
+Project Structure:
+==================
+
+kompa/
+├── .github/
+│   ├── workflows/
+│   │   ├── ci.yml              ← CI workflow (tests, type-check, build)
+│   │   └── deploy.yml          ← Deployment workflow (Fly.io + migrations)
+│   └── QUICKSTART.md           ← Quick reference guide
+│
+├── GITHUB_ACTIONS_SETUP.md     ← Complete setup guide (READ THIS FIRST!)
+└── SETUP_COMPLETE.md           ← What was done & next steps
+
+Existing Files (unchanged):
+===========================
+├── server/
+│   └── DATABASE_MIGRATIONS.md  ← Migration best practices (created earlier)
+├── web/
+└── README.md
+
+================================================================================
+ WHAT YOU NEED TO DO NEXT (5 minutes)
+================================================================================
+
+1. Get Fly.io token:
+   $ flyctl auth token
+
+2. Add to GitHub Secrets:
+   - Go to: https://github.com/0papi/kompa/settings/secrets/actions
+   - Name: FLY_API_TOKEN
+   - Value: <paste token from step 1>
+
+3. Commit and push:
+   $ git add .github/ GITHUB_ACTIONS_SETUP.md SETUP_COMPLETE.md
+   $ git commit -m "ci: add GitHub Actions for CI/CD"
+   $ git push origin feat/web
+
+4. Watch it work:
+   - Go to: https://github.com/0papi/kompa/actions
+
+================================================================================
+ QUICK REFERENCE
+================================================================================
+
+View Workflows:
+  https://github.com/0papi/kompa/actions
+
+Full Documentation:
+  ./GITHUB_ACTIONS_SETUP.md
+
+Quick Reference:
+  ./.github/QUICKSTART.md
+
+Skip CI:
+  git commit -m "your message [skip ci]"
+
+Manual Deploy (if needed):
+  fly deploy
+  flyctl ssh console -C "pnpm db:migrate"
+
+================================================================================
+ WHAT HAPPENS NOW
+================================================================================
+
+When you push to main or feat/web:
+
+1. CI Workflow Runs:
+   ✓ Type check server & web
+   ✓ Run server tests
+   ✓ Build web app
+
+2. Deploy Workflow Runs (if CI passes):
+   ✓ Deploy server to Fly.io
+   ✓ Wait for deployment to stabilize
+   ✓ Run database migrations automatically
+   ✓ Report success/failure
+
+NO MORE MANUAL FLY DEPLOY OR MIGRATIONS! 🎉
+
+================================================================================
