@@ -1,58 +1,88 @@
 "use client"
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
+import { useTheme } from "next-themes"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { Switch } from "@/components/ui/switch"
-import { Moon, Sun, Monitor } from "lucide-react"
+import { Moon, Sun, Monitor, Palette } from "lucide-react"
+import { Skeleton } from "@/components/ui/skeleton"
+import { useEffect, useState } from "react"
 
 export function AppearanceTab() {
-  const [theme, setTheme] = useState("system")
-  const [compactMode, setCompactMode] = useState(false)
-  const [animations, setAnimations] = useState(true)
+  const { theme, setTheme, systemTheme } = useTheme()
+  const [mounted, setMounted] = useState(false)
+
+  // Prevent hydration mismatch
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  if (!mounted) {
+    return <AppearanceLoading />
+  }
+
+  const currentTheme = theme === "system" ? systemTheme : theme
 
   return (
     <div className="space-y-6">
       {/* Theme Selection */}
       <Card>
         <CardHeader>
-          <CardTitle>Theme</CardTitle>
+          <CardTitle className="flex items-center gap-2">
+            <Palette className="h-5 w-5 text-muted-foreground" />
+            Theme
+          </CardTitle>
           <CardDescription>Choose your preferred color scheme</CardDescription>
         </CardHeader>
         <CardContent>
           <RadioGroup value={theme} onValueChange={setTheme}>
             <div className="space-y-4">
-              <div className="flex items-center space-x-3">
-                <RadioGroupItem value="light" id="light" />
-                <Label htmlFor="light" className="flex cursor-pointer items-center gap-3">
-                  <Sun className="h-4 w-4" />
-                  <div>
-                    <p className="font-medium">Light</p>
-                    <p className="text-sm text-muted-foreground">Clean and bright interface</p>
+              {/* Light Theme */}
+              <div className="flex items-start space-x-3">
+                <RadioGroupItem value="light" id="light" className="mt-1" />
+                <Label htmlFor="light" className="flex-1 cursor-pointer">
+                  <div className="flex items-center gap-3 pb-2">
+                    <div className="flex h-9 w-9 items-center justify-center rounded-lg border bg-background">
+                      <Sun className="h-5 w-5 text-amber-500" />
+                    </div>
+                    <div className="flex-1">
+                      <p className="font-medium text-foreground">Light</p>
+                      <p className="text-sm text-muted-foreground">Clean and bright interface</p>
+                    </div>
                   </div>
                 </Label>
               </div>
 
-              <div className="flex items-center space-x-3">
-                <RadioGroupItem value="dark" id="dark" />
-                <Label htmlFor="dark" className="flex cursor-pointer items-center gap-3">
-                  <Moon className="h-4 w-4" />
-                  <div>
-                    <p className="font-medium">Dark</p>
-                    <p className="text-sm text-muted-foreground">Easy on the eyes at night</p>
+              {/* Dark Theme */}
+              <div className="flex items-start space-x-3">
+                <RadioGroupItem value="dark" id="dark" className="mt-1" />
+                <Label htmlFor="dark" className="flex-1 cursor-pointer">
+                  <div className="flex items-center gap-3 pb-2">
+                    <div className="flex h-9 w-9 items-center justify-center rounded-lg border bg-background">
+                      <Moon className="h-5 w-5 text-blue-500" />
+                    </div>
+                    <div className="flex-1">
+                      <p className="font-medium text-foreground">Dark</p>
+                      <p className="text-sm text-muted-foreground">Easy on the eyes at night</p>
+                    </div>
                   </div>
                 </Label>
               </div>
 
-              <div className="flex items-center space-x-3">
-                <RadioGroupItem value="system" id="system" />
-                <Label htmlFor="system" className="flex cursor-pointer items-center gap-3">
-                  <Monitor className="h-4 w-4" />
-                  <div>
-                    <p className="font-medium">System</p>
-                    <p className="text-sm text-muted-foreground">Follow your device settings</p>
+              {/* System Theme */}
+              <div className="flex items-start space-x-3">
+                <RadioGroupItem value="system" id="system" className="mt-1" />
+                <Label htmlFor="system" className="flex-1 cursor-pointer">
+                  <div className="flex items-center gap-3 pb-2">
+                    <div className="flex h-9 w-9 items-center justify-center rounded-lg border bg-background">
+                      <Monitor className="h-5 w-5 text-muted-foreground" />
+                    </div>
+                    <div className="flex-1">
+                      <p className="font-medium text-foreground">System</p>
+                      <p className="text-sm text-muted-foreground">
+                        Automatically match your device settings
+                      </p>
+                    </div>
                   </div>
                 </Label>
               </div>
@@ -61,79 +91,90 @@ export function AppearanceTab() {
         </CardContent>
       </Card>
 
-      {/* Display Options */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Display Options</CardTitle>
-          <CardDescription>Customize how content is displayed</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <Label htmlFor="compact" className="font-medium">
-                Compact Mode
-              </Label>
-              <p className="text-sm text-muted-foreground">Reduce spacing and padding</p>
-            </div>
-            <Switch id="compact" checked={compactMode} onCheckedChange={setCompactMode} />
-          </div>
-
-          <div className="flex items-center justify-between">
-            <div>
-              <Label htmlFor="animations" className="font-medium">
-                Animations
-              </Label>
-              <p className="text-sm text-muted-foreground">Enable smooth transitions</p>
-            </div>
-            <Switch id="animations" checked={animations} onCheckedChange={setAnimations} />
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Accent Color */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Accent Color</CardTitle>
-          <CardDescription>Choose your preferred accent color</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-6 gap-3">
-            {[
-              { name: "Blue", color: "bg-blue-500" },
-              { name: "Purple", color: "bg-purple-500" },
-              { name: "Pink", color: "bg-pink-500" },
-              { name: "Red", color: "bg-red-500" },
-              { name: "Orange", color: "bg-orange-500" },
-              { name: "Green", color: "bg-green-500" },
-            ].map((accent) => (
-              <button
-                key={accent.name}
-                className={`h-10 w-10 rounded-lg transition-transform hover:scale-110 ${accent.color}`}
-                title={accent.name}
-              />
-            ))}
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Preview */}
+      {/* Preview Card */}
       <Card>
         <CardHeader>
           <CardTitle>Preview</CardTitle>
-          <CardDescription>See how your settings look</CardDescription>
+          <CardDescription>
+            {theme === "system"
+              ? `Currently using ${currentTheme} mode (system preference)`
+              : `Currently using ${theme} mode`
+            }
+          </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="space-y-4 rounded-lg border border-border bg-muted/50 p-4">
-            <div className="h-20 rounded-lg bg-primary" />
-            <div className="space-y-2">
+          <div className="space-y-4 rounded-lg border border-border bg-muted/50 p-6">
+            {/* Preview Header */}
+            <div className="flex items-center justify-between">
+              <div className="space-y-1">
+                <div className="h-5 w-32 rounded-md bg-foreground/80" />
+                <div className="h-3 w-48 rounded-md bg-foreground/40" />
+              </div>
+              <div className="h-9 w-9 rounded-full bg-primary" />
+            </div>
+
+            {/* Preview Content */}
+            <div className="space-y-3 rounded-lg border border-border bg-background p-4">
               <div className="h-4 w-3/4 rounded bg-foreground/20" />
+              <div className="h-4 w-5/6 rounded bg-foreground/15" />
               <div className="h-4 w-1/2 rounded bg-foreground/10" />
+            </div>
+
+            {/* Preview Actions */}
+            <div className="flex gap-2">
+              <div className="h-9 w-20 rounded-md bg-primary" />
+              <div className="h-9 w-20 rounded-md border border-border bg-background" />
             </div>
           </div>
         </CardContent>
       </Card>
 
-      <Button>Save Preferences</Button>
+      {/* Info Card */}
+      <Card className="border-blue-500/50 bg-blue-50 dark:bg-blue-950/20">
+        <CardContent className="flex gap-3 pt-6">
+          <Palette className="h-5 w-5 flex-shrink-0 text-blue-600 dark:text-blue-500" />
+          <div>
+            <p className="font-medium text-blue-900 dark:text-blue-200">Theme Settings</p>
+            <p className="text-sm text-blue-800 dark:text-blue-300">
+              Your theme preference is saved automatically and will be applied across all pages. System theme
+              automatically switches between light and dark based on your device settings.
+            </p>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  )
+}
+
+function AppearanceLoading() {
+  return (
+    <div className="space-y-6">
+      <Card>
+        <CardHeader>
+          <Skeleton className="h-6 w-32" />
+          <Skeleton className="h-4 w-64 mt-2" />
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="flex items-center space-x-3">
+              <Skeleton className="h-5 w-5 rounded-full" />
+              <div className="flex-1">
+                <Skeleton className="h-5 w-24 mb-2" />
+                <Skeleton className="h-4 w-48" />
+              </div>
+            </div>
+          ))}
+        </CardContent>
+      </Card>
+      <Card>
+        <CardHeader>
+          <Skeleton className="h-6 w-24" />
+          <Skeleton className="h-4 w-48 mt-2" />
+        </CardHeader>
+        <CardContent>
+          <Skeleton className="h-40 w-full rounded-lg" />
+        </CardContent>
+      </Card>
     </div>
   )
 }

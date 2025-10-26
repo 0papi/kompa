@@ -10,6 +10,8 @@ import listingRouter from "./routes/listing.routes";
 import favoriteRouter from "./routes/favorite.routes";
 import commentRouter from "./routes/comments.route";
 import reviewRouter from "./routes/review.routes";
+import userPreferencesRouter from "./routes/user-preferences.routes";
+import paymentMethodsRouter from "./routes/payment-methods.routes";
 
 // Initialize Firebase
 initializeFirebase();
@@ -36,6 +38,8 @@ app.use(express.urlencoded({ extended: true }));
 // Routes
 app.use("/health", healthRouter);
 app.use("/api/v1/users", userRouter);
+app.use("/api/v1/users/preferences", userPreferencesRouter);
+app.use("/api/v1/users/payment-methods", paymentMethodsRouter);
 app.use("/api/v1/listings", listingRouter);
 app.use("/api/v1/favorites", favoriteRouter);
 app.use("/api/v1", commentRouter);

@@ -3,9 +3,10 @@
 import { useSearchParams, useRouter } from "next/navigation"
 import { Suspense } from "react"
 import { ProfileTab } from "@/components/settings/profile-tab"
-import { BillingTab } from "@/components/settings/billing-tab"
+import { PreferencesTab } from "@/components/settings/preferences-tab"
+import { PaymentMethodsTab } from "@/components/settings/payment-methods-tab"
 import { AppearanceTab } from "@/components/settings/appearance-tab"
-import { User, CreditCard, Palette } from "lucide-react"
+import { User, Settings, Wallet, Palette } from "lucide-react"
 
 function SettingsContent() {
   const searchParams = useSearchParams()
@@ -18,7 +19,8 @@ function SettingsContent() {
 
   const tabs = [
     { id: "profile", label: "Profile", icon: User },
-    { id: "billing", label: "Finance", icon: CreditCard },
+    { id: "preferences", label: "Preferences", icon: Settings },
+    { id: "payment-methods", label: "Payment Methods", icon: Wallet },
     { id: "appearance", label: "Appearance", icon: Palette },
   ]
 
@@ -62,7 +64,8 @@ function SettingsContent() {
         {/* Tab Content */}
         <div className="mt-8">
           {activeTab === "profile" && <ProfileTab />}
-          {activeTab === "billing" && <BillingTab />}
+          {activeTab === "preferences" && <PreferencesTab />}
+          {activeTab === "payment-methods" && <PaymentMethodsTab />}
           {activeTab === "appearance" && <AppearanceTab />}
         </div>
       </div>

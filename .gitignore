@@ -65,3 +65,9 @@ Thumbs.db
 *.pem
 *.key
 .vercel
+
+# Auto-generated Documentation (temporary guides)
+IMPLEMENTATION_COMPLETE.md
+QUICK_TEST_GUIDE.md
+SETUP_COMPLETE.md
+_FILES_CREATED.txt
