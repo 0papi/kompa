@@ -5,7 +5,7 @@ import { reviews } from "./review.model";
 
 export const reviewComment = pgTable("review_comments", {
   id: uuid("id").defaultRandom().primaryKey(),
-  authorId: text("author_id")
+  authorId: uuid("author_id")
     .notNull()
     .references(() => users.id, { onDelete: "cascade" }),
   listingId: uuid("listing_id")

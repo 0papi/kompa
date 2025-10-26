@@ -55,7 +55,7 @@ CREATE TABLE "listings" (
 --> statement-breakpoint
 CREATE TABLE "comments" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
-	"author_id" text NOT NULL,
+	"author_id" uuid NOT NULL,
 	"listing_id" uuid NOT NULL,
 	"related_to_id" uuid NOT NULL,
 	"related_to_type" text NOT NULL,
@@ -76,7 +76,7 @@ CREATE TABLE "reviews" (
 --> statement-breakpoint
 CREATE TABLE "review_comments" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
-	"author_id" text NOT NULL,
+	"author_id" uuid NOT NULL,
 	"listing_id" uuid NOT NULL,
 	"review_id" uuid NOT NULL,
 	"comment" text NOT NULL,
