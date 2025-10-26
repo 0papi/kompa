@@ -47,10 +47,10 @@ export default function NewListingPage() {
         </Button>
         <div>
           <h1 className="text-3xl font-bold tracking-tight">
-            Create New Listing
+            Create New Comparable
           </h1>
           <p className="text-muted-foreground mt-1">
-            Add a new property to your listings
+            Add a new comparable to your listings
           </p>
         </div>
       </div>

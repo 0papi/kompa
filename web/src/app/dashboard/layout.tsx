@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "@/lib/firebase"; // your firebase config
 import { DashboardHeader } from "@/components/dashboard/dashboard-header";
+import { EmailVerificationBanner } from "@/components/email-verification-banner";
 import Loader from "@/components/loader";
 
 const DashboardLayout = ({ children }: { children: ReactNode }) => {
@@ -30,6 +31,7 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
   return (
     <div className="min-h-screen flex flex-col">
       <DashboardHeader />
+      <EmailVerificationBanner />
       <main className="flex-1 overflow-y-auto bg-background/90 custom-scrollbar">
         <div className="container mx-auto p-6 md:p-8 lg:p-10 custom-scrollbar">
           {children}

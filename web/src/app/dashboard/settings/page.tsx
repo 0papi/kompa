@@ -18,7 +18,7 @@ function SettingsContent() {
 
   const tabs = [
     { id: "profile", label: "Profile", icon: User },
-    { id: "billing", label: "Billing", icon: CreditCard },
+    { id: "billing", label: "Finance", icon: CreditCard },
     { id: "appearance", label: "Appearance", icon: Palette },
   ]
 

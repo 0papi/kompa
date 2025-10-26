@@ -34,16 +34,11 @@ export const ROLE_SPECIFIC_DASHBOARD_ITEMS: Record<
       href: "/dashboard/purchases",
       icon: ShoppingCart,
     },
-    {
-      label: "Billing",
-      href: "/dashboard/billing",
-      icon: CreditCard,
-    },
   ],
 
   PROVIDER: [
     {
-      label: "My Listings",
+      label: "My Comparables",
       href: "/dashboard/listings",
       icon: Building,
     },
@@ -61,7 +56,7 @@ export const ROLE_SPECIFIC_DASHBOARD_ITEMS: Record<
 
   CONSUMER_PROVIDER: [
     {
-      label: "My Listings",
+      label: "My Comparables",
       href: "/dashboard/listings",
       icon: Building,
     },
@@ -79,11 +74,6 @@ export const ROLE_SPECIFIC_DASHBOARD_ITEMS: Record<
       label: "Payouts",
       href: "/dashboard/payouts",
       icon: Landmark,
-    },
-    {
-      label: "Billing",
-      href: "/dashboard/billing",
-      icon: CreditCard,
     },
   ],
 };

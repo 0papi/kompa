@@ -49,6 +49,8 @@ import { useQuery } from "@tanstack/react-query";
 import { favoritesApi } from "@/lib/api/favorites";
 import { BookmarksDrawer } from "@/components/bookmarks/bookmarks-drawer";
 import { useBookmarksDrawer } from "@/components/bookmarks/state";
+import { DISMISSAL_KEY } from "../email-verification-banner";
+import { getInitials } from "@/lib/utils";
 
 export function DashboardHeader() {
   const [open, setOpen] = useState(false);
@@ -77,6 +79,7 @@ export function DashboardHeader() {
     try {
       setIsSigningOut(true);
       await signOut(auth);
+      localStorage.removeItem(DISMISSAL_KEY)
       toast.success("Signed out successfully");
       router.push("/login");
     } catch (error) {
@@ -88,19 +91,6 @@ export function DashboardHeader() {
     }
   };
 
-  const getInitials = (name: string | null, email: string | null) => {
-    if (name) {
-      const parts = name.trim().split(" ");
-      if (parts.length >= 2) {
-        return `${parts[0][0]}${parts[parts.length - 1][0]}`.toUpperCase();
-      }
-      return name.slice(0, 2).toUpperCase();
-    }
-    if (email) {
-      return email.slice(0, 2).toUpperCase();
-    }
-    return "U";
-  };
 
   const userInitials = getInitials(
     user?.displayName || null,
@@ -139,7 +129,7 @@ export function DashboardHeader() {
 
               {/* Desktop Navigation */}
               <nav className="hidden md:flex items-center gap-1 ml-6">
-                <Button variant="ghost" size="sm" className="gap-2 text-sm">
+                <Button variant="ghost" size="sm" className="gap-2 text-sm" onClick={() => router.push('/dashboard')}>
                   <LayoutDashboard className="h-4 w-4 text-muted-foreground" />
                   Overview
                 </Button>
@@ -149,6 +139,7 @@ export function DashboardHeader() {
                   const id = `${link.label}+${link.href}`;
                   return (
                     <Button
+                    key={id}
                       id={id}
                       variant="ghost"
                       size="sm"
@@ -168,19 +159,6 @@ export function DashboardHeader() {
                 <span>Marketplace</span>
                 <ExternalLink className="h-4 w-4 text-muted-foreground" />
               </Link>
-              {/*<Button
-                variant="outline"
-                size="sm"
-                className="hidden md:flex gap-2 w-64 justify-start text-muted-foreground bg-transparent"
-                onClick={() => setOpen(true)}
-              >
-                <Search className="h-4 w-4" />
-                <span>Search...</span>
-                <kbd className="ml-auto pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
-                  <span className="text-xs">⌘</span>K
-                </kbd>
-              </Button>*/}
-
               <ThemeToggle />
 
               <Button variant="ghost" size="icon" className="relative">

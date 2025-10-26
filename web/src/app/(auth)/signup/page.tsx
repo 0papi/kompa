@@ -25,11 +25,27 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
+import PhoneInput from "react-phone-number-input";
+import "react-phone-number-input/style.css";
+import { isValidPhoneNumber } from "libphonenumber-js";
 
 const signupSchema = z.object({
   firstName: z.string().min(1, "First name is required"),
   lastName: z.string().min(1, "Last name is required"),
   email: z.string().email("Please enter a valid email address"),
+  phoneNumber: z
+    .string()
+    .refine(
+      (value) => {
+        if (!value || value === "") return true;
+        return isValidPhoneNumber(value);
+      },
+      {
+        message: "Please enter a valid phone number",
+      }
+    )
+    .optional()
+    .or(z.literal("")),
   password: z
     .string()
     .min(8, "Password must be at least 8 characters")
@@ -87,6 +103,7 @@ export default function SignUp() {
         account_type: data.account_type,
         email: data.email,
         name,
+        phoneNumber: data.phoneNumber || undefined,
         password: data.password,
       },
       {
@@ -99,7 +116,7 @@ export default function SignUp() {
           // @ts-ignore
           toast.error(error?.error?.message);
         },
-      },
+      }
     );
   };
 
@@ -114,11 +131,9 @@ export default function SignUp() {
               </div>
               <span className="text-xl font-bold text-black">Kompa</span>
             </Link>
-            <h1 className="text-2xl font-bold text-black mb-1">
-              Get started free
-            </h1>
+            <h1 className="text-2xl font-bold text-black mb-1">Join Kompa</h1>
             <p className="text-sm text-gray-600">
-              Create your account and start exploring property data
+              Create your account and start exploring comparable data
             </p>
           </div>
 
@@ -262,6 +277,41 @@ export default function SignUp() {
                   ))}
                 </div>
               )}
+              {errors.password && (
+                <p className="mt-1 text-xs text-red-600">
+                  {errors.password.message}
+                </p>
+              )}
+            </div>
+
+            <div>
+              <label
+                htmlFor="phoneNumber"
+                className="block text-xs font-semibold text-black mb-1.5"
+              >
+                Phone Number (Optional)
+              </label>
+              <Controller
+                name="phoneNumber"
+                control={control}
+                render={({ field }) => (
+                  <PhoneInput
+                    {...field}
+                    international
+                    defaultCountry="GH"
+                    placeholder="Enter phone number"
+                    numberInputProps={{
+                      className:
+                        "selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input flex h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive text-black",
+                    }}
+                  />
+                )}
+              />
+              {errors.phoneNumber && (
+                <p className="mt-1 text-xs text-red-600">
+                  {errors.phoneNumber.message}
+                </p>
+              )}
             </div>
 
             <div>
@@ -281,7 +331,7 @@ export default function SignUp() {
                         "relative p-4 rounded-xl border-1 text-left transition-all duration-200 group",
                         field.value === "PROVIDER"
                           ? "border-blue-600 bg-blue-50 shadow-sm"
-                          : "border-gray-200 bg-white hover:border-gray-300 hover:bg-gray-50",
+                          : "border-gray-200 bg-white hover:border-gray-300 hover:bg-gray-50"
                       )}
                     >
                       <div className="flex items-start gap-3">
@@ -290,7 +340,7 @@ export default function SignUp() {
                             "flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center transition-colors",
                             field.value === "PROVIDER"
                               ? "bg-blue-600 text-white"
-                              : "bg-gray-100 text-gray-600 group-hover:bg-gray-200",
+                              : "bg-gray-100 text-gray-600 group-hover:bg-gray-200"
                           )}
                         >
                           <Store className="h-5 w-5" />
@@ -302,7 +352,7 @@ export default function SignUp() {
                                 "font-semibold text-sm",
                                 field.value === "PROVIDER"
                                   ? "text-blue-900"
-                                  : "text-gray-900",
+                                  : "text-gray-900"
                               )}
                             >
                               Provide Comp Data
@@ -316,7 +366,7 @@ export default function SignUp() {
                               "text-xs leading-relaxed",
                               field.value === "PROVIDER"
                                 ? "text-blue-700"
-                                : "text-gray-600",
+                                : "text-gray-600"
                             )}
                           >
                             I have property comparable data to share with the
@@ -333,7 +383,7 @@ export default function SignUp() {
                         "relative p-4 rounded-xl border-1 text-left transition-all duration-200 group",
                         field.value === "CONSUMER"
                           ? "border-green-600 bg-green-50 shadow-sm"
-                          : "border-gray-200 bg-white hover:border-gray-300 hover:bg-gray-50",
+                          : "border-gray-200 bg-white hover:border-gray-300 hover:bg-gray-50"
                       )}
                     >
                       <div className="flex items-start gap-3">
@@ -342,7 +392,7 @@ export default function SignUp() {
                             "flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center transition-colors",
                             field.value === "CONSUMER"
                               ? "bg-green-600 text-white"
-                              : "bg-gray-100 text-gray-600 group-hover:bg-gray-200",
+                              : "bg-gray-100 text-gray-600 group-hover:bg-gray-200"
                           )}
                         >
                           <ShoppingBag className="h-5 w-5" />
@@ -354,7 +404,7 @@ export default function SignUp() {
                                 "font-semibold text-sm",
                                 field.value === "CONSUMER"
                                   ? "text-green-900"
-                                  : "text-gray-900",
+                                  : "text-gray-900"
                               )}
                             >
                               Access Comp Data
@@ -368,7 +418,7 @@ export default function SignUp() {
                               "text-xs leading-relaxed",
                               field.value === "CONSUMER"
                                 ? "text-green-700"
-                                : "text-gray-600",
+                                : "text-gray-600"
                             )}
                           >
                             I need property comparable data for analysis and
@@ -385,7 +435,7 @@ export default function SignUp() {
                         "relative p-4 rounded-xl border-1 text-left transition-all duration-200 group",
                         field.value === "CONSUMER_PROVIDER"
                           ? "border-purple-600 bg-purple-50 shadow-sm"
-                          : "border-gray-200 bg-white hover:border-gray-300 hover:bg-gray-50",
+                          : "border-gray-200 bg-white hover:border-gray-300 hover:bg-gray-50"
                       )}
                     >
                       <div className="flex items-start gap-3">
@@ -394,7 +444,7 @@ export default function SignUp() {
                             "flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center transition-colors",
                             field.value === "CONSUMER_PROVIDER"
                               ? "bg-purple-600 text-white"
-                              : "bg-gray-100 text-gray-600 group-hover:bg-gray-200",
+                              : "bg-gray-100 text-gray-600 group-hover:bg-gray-200"
                           )}
                         >
                           <Users className="h-5 w-5" />
@@ -406,7 +456,7 @@ export default function SignUp() {
                                 "font-semibold text-sm",
                                 field.value === "CONSUMER_PROVIDER"
                                   ? "text-purple-900"
-                                  : "text-gray-900",
+                                  : "text-gray-900"
                               )}
                             >
                               Both
@@ -420,7 +470,7 @@ export default function SignUp() {
                               "text-xs leading-relaxed",
                               field.value === "CONSUMER_PROVIDER"
                                 ? "text-purple-700"
-                                : "text-gray-600",
+                                : "text-gray-600"
                             )}
                           >
                             I want to both provide and access property

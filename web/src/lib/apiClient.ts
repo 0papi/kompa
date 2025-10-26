@@ -31,7 +31,7 @@ apiClient.interceptors.response.use(
   (response) => response,
   (error: AxiosError) => {
     if (error.response) {
-      console.error("API error:", error.response.data);
+      console.log("API error:", error.response.data);
     } else if (error.request) {
       console.error("No response from server:", error.message);
     } else {

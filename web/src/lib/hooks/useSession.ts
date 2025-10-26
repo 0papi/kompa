@@ -14,27 +14,27 @@ export function useSession() {
   const [claimsLoading, setClaimsLoading] = useState(true); // Separate loading state for claims
 
   useEffect(() => {
-   
+
     if (!user) {
-      
+
       setClaims({});
       setClaimsLoading(false);
       return;
     }
 
-    
+
     (async () => {
       try {
         // Force refresh to get the latest claims, crucial after login or updates.
         const idTokenResult = await user.getIdTokenResult(true);
         const role = idTokenResult?.claims?.role;
-        console.log('idtokenresult', idTokenResult)
+
         setClaims((prev) => ({...prev, role: role as any}));
       } catch (error) {
         console.error("Error fetching custom claims:", error);
-     
+
       } finally {
-    
+
         setClaimsLoading(false);
       }
     })();

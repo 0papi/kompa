@@ -10,6 +10,8 @@ import { useSignInWithEmailAndPassword } from "react-firebase-hooks/auth";
 import { auth } from "@/lib/firebase";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
 
 const loginSchema = z.object({
 	email: z.string().email("Please enter a valid email address"),
@@ -40,7 +42,7 @@ export default function Login() {
 		if(!user) {
 			throw new Error('Invalid email or password')
 		}
-    router.push('/dashboard');
+    router.replace('/dashboard', );
   } catch (error) {
     toast.error('Invalid email or password');
   }
@@ -75,14 +77,12 @@ export default function Login() {
 								<div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
 									<Mail className="h-5 w-5 text-gray-400" />
 								</div>
-								<input
+								<Input
 									id="email"
 									type="email"
 									autoComplete="email"
 									{...register("email")}
-									className={`block w-full pl-12 pr-4 py-3.5 border rounded-xl text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all ${
-										errors.email ? "border-red-500" : "border-gray-200"
-									}`}
+									className={cn(`block w-full pl-12 pr-4 py-3.5`, errors.email && 'text-red-500', !errors.email && 'text-black')}
 									placeholder="you@example.com"
 								/>
 							</div>
@@ -104,14 +104,12 @@ export default function Login() {
 								<div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
 									<Lock className="h-5 w-5 text-gray-400" />
 								</div>
-								<input
+								<Input
 									id="password"
 									type={showPassword ? "text" : "password"}
 									autoComplete="current-password"
 									{...register("password")}
-									className={`block w-full pl-12 pr-12 py-3.5 border rounded-xl text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all ${
-										errors.password ? "border-red-500" : "border-gray-200"
-									}`}
+										className={cn(`block w-full pl-12 pr-4 py-3.5`, errors.password && 'text-red-500', !errors.password && 'text-black')}
 									placeholder="Enter your password"
 								/>
 								<button

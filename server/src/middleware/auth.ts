@@ -30,6 +30,8 @@ export async function authenticateUser(
 		try {
 			const decodedToken = await auth().verifyIdToken(token);
 
+			console.log('decoded token', decodedToken)
+
 	
 			const [user] = await db
 				.select()
@@ -50,6 +52,8 @@ export async function authenticateUser(
 				});
 				return;
 			}
+
+			console.log('found user', user)
 
 			req.user = {
 				uid: user.id, 

@@ -3,4 +3,6 @@ export * from "./listing.model";
 export * from "./comment.model";
 export * from "./review.model";
 export * from "./review-comment.model";
-export * from './favorite.model'
+export * from './favorite.model';
+export * from './user-preferences.model';
+export * from './payment-methods.model';

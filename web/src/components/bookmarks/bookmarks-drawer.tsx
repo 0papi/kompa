@@ -91,11 +91,11 @@ export function BookmarksDrawer({ open, onOpenChange }: BookmarksDrawerProps) {
         <DrawerHeader className="border-b">
           <div className="flex items-center justify-between">
             <div>
-              <DrawerTitle className="text-xl">Bookmarks</DrawerTitle>
+              <DrawerTitle className="text-xl">Saved</DrawerTitle>
               <DrawerDescription className="mt-1">
                 {bookmarks.length > 0
-                  ? `${bookmarks.length} saved ${bookmarks.length === 1 ? "listing" : "listings"}`
-                  : "Your saved listings"}
+                  ? `${bookmarks.length} saved ${bookmarks.length === 1 ? "comparable" : "comparables"}`
+                  : "Your saved comparables"}
               </DrawerDescription>
             </div>
             <DrawerClose asChild>

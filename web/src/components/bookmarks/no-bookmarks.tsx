@@ -18,10 +18,10 @@ const NoBookmarks = () => {
         />
       </svg>
 
-      <h2 className="mt-4 text-lg font-semibold">No bookmarks yet</h2>
+      <h2 className="mt-4 text-lg font-semibold">No saved items yet</h2>
 
       <p className="mt-2 text-sm text-muted-foreground">
-        Your saved bookmarks will appear here
+        Your saved comparables will appear here
       </p>
     </div>
   );
