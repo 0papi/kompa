@@ -72,13 +72,13 @@ export function ListingForm({
   };
 
   return (
-    <form onSubmit={handleSubmit(onFormSubmit)} className="space-y-8">
+    <form onSubmit={handleSubmit(onFormSubmit)} className="space-y-6 md:space-y-8">
       {/* Property Details Section */}
-      <div className="p-6">
-        <h2 className="text-lg font-semibold mb-6">Property Details</h2>
-        <div className="space-y-6">
-          <div className="flex items-start gap-6">
-            <Label htmlFor="title" className="w-1/3 pt-2 text-start shrink-0">
+      <div className="p-4 md:p-6">
+        <h2 className="text-lg font-semibold mb-4 md:mb-6">Property Details</h2>
+        <div className="space-y-4 md:space-y-6">
+          <div className="flex flex-col gap-2 md:flex-row md:items-start md:gap-6">
+            <Label htmlFor="title" className="w-full md:w-1/3 md:pt-2 text-start md:shrink-0">
               <div>
                 <div>
                   Title <span className="text-destructive">*</span>
@@ -88,7 +88,7 @@ export function ListingForm({
                 </div>
               </div>
             </Label>
-            <div className="flex-1 max-w-xl">
+            <div className="flex-1 md:max-w-xl">
               <Input
                 id="title"
                 {...register("title")}
@@ -103,10 +103,10 @@ export function ListingForm({
             </div>
           </div>
 
-          <div className="flex items-start gap-6">
+          <div className="flex flex-col gap-2 md:flex-row md:items-start md:gap-6">
             <Label
               htmlFor="description"
-              className="w-1/3 pt-2 text-start shrink-0"
+              className="w-full md:w-1/3 md:pt-2 text-start md:shrink-0"
             >
               <div>
                 <div>
@@ -117,7 +117,7 @@ export function ListingForm({
                 </div>
               </div>
             </Label>
-            <div className="flex-1 max-w-xl">
+            <div className="flex-1 md:max-w-xl">
               <Controller
                 name="status"
                 control={control}
@@ -146,10 +146,10 @@ export function ListingForm({
             </div>
           </div>
 
-          <div className="flex items-start gap-6">
+          <div className="flex flex-col gap-2 md:flex-row md:items-start md:gap-6">
             <Label
               htmlFor="description"
-              className="w-1/3 pt-2 text-start shrink-0"
+              className="w-full md:w-1/3 md:pt-2 text-start md:shrink-0"
             >
               <div>
                 <div>
@@ -160,7 +160,7 @@ export function ListingForm({
                 </div>
               </div>
             </Label>
-            <div className="flex-1 max-w-xl">
+            <div className="flex-1 md:max-w-xl">
               <Textarea
                 id="description"
                 {...register("description")}
@@ -176,10 +176,10 @@ export function ListingForm({
             </div>
           </div>
 
-          <div className="flex items-start gap-6">
+          <div className="flex flex-col gap-2 md:flex-row md:items-start md:gap-6">
             <Label
               htmlFor="propertyCategory"
-              className="w-1/3 pt-2 text-start shrink-0"
+              className="w-full md:w-1/3 md:pt-2 text-start md:shrink-0"
             >
               <div>
                 <div>
@@ -190,7 +190,7 @@ export function ListingForm({
                 </div>
               </div>
             </Label>
-            <div className="flex-1 max-w-xl">
+            <div className="flex-1 md:max-w-xl">
               <Controller
                 name="propertyCategory"
                 control={control}
@@ -221,10 +221,10 @@ export function ListingForm({
             </div>
           </div>
 
-          <div className="flex items-start gap-6">
+          <div className="flex flex-col gap-2 md:flex-row md:items-start md:gap-6">
             <Label
               htmlFor="propertyType"
-              className="w-1/3 pt-2 text-start shrink-0"
+              className="w-full md:w-1/3 md:pt-2 text-start md:shrink-0"
             >
               <div>
                 <div>
@@ -235,7 +235,7 @@ export function ListingForm({
                 </div>
               </div>
             </Label>
-            <div className="flex-1 max-w-xl">
+            <div className="flex-1 md:max-w-xl">
               <Controller
                 name="propertyType"
                 control={control}
@@ -278,11 +278,11 @@ export function ListingForm({
       <Separator className="my-2" />
 
       {/* Location Section */}
-      <div className="p-6">
-        <h2 className="text-lg font-semibold mb-6">Property Location</h2>
-        <div className="space-y-6">
-          <div className="flex items-start gap-6">
-            <Label htmlFor="street" className="w-1/3 pt-2 text-start shrink-0">
+      <div className="p-4 md:p-6">
+        <h2 className="text-lg font-semibold mb-4 md:mb-6">Property Location</h2>
+        <div className="space-y-4 md:space-y-6">
+          <div className="flex flex-col gap-2 md:flex-row md:items-start md:gap-6">
+            <Label htmlFor="street" className="w-full md:w-1/3 md:pt-2 text-start md:shrink-0">
               <div>
                 <div>
                   Street Address <span className="text-destructive">*</span>
@@ -292,7 +292,7 @@ export function ListingForm({
                 </div>
               </div>
             </Label>
-            <div className="flex-1 max-w-xl">
+            <div className="flex-1 md:max-w-xl">
               <Input
                 id="street"
                 {...register("street")}
@@ -307,8 +307,8 @@ export function ListingForm({
             </div>
           </div>
 
-          <div className="flex items-start gap-6">
-            <Label htmlFor="city" className="w-1/3 pt-2 text-start shrink-0">
+          <div className="flex flex-col gap-2 md:flex-row md:items-start md:gap-6">
+            <Label htmlFor="city" className="w-full md:w-1/3 md:pt-2 text-start md:shrink-0">
               <div>
                 <div>
                   City <span className="text-destructive">*</span>
@@ -318,7 +318,7 @@ export function ListingForm({
                 </div>
               </div>
             </Label>
-            <div className="flex-1 max-w-xl">
+            <div className="flex-1 md:max-w-xl">
               <Input
                 id="city"
                 {...register("city")}
@@ -333,8 +333,8 @@ export function ListingForm({
             </div>
           </div>
 
-          <div className="flex items-start gap-6">
-            <Label htmlFor="state" className="w-1/3 pt-2 text-start shrink-0">
+          <div className="flex flex-col gap-2 md:flex-row md:items-start md:gap-6">
+            <Label htmlFor="state" className="w-full md:w-1/3 md:pt-2 text-start md:shrink-0">
               <div>
                 <div>
                   State <span className="text-destructive">*</span>
@@ -344,7 +344,7 @@ export function ListingForm({
                 </div>
               </div>
             </Label>
-            <div className="flex-1 max-w-xl">
+            <div className="flex-1 md:max-w-xl">
               <Input
                 id="state"
                 {...register("state")}
@@ -359,8 +359,8 @@ export function ListingForm({
             </div>
           </div>
 
-          <div className="flex items-start gap-6">
-            <Label htmlFor="zipCode" className="w-1/3 pt-2 text-start shrink-0">
+          <div className="flex flex-col gap-2 md:flex-row md:items-start md:gap-6">
+            <Label htmlFor="zipCode" className="w-full md:w-1/3 md:pt-2 text-start md:shrink-0">
               <div>
                 <div>
                   ZIP Code <span className="text-destructive">*</span>
@@ -370,7 +370,7 @@ export function ListingForm({
                 </div>
               </div>
             </Label>
-            <div className="flex-1 max-w-xl">
+            <div className="flex-1 md:max-w-xl">
               <Input
                 id="zipCode"
                 {...register("zipCode")}
@@ -385,8 +385,8 @@ export function ListingForm({
             </div>
           </div>
 
-          <div className="flex items-start gap-6">
-            <Label htmlFor="county" className="w-1/3 pt-2 text-start shrink-0">
+          <div className="flex flex-col gap-2 md:flex-row md:items-start md:gap-6">
+            <Label htmlFor="county" className="w-full md:w-1/3 md:pt-2 text-start md:shrink-0">
               <div>
                 <div>County</div>
                 <div className="text-xs text-muted-foreground font-normal mt-0.5">
@@ -394,7 +394,7 @@ export function ListingForm({
                 </div>
               </div>
             </Label>
-            <div className="flex-1 max-w-xl">
+            <div className="flex-1 md:max-w-xl">
               <Input
                 id="county"
                 {...register("county")}
@@ -414,11 +414,11 @@ export function ListingForm({
       <Separator className="my-2" />
 
       {/* Property Specifications */}
-      <div className="p-6">
-        <h2 className="text-lg font-semibold mb-6">Property Specifications</h2>
-        <div className="space-y-6">
-          <div className="flex items-start gap-6">
-            <Label htmlFor="price" className="w-1/3 pt-2 text-start shrink-0">
+      <div className="p-4 md:p-6">
+        <h2 className="text-lg font-semibold mb-4 md:mb-6">Property Specifications</h2>
+        <div className="space-y-4 md:space-y-6">
+          <div className="flex flex-col gap-2 md:flex-row md:items-start md:gap-6">
+            <Label htmlFor="price" className="w-full md:w-1/3 md:pt-2 text-start md:shrink-0">
               <div>
                 <div>
                   Price ($) <span className="text-destructive">*</span>
@@ -428,7 +428,7 @@ export function ListingForm({
                 </div>
               </div>
             </Label>
-            <div className="flex-1 max-w-xl">
+            <div className="flex-1 md:max-w-xl">
               <Input
                 id="price"
                 type="number"
@@ -444,10 +444,10 @@ export function ListingForm({
             </div>
           </div>
 
-          <div className="flex items-start gap-6">
+          <div className="flex flex-col gap-2 md:flex-row md:items-start md:gap-6">
             <Label
               htmlFor="pricePerSquareFoot"
-              className="w-1/3 pt-2 text-start shrink-0"
+              className="w-full md:w-1/3 md:pt-2 text-start md:shrink-0"
             >
               <div>
                 <div>Price per Sq Ft ($)</div>
@@ -456,7 +456,7 @@ export function ListingForm({
                 </div>
               </div>
             </Label>
-            <div className="flex-1 max-w-xl">
+            <div className="flex-1 md:max-w-xl">
               <Input
                 id="pricePerSquareFoot"
                 type="number"
@@ -473,10 +473,10 @@ export function ListingForm({
             </div>
           </div>
 
-          <div className="flex items-start gap-6">
+          <div className="flex flex-col gap-2 md:flex-row md:items-start md:gap-6">
             <Label
               htmlFor="bedrooms"
-              className="w-1/3 pt-2 text-start shrink-0"
+              className="w-full md:w-1/3 md:pt-2 text-start md:shrink-0"
             >
               <div>
                 <div>
@@ -487,7 +487,7 @@ export function ListingForm({
                 </div>
               </div>
             </Label>
-            <div className="flex-1 max-w-xl">
+            <div className="flex-1 md:max-w-xl">
               <Input
                 id="bedrooms"
                 type="number"
@@ -503,10 +503,10 @@ export function ListingForm({
             </div>
           </div>
 
-          <div className="flex items-start gap-6">
+          <div className="flex flex-col gap-2 md:flex-row md:items-start md:gap-6">
             <Label
               htmlFor="bathrooms"
-              className="w-1/3 pt-2 text-start shrink-0"
+              className="w-full md:w-1/3 md:pt-2 text-start md:shrink-0"
             >
               <div>
                 <div>
@@ -517,7 +517,7 @@ export function ListingForm({
                 </div>
               </div>
             </Label>
-            <div className="flex-1 max-w-xl">
+            <div className="flex-1 md:max-w-xl">
               <Input
                 id="bathrooms"
                 type="number"
@@ -534,10 +534,10 @@ export function ListingForm({
             </div>
           </div>
 
-          <div className="flex items-start gap-6">
+          <div className="flex flex-col gap-2 md:flex-row md:items-start md:gap-6">
             <Label
               htmlFor="squareFeet"
-              className="w-1/3 pt-2 text-start shrink-0"
+              className="w-full md:w-1/3 md:pt-2 text-start md:shrink-0"
             >
               <div>
                 <div>
@@ -548,7 +548,7 @@ export function ListingForm({
                 </div>
               </div>
             </Label>
-            <div className="flex-1 max-w-xl">
+            <div className="flex-1 md:max-w-xl">
               <Input
                 id="squareFeet"
                 type="number"
@@ -564,7 +564,7 @@ export function ListingForm({
             </div>
           </div>
 
-          <div className="flex items-start gap-6">
+          <div className="flex flex-col gap-2 md:flex-row md:items-start md:gap-6">
             <Label htmlFor="lotSize" className="w-1/3 pt-2 text-start shrink-0">
               <div>
                 <div>Lot Size (acres)</div>
@@ -573,7 +573,7 @@ export function ListingForm({
                 </div>
               </div>
             </Label>
-            <div className="flex-1 max-w-xl">
+            <div className="flex-1 md:max-w-xl">
               <Input
                 id="lotSize"
                 type="number"
@@ -590,10 +590,10 @@ export function ListingForm({
             </div>
           </div>
 
-          <div className="flex items-start gap-6">
+          <div className="flex flex-col gap-2 md:flex-row md:items-start md:gap-6">
             <Label
               htmlFor="yearBuilt"
-              className="w-1/3 pt-2 text-start shrink-0"
+              className="w-full md:w-1/3 md:pt-2 text-start md:shrink-0"
             >
               <div>
                 <div>Year Built</div>
@@ -602,7 +602,7 @@ export function ListingForm({
                 </div>
               </div>
             </Label>
-            <div className="flex-1 max-w-xl">
+            <div className="flex-1 md:max-w-xl">
               <Input
                 id="yearBuilt"
                 type="number"
@@ -618,7 +618,7 @@ export function ListingForm({
             </div>
           </div>
 
-          <div className="flex items-start gap-6">
+          <div className="flex flex-col gap-2 md:flex-row md:items-start md:gap-6">
             <Label htmlFor="stories" className="w-1/3 pt-2 text-start shrink-0">
               <div>
                 <div>Stories</div>
@@ -627,7 +627,7 @@ export function ListingForm({
                 </div>
               </div>
             </Label>
-            <div className="flex-1 max-w-xl">
+            <div className="flex-1 md:max-w-xl">
               <Input
                 id="stories"
                 type="number"
@@ -643,10 +643,10 @@ export function ListingForm({
             </div>
           </div>
 
-          <div className="flex items-start gap-6">
+          <div className="flex flex-col gap-2 md:flex-row md:items-start md:gap-6">
             <Label
               htmlFor="garageSpaces"
-              className="w-1/3 pt-2 text-start shrink-0"
+              className="w-full md:w-1/3 md:pt-2 text-start md:shrink-0"
             >
               <div>
                 <div>Garage Spaces</div>
@@ -655,7 +655,7 @@ export function ListingForm({
                 </div>
               </div>
             </Label>
-            <div className="flex-1 max-w-xl">
+            <div className="flex-1 md:max-w-xl">
               <Input
                 id="garageSpaces"
                 type="number"
@@ -671,10 +671,10 @@ export function ListingForm({
             </div>
           </div>
 
-          <div className="flex items-start gap-6">
+          <div className="flex flex-col gap-2 md:flex-row md:items-start md:gap-6">
             <Label
               htmlFor="parkingSpaces"
-              className="w-1/3 pt-2 text-start shrink-0"
+              className="w-full md:w-1/3 md:pt-2 text-start md:shrink-0"
             >
               <div>
                 <div>Parking Spaces</div>
@@ -683,7 +683,7 @@ export function ListingForm({
                 </div>
               </div>
             </Label>
-            <div className="flex-1 max-w-xl">
+            <div className="flex-1 md:max-w-xl">
               <Input
                 id="parkingSpaces"
                 type="number"
@@ -699,10 +699,10 @@ export function ListingForm({
             </div>
           </div>
 
-          <div className="flex items-start gap-6">
+          <div className="flex flex-col gap-2 md:flex-row md:items-start md:gap-6">
             <Label
               htmlFor="condition"
-              className="w-1/3 pt-2 text-start shrink-0"
+              className="w-full md:w-1/3 md:pt-2 text-start md:shrink-0"
             >
               <div>
                 <div>
@@ -713,7 +713,7 @@ export function ListingForm({
                 </div>
               </div>
             </Label>
-            <div className="flex-1 max-w-xl">
+            <div className="flex-1 md:max-w-xl">
               <Controller
                 name="condition"
                 control={control}
@@ -738,10 +738,10 @@ export function ListingForm({
       <Separator className="my-2" />
 
       {/* Financial Details */}
-      <div className="p-6">
-        <h2 className="text-lg font-semibold mb-6">Financial Details</h2>
-        <div className="space-y-6">
-          <div className="flex items-start gap-6">
+      <div className="p-4 md:p-6">
+        <h2 className="text-lg font-semibold mb-4 md:mb-6">Financial Details</h2>
+        <div className="space-y-4 md:space-y-6">
+          <div className="flex flex-col gap-2 md:flex-row md:items-start md:gap-6">
             <Label htmlFor="hoaFees" className="w-1/3 pt-2 text-start shrink-0">
               <div>
                 <div>HOA Fees (monthly)</div>
@@ -750,7 +750,7 @@ export function ListingForm({
                 </div>
               </div>
             </Label>
-            <div className="flex-1 max-w-xl">
+            <div className="flex-1 md:max-w-xl">
               <Input
                 id="hoaFees"
                 type="number"
@@ -766,10 +766,10 @@ export function ListingForm({
             </div>
           </div>
 
-          <div className="flex items-start gap-6">
+          <div className="flex flex-col gap-2 md:flex-row md:items-start md:gap-6">
             <Label
               htmlFor="propertyTaxes"
-              className="w-1/3 pt-2 text-start shrink-0"
+              className="w-full md:w-1/3 md:pt-2 text-start md:shrink-0"
             >
               <div>
                 <div>Property Taxes (annual)</div>
@@ -778,7 +778,7 @@ export function ListingForm({
                 </div>
               </div>
             </Label>
-            <div className="flex-1 max-w-xl">
+            <div className="flex-1 md:max-w-xl">
               <Input
                 id="propertyTaxes"
                 type="number"
@@ -794,10 +794,10 @@ export function ListingForm({
             </div>
           </div>
 
-          <div className="flex items-start gap-6">
+          <div className="flex flex-col gap-2 md:flex-row md:items-start md:gap-6">
             <Label
               htmlFor="annualInsurance"
-              className="w-1/3 pt-2 text-start shrink-0"
+              className="w-full md:w-1/3 md:pt-2 text-start md:shrink-0"
             >
               <div>
                 <div>Annual Insurance</div>
@@ -806,7 +806,7 @@ export function ListingForm({
                 </div>
               </div>
             </Label>
-            <div className="flex-1 max-w-xl">
+            <div className="flex-1 md:max-w-xl">
               <Input
                 id="annualInsurance"
                 type="number"
@@ -827,13 +827,13 @@ export function ListingForm({
       <Separator className="my-2" />
 
       {/* Valuation & Sale Details */}
-      <div className="p-6">
-        <h2 className="text-lg font-semibold mb-6">Valuation & Sale Details</h2>
-        <div className="space-y-6">
-          <div className="flex items-start gap-6">
+      <div className="p-4 md:p-6">
+        <h2 className="text-lg font-semibold mb-4 md:mb-6">Valuation & Sale Details</h2>
+        <div className="space-y-4 md:space-y-6">
+          <div className="flex flex-col gap-2 md:flex-row md:items-start md:gap-6">
             <Label
               htmlFor="valuationMethod"
-              className="w-1/3 pt-2 text-start shrink-0"
+              className="w-full md:w-1/3 md:pt-2 text-start md:shrink-0"
             >
               <div>
                 <div>
@@ -844,7 +844,7 @@ export function ListingForm({
                 </div>
               </div>
             </Label>
-            <div className="flex-1 max-w-xl">
+            <div className="flex-1 md:max-w-xl">
               <Controller
                 name="valuationMethod"
                 control={control}
@@ -880,10 +880,10 @@ export function ListingForm({
             </div>
           </div>
 
-          <div className="flex items-start gap-6">
+          <div className="flex flex-col gap-2 md:flex-row md:items-start md:gap-6">
             <Label
               htmlFor="listDate"
-              className="w-1/3 pt-2 text-start shrink-0"
+              className="w-full md:w-1/3 md:pt-2 text-start md:shrink-0"
             >
               <div>
                 <div>List Date</div>
@@ -892,7 +892,7 @@ export function ListingForm({
                 </div>
               </div>
             </Label>
-            <div className="flex-1 max-w-xl">
+            <div className="flex-1 md:max-w-xl">
               <Controller
                 name="listDate"
                 control={control}
@@ -937,10 +937,10 @@ export function ListingForm({
             </div>
           </div>
 
-          <div className="flex items-start gap-6">
+          <div className="flex flex-col gap-2 md:flex-row md:items-start md:gap-6">
             <Label
               htmlFor="saleDate"
-              className="w-1/3 pt-2 text-start shrink-0"
+              className="w-full md:w-1/3 md:pt-2 text-start md:shrink-0"
             >
               <div>
                 <div>Sale Date</div>
@@ -949,7 +949,7 @@ export function ListingForm({
                 </div>
               </div>
             </Label>
-            <div className="flex-1 max-w-xl">
+            <div className="flex-1 md:max-w-xl">
               <Controller
                 name="saleDate"
                 control={control}
@@ -994,10 +994,10 @@ export function ListingForm({
             </div>
           </div>
 
-          <div className="flex items-start gap-6">
+          <div className="flex flex-col gap-2 md:flex-row md:items-start md:gap-6">
             <Label
               htmlFor="daysOnMarket"
-              className="w-1/3 pt-2 text-start shrink-0"
+              className="w-full md:w-1/3 md:pt-2 text-start md:shrink-0"
             >
               <div>
                 <div>Days on Market</div>
@@ -1006,7 +1006,7 @@ export function ListingForm({
                 </div>
               </div>
             </Label>
-            <div className="flex-1 max-w-xl">
+            <div className="flex-1 md:max-w-xl">
               <Input
                 id="daysOnMarket"
                 type="number"
@@ -1027,10 +1027,10 @@ export function ListingForm({
       <Separator className="my-2" />
 
       {/* Additional Features */}
-      <div className="p-6">
+      <div className="p-4 md:p-6">
         <div className="space-y-4">
-          <div className="flex items-start gap-6">
-            <Label className="w-1/3 pt-2 text-start shrink-0">
+          <div className="flex flex-col gap-2 md:flex-row md:items-start md:gap-6">
+            <Label className="w-full md:w-1/3 md:pt-2 text-start md:shrink-0">
               <div>
                 <div>Additional Features</div>
                 <div className="text-xs text-muted-foreground font-normal mt-0.5">
@@ -1038,18 +1038,18 @@ export function ListingForm({
                 </div>
               </div>
             </Label>
-            <div className="flex-1 max-w-xl space-y-3">
+            <div className="flex-1 md:max-w-xl space-y-3">
               <div className="flex flex-wrap gap-2">
                 {fields.map((field, index) => (
                   <div
                     key={field.id}
-                    className="flex items-center gap-1.5 rounded-md px-3 py-1.5"
+                    className="flex items-center gap-1.5 rounded-md px-3 py-1.5 w-full sm:w-auto"
                   >
                     <Input
                       {...register(`features.${index}.name` as const)}
                       placeholder="Feature name"
                       disabled={isLoading}
-                      className="h-6 border-0 px-2 bg-transparent text-sm w-32 focus-visible:ring-0 focus-visible:ring-offset-0"
+                      className="h-6 border-0 px-2 bg-transparent text-sm w-full sm:w-32 focus-visible:ring-0 focus-visible:ring-offset-0"
                     />
                     <Button
                       type="button"
@@ -1057,7 +1057,7 @@ export function ListingForm({
                       size="icon"
                       onClick={() => remove(index)}
                       disabled={isLoading}
-                      className="h-5 w-5 hover:bg-transparent"
+                      className="h-5 w-5 hover:bg-transparent flex-shrink-0"
                     >
                       <X className="h-3.5 w-3.5" />
                     </Button>
@@ -1083,12 +1083,12 @@ export function ListingForm({
       <Separator className="my-2" />
 
       {/* Comparable Notes */}
-      <div className="p-6">
-        <h2 className="text-lg font-semibold mb-6">Additional Notes</h2>
-        <div className="flex items-start gap-6">
+      <div className="p-4 md:p-6">
+        <h2 className="text-lg font-semibold mb-4 md:mb-6">Additional Notes</h2>
+        <div className="flex flex-col gap-2 md:flex-row md:items-start md:gap-6">
           <Label
             htmlFor="comparableNotes"
-            className="w-1/3 pt-2 text-start shrink-0"
+            className="w-full md:w-1/3 md:pt-2 text-start md:shrink-0"
           >
             <div>
               <div>Comparable Notes</div>
@@ -1097,7 +1097,7 @@ export function ListingForm({
               </div>
             </div>
           </Label>
-          <div className="flex-1 max-w-xl">
+          <div className="flex-1 md:max-w-xl">
             <Textarea
               id="comparableNotes"
               {...register("comparableNotes")}
@@ -1117,8 +1117,8 @@ export function ListingForm({
       <Separator className="my-2" />
 
       {/* Form Actions */}
-      <div className="flex flex-row-reverse">
-        <div className="flex items-center gap-4">
+      <div className="flex flex-col-reverse gap-3 sm:flex-row sm:flex-row-reverse p-4 md:p-0">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4">
           {onCancel && (
             <Button
               type="button"
