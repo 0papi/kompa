@@ -38,6 +38,15 @@ export const updateUserSchema = z.object({
   account_type: z.enum(["PROVIDER", "CONSUMER", "CONSUMER_PROVIDER"]).optional(),
 });
 
+// Schema for completing OAuth registration (Google sign-in)
+export const completeOAuthRegistrationSchema = z.object({
+  firstName: z.string().min(1, "First name is required"),
+  lastName: z.string().min(1, "Last name is required"),
+  phoneNumber: phoneNumberSchema,
+  account_type: z.enum(["PROVIDER", "CONSUMER", "CONSUMER_PROVIDER"]),
+});
+
 export type CreateUserType = z.Infer<typeof createUserSchema>;
 export type CreateFirebaseUserType = z.Infer<typeof createFirebaseUserSchema>;
 export type UpdateUserType = z.Infer<typeof updateUserSchema>;
+export type CompleteOAuthRegistrationType = z.Infer<typeof completeOAuthRegistrationSchema>;

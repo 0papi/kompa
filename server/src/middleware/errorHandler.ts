@@ -2,6 +2,7 @@ import type { Request, Response, NextFunction } from "express";
 import { logger } from "../config/logger";
 import { env } from "../config/env";
 import type { ApiResponse } from "../types/index";
+import { slackService } from "../services/slack.service";
 
 export class AppError extends Error {
 	constructor(
@@ -17,7 +18,7 @@ export class AppError extends Error {
 
 export function errorHandler(
 	error: Error,
-	_req: Request,
+	req: Request,
 	res: Response,
 	_next: NextFunction,
 ): void {
@@ -26,6 +27,19 @@ export function errorHandler(
 		stack: error.stack,
 		name: error.name,
 	});
+
+	// Log to Slack
+	const context = `${req.method} ${req.path}`;
+	const additionalData: Record<string, any> = {
+		endpoint: `${req.method} ${req.path}`,
+		user: (req as any).user?.uid || "Anonymous",
+	};
+
+	if (req.body && Object.keys(req.body).length > 0) {
+		additionalData.body = JSON.stringify(req.body).substring(0, 500);
+	}
+
+	slackService.logError(error, context, additionalData);
 
 	if (error instanceof AppError) {
 		const response: ApiResponse = {

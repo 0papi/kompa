@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { UserController } from "@/controllers/user.controller";
 import { validate } from "@/middleware/validation";
-import { createFirebaseUserSchema, updateUserSchema } from "@/schemas/user.schema";
+import { createFirebaseUserSchema, updateUserSchema, completeOAuthRegistrationSchema } from "@/schemas/user.schema";
 import { validateRequest } from "zod-express-middleware";
 import { authenticateUser } from "@/middleware/auth";
 
@@ -13,6 +13,14 @@ router.post(
   "/register",
   validateRequest({ body: createFirebaseUserSchema }),
   userController.create,
+);
+
+// Complete OAuth registration (Google sign-in)
+router.post(
+  "/complete-oauth",
+  authenticateUser,
+  validateRequest({ body: completeOAuthRegistrationSchema }),
+  userController.completeOAuthRegistration,
 );
 
 // Get current user profile

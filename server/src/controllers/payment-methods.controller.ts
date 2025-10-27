@@ -5,6 +5,7 @@ import { CreatePaymentMethodType, UpdatePaymentMethodType } from "@/schemas/paym
 import { logger } from "@/config/logger";
 import { failure, success } from "@/utils/api-response";
 import type { AuthenticatedRequest } from "@/types/index";
+import { slackService } from "@/services/slack.service";
 
 export class PaymentMethodsController {
   private paymentMethodsService: PaymentMethodsService;
@@ -86,6 +87,14 @@ export class PaymentMethodsController {
 
       const paymentMethod = await this.paymentMethodsService.createForUser(userId, payload);
 
+      // Log to Slack
+      await slackService.logPaymentMethod(
+        "create",
+        userId,
+        paymentMethod.methodType,
+        paymentMethod.isPreferred
+      );
+
       return res.status(201).json(success(paymentMethod));
     } catch (error: any) {
       logger.error("Creating payment method failed", error);
@@ -116,6 +125,14 @@ export class PaymentMethodsController {
         return res.status(404).json(failure("Payment method not found"));
       }
 
+      // Log to Slack
+      await slackService.logPaymentMethod(
+        "update",
+        userId,
+        updatedMethod.methodType,
+        updatedMethod.isPreferred
+      );
+
       return res.status(200).json(success(updatedMethod));
     } catch (error: any) {
       logger.error("Updating payment method failed", error);
@@ -135,10 +152,23 @@ export class PaymentMethodsController {
         return res.status(401).json(failure("User not authenticated"));
       }
 
+      // Get payment method details before deleting
+      const paymentMethod = await this.paymentMethodsService.getByIdAndUserId(id, userId);
+
       const deleted = await this.paymentMethodsService.deleteForUser(id, userId);
 
       if (!deleted) {
         return res.status(404).json(failure("Payment method not found"));
+      }
+
+      // Log to Slack
+      if (paymentMethod) {
+        await slackService.logPaymentMethod(
+          "delete",
+          userId,
+          paymentMethod.methodType,
+          paymentMethod.isPreferred
+        );
       }
 
       return res.status(200).json(success({ message: "Payment method deleted successfully" }));

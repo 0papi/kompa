@@ -1,10 +1,11 @@
 import { type Request, Response } from "express";
-import { CreateFirebaseUserType, UpdateUserType } from "@/schemas/user.schema";
+import { CreateFirebaseUserType, UpdateUserType, CompleteOAuthRegistrationType } from "@/schemas/user.schema";
 import { UserService } from "@/services/user.service";
 import { auth } from "@/config/firebase";
 import { logger } from "@/config/logger";
 import { failure, success } from "@/utils/api-response";
 import type { AuthenticatedRequest } from "@/types/index";
+import { slackService } from "@/services/slack.service";
 
 export class UserController {
   private userService: UserService;
@@ -34,6 +35,17 @@ export class UserController {
         phoneNumber: payload.phoneNumber,
         account_type: payload.account_type,
       });
+
+      // Log to Slack
+      await slackService.logAuth(
+        "register",
+        user.id,
+        user.email,
+        {
+          "Account Type": payload.account_type,
+          "Has Phone": payload.phoneNumber ? "Yes" : "No",
+        }
+      );
 
       return res.status(201).json(success(user));
     } catch (error: any) {
@@ -87,6 +99,83 @@ export class UserController {
     } catch (error: any) {
       logger.error("Updating user profile failed", error);
       return res.status(500).json(failure(error.message));
+    }
+  };
+
+  /**
+   * Complete OAuth registration for Google sign-in users
+   * User is already authenticated via Firebase, we just need to collect additional info
+   */
+  completeOAuthRegistration = async (req: AuthenticatedRequest, res: Response) => {
+    try {
+      const firebaseUid = res.locals.firebaseUid;
+      const payload = req.body as CompleteOAuthRegistrationType;
+
+      if (!firebaseUid) {
+        return res.status(401).json(failure("User not authenticated"));
+      }
+
+      // Check if user already exists
+      const existingUser = await this.userService.getUserByFirebaseUid(firebaseUid);
+      if (existingUser) {
+        return res.status(400).json(failure("User already registered"));
+      }
+
+      // Get Firebase user record to extract email
+      const firebaseUser = await auth().getUser(firebaseUid);
+
+      if (!firebaseUser.email) {
+        return res.status(400).json(failure("Email not found in Firebase account"));
+      }
+
+      // Construct full name from first and last name
+      const fullName = `${payload.firstName} ${payload.lastName}`;
+
+      // Create user in database
+      const user = await this.userService.createUser({
+        email: firebaseUser.email,
+        firebaseUid: firebaseUid,
+        name: fullName,
+        phoneNumber: payload.phoneNumber || undefined,
+        account_type: payload.account_type,
+      });
+
+      // Update Firebase user with display name and phone number
+      const firebaseUpdates: {
+        displayName?: string;
+        phoneNumber?: string;
+      } = {
+        displayName: fullName,
+      };
+
+      if (payload.phoneNumber) {
+        firebaseUpdates.phoneNumber = payload.phoneNumber;
+      }
+
+      await auth().updateUser(firebaseUid, firebaseUpdates);
+
+      // Set custom claims in Firebase
+      await auth().setCustomUserClaims(firebaseUid, {
+        role: payload.account_type,
+      });
+
+      // Log to Slack
+      await slackService.logAuth(
+        "register",
+        user.id,
+        user.email,
+        {
+          "Full Name": fullName,
+          "Account Type": payload.account_type,
+          "Has Phone": payload.phoneNumber ? "Yes" : "No",
+          "Sign-in Method": "Google OAuth",
+        }
+      );
+
+      return res.status(201).json(success(user));
+    } catch (error: any) {
+      logger.error("Completing OAuth registration failed", error);
+      return res.status(400).json(failure(error.message));
     }
   };
 

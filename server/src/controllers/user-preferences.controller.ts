@@ -4,6 +4,7 @@ import { UpdateUserPreferencesType } from "@/schemas/user-preferences.schema";
 import { logger } from "@/config/logger";
 import { failure, success } from "@/utils/api-response";
 import type { AuthenticatedRequest } from "@/types/index";
+import { slackService } from "@/services/slack.service";
 
 export class UserPreferencesController {
   private userPreferencesService: UserPreferencesService;
@@ -63,6 +64,9 @@ export class UserPreferencesController {
         userId,
         payload,
       );
+
+      // Log to Slack
+      await slackService.logPreferences(userId, payload);
 
       return res.status(200).json(success(updatedPreferences));
     } catch (error: any) {

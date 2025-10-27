@@ -3,6 +3,7 @@ import { CreateListingType } from "@/schemas/listing.schema";
 import { ListingService } from "@/services/listing.service";
 import { logger } from "@/config/logger";
 import { failure, success } from "@/utils/api-response";
+import { slackService } from "@/services/slack.service";
 
 export class ListingController {
   private listingService: ListingService;
@@ -17,6 +18,19 @@ export class ListingController {
       const payload = req.body as CreateListingType;
 
       const listing = await this.listingService.createListing(userId, payload);
+
+      // Log to Slack
+      await slackService.logListing(
+        "create",
+        listing.id,
+        userId,
+        listing.title,
+        {
+          Status: listing.status,
+          Price: `$${listing.price}`,
+          Location: `${listing.city}, ${listing.state}`,
+        }
+      );
 
       return res.status(201).json(success(listing));
     } catch (error: any) {
@@ -74,6 +88,22 @@ export class ListingController {
           .json(failure("Listing not found or unauthorized"));
       }
 
+      // Log to Slack
+      const additionalInfo: Record<string, string> = {};
+      if (payload.price) additionalInfo.Price = `$${payload.price}`;
+      if (payload.status) additionalInfo.Status = payload.status;
+      if (payload.city || payload.state) {
+        additionalInfo.Location = `${updatedListing.city}, ${updatedListing.state}`;
+      }
+
+      await slackService.logListing(
+        "update",
+        updatedListing.id,
+        userId,
+        updatedListing.title,
+        additionalInfo
+      );
+
       return res.status(200).json(success(updatedListing));
     } catch (error: any) {
       logger.error("Updating listing failed", error);
@@ -96,6 +126,17 @@ export class ListingController {
           .status(404)
           .json(failure("Listing not found or unauthorized"));
       }
+
+      // Log to Slack
+      await slackService.logListing(
+        "delete",
+        deletedListing.id,
+        userId,
+        deletedListing.title,
+        {
+          "Deleted At": new Date().toISOString(),
+        }
+      );
 
       return res.status(200).json(success(deletedListing));
     } catch (error: any) {
@@ -197,6 +238,23 @@ export class ListingController {
           .status(404)
           .json(failure("Listing not found or unauthorized"));
       }
+
+      // Log to Slack based on status change
+      const actionMap: Record<string, "publish" | "unpublish" | "archive"> = {
+        PUBLISHED: "publish",
+        DRAFT: "unpublish",
+        ARCHIVED: "archive",
+      };
+
+      await slackService.logListing(
+        actionMap[status],
+        updatedListing.id,
+        userId,
+        updatedListing.title,
+        {
+          "New Status": status,
+        }
+      );
 
       return res
         .status(200)

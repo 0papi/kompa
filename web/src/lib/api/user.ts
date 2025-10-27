@@ -17,6 +17,13 @@ export interface UpdateUserData {
   account_type?: "PROVIDER" | "CONSUMER" | "CONSUMER_PROVIDER";
 }
 
+export interface CompleteOAuthRegistrationData {
+  firstName: string;
+  lastName: string;
+  phoneNumber?: string;
+  account_type: "PROVIDER" | "CONSUMER" | "CONSUMER_PROVIDER";
+}
+
 export interface ApiResponse<T> {
   success: boolean;
   data: T;
@@ -31,6 +38,11 @@ export const userApi = {
 
   updateProfile: async (data: UpdateUserData): Promise<ApiResponse<User>> => {
     const response = await apiClient.patch<ApiResponse<User>>("/users/profile", data);
+    return response.data;
+  },
+
+  completeOAuthRegistration: async (data: CompleteOAuthRegistrationData): Promise<ApiResponse<User>> => {
+    const response = await apiClient.post<ApiResponse<User>>("/users/complete-oauth", data);
     return response.data;
   },
 };
