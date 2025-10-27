@@ -9,14 +9,14 @@ interface ListingsHeaderProps {
 
 export function ListingsHeader({ onCreateNew }: ListingsHeaderProps) {
   return (
-    <div className="flex items-center justify-between">
+    <div className="flex items-center md:flex-row flex-col space-y-4 justify-between">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">Comparables</h1>
-        <p className="text-muted-foreground mt-1">
+        <h1 className="md:text-3xl text-lg font-bold tracking-tight">Comparables</h1>
+        <p className="text-muted-foreground md:text-base text-sm mt-1">
           Manage and view all your comparable listings
         </p>
       </div>
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-x-2">
         <Button variant="outline" onClick={onCreateNew}>
           <Download className="h-4 w-4 text-muted-foreground" />
           Export

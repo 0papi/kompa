@@ -107,79 +107,108 @@ export function EmailVerificationBanner() {
         className="overflow-hidden"
       >
         <div className="border-b bg-amber-50 dark:bg-amber-950/20">
-          <div className="container mx-auto px-6 md:px-8 lg:px-10">
-            <Alert className="relative border-none bg-transparent shadow-none rounded-none py-3">
-              <div className="flex items-center gap-3">
-                <div className="flex-shrink-0">
-                  <div className="h-9 w-9 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center">
-                    <Mail className="h-4 w-4 text-amber-600 dark:text-amber-500" />
+          <div className="container mx-auto px-4 md:px-8 lg:px-10">
+            <Alert className="relative border-none bg-transparent shadow-none rounded-none py-3 md:py-3">
+              <div className="flex flex-col md:flex-row md:items-center gap-3">
+                {/* Icon and text section */}
+                <div className="flex items-start gap-3 flex-1">
+                  <div className="flex-shrink-0">
+                    <div className="h-9 w-9 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center">
+                      <Mail className="h-4 w-4 text-amber-600 dark:text-amber-500" />
+                    </div>
                   </div>
-                </div>
 
-                <AlertDescription className="flex-1 flex items-center justify-between gap-4">
-                  <div className="flex-1">
+                  <AlertDescription className="flex-1 min-w-0">
                     <p className="text-sm font-medium text-amber-900 dark:text-amber-200">
                       Verify your email address
                     </p>
                     <p className="text-sm text-amber-700 dark:text-amber-400 mt-0.5">
                       {hasEverSent ? (
                         <>
-                          Verification email sent to{" "}
-                          <span className="font-semibold">{user.email}</span>.
-                          Please check your inbox and spam folder.
+                          <span className="hidden md:inline">
+                            Verification email sent to{" "}
+                            <span className="font-semibold">{user.email}</span>.
+                            Please check your inbox.
+                          </span>
+                          <span className="md:hidden">
+                            Check your inbox at{" "}
+                            <span className="font-semibold break-all">{user.email}</span>
+                          </span>
                         </>
                       ) : (
                         <>
-                          Click below to send a verification email to{" "}
-                          <span className="font-semibold">{user.email}</span>{" "}
-                          and unlock all features.
+                          <span className="hidden md:inline">
+                            Click below to send a verification email to{" "}
+                            <span className="font-semibold">{user.email}</span>{" "}
+                            and unlock all features.
+                          </span>
+                          <span className="md:hidden">
+                            Send verification to{" "}
+                            <span className="font-semibold break-all">{user.email}</span>
+                          </span>
                         </>
                       )}
                     </p>
-                  </div>
+                  </AlertDescription>
 
-                  <div className="flex items-center gap-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={handleSendVerification}
-                      disabled={isSending || cooldown > 0}
-                      className="bg-white dark:bg-gray-950 border-amber-300 dark:border-amber-800 hover:bg-amber-50 dark:hover:bg-amber-950/40 text-amber-900 dark:text-amber-200 font-medium"
-                    >
-                      {isSending ? (
-                        <>
-                          <RefreshCw className="h-3.5 w-3.5 mr-2 animate-spin" />
-                          Sending...
-                        </>
-                      ) : cooldown > 0 ? (
-                        <>
-                          <RefreshCw className="h-3.5 w-3.5 mr-2" />
-                          Resend ({cooldown}s)
-                        </>
-                      ) : hasEverSent ? (
-                        <>
-                          <RefreshCw className="h-3.5 w-3.5 mr-2" />
-                          Resend email
-                        </>
-                      ) : (
-                        <>
-                          <Mail className="h-3.5 w-3.5 mr-2" />
-                          Send verification email
-                        </>
-                      )}
-                    </Button>
+                  {/* Dismiss button - absolute on mobile */}
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={handleDismiss}
+                    className="h-8 w-8 text-amber-600 dark:text-amber-500 hover:text-amber-700 dark:hover:text-amber-400 hover:bg-amber-100 dark:hover:bg-amber-900/30 md:hidden flex-shrink-0"
+                  >
+                    <X className="h-4 w-4" />
+                    <span className="sr-only">Dismiss</span>
+                  </Button>
+                </div>
 
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={handleDismiss}
-                      className="h-8 w-8 text-amber-600 dark:text-amber-500 hover:text-amber-700 dark:hover:text-amber-400 hover:bg-amber-100 dark:hover:bg-amber-900/30"
-                    >
-                      <X className="h-4 w-4" />
-                      <span className="sr-only">Dismiss</span>
-                    </Button>
-                  </div>
-                </AlertDescription>
+                {/* Action buttons section */}
+                <div className="flex items-center gap-2 md:ml-auto pl-12 md:pl-0">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleSendVerification}
+                    disabled={isSending || cooldown > 0}
+                    className="bg-white dark:bg-gray-950 border-amber-300 dark:border-amber-800 hover:bg-amber-50 dark:hover:bg-amber-950/40 text-amber-900 dark:text-amber-200 font-medium text-xs md:text-sm"
+                  >
+                    {isSending ? (
+                      <>
+                        <RefreshCw className="h-3.5 w-3.5 mr-1.5 md:mr-2 animate-spin" />
+                        <span className="hidden sm:inline">Sending...</span>
+                        <span className="sm:hidden">Sending</span>
+                      </>
+                    ) : cooldown > 0 ? (
+                      <>
+                        <RefreshCw className="h-3.5 w-3.5 mr-1.5 md:mr-2" />
+                        Resend ({cooldown}s)
+                      </>
+                    ) : hasEverSent ? (
+                      <>
+                        <RefreshCw className="h-3.5 w-3.5 mr-1.5 md:mr-2" />
+                        <span className="hidden sm:inline">Resend email</span>
+                        <span className="sm:hidden">Resend</span>
+                      </>
+                    ) : (
+                      <>
+                        <Mail className="h-3.5 w-3.5 mr-1.5 md:mr-2" />
+                        <span className="hidden sm:inline">Send verification</span>
+                        <span className="sm:hidden">Verify</span>
+                      </>
+                    )}
+                  </Button>
+
+                  {/* Dismiss button - visible on desktop */}
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={handleDismiss}
+                    className="hidden md:flex h-8 w-8 text-amber-600 dark:text-amber-500 hover:text-amber-700 dark:hover:text-amber-400 hover:bg-amber-100 dark:hover:bg-amber-900/30"
+                  >
+                    <X className="h-4 w-4" />
+                    <span className="sr-only">Dismiss</span>
+                  </Button>
+                </div>
               </div>
             </Alert>
           </div>

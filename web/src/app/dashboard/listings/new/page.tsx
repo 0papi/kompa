@@ -34,7 +34,7 @@ export default function NewListingPage() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="md:space-y-6 space-y-4">
       {/* Header */}
       <div className="flex items-center gap-4">
         <Button
@@ -46,10 +46,10 @@ export default function NewListingPage() {
           <ArrowLeft className="h-4 w-4" />
         </Button>
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">
+          <h1 className="md:text-3xl text-lg font-bold tracking-tight">
             Create New Comparable
           </h1>
-          <p className="text-muted-foreground mt-1">
+          <p className="text-muted-foreground mt-1 md:text-base text-sm">
             Add a new comparable to your listings
           </p>
         </div>

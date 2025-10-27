@@ -106,16 +106,6 @@ export function DashboardHeader() {
           <div className="flex h-16 items-center justify-between">
             {/* Left section - Logo & Command Menu */}
             <div className="flex items-center gap-4">
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setOpen(true)}
-                className="md:hidden"
-              >
-                <Menu className="h-5 w-5" />
-                <span className="sr-only">Open menu</span>
-              </Button>
-
               <div className="flex items-center">
                 <Link href="/dashboard" className="flex items-center gap-2">
                   <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
@@ -155,13 +145,13 @@ export function DashboardHeader() {
             </div>
 
             <div className="flex items-center gap-2">
-              <Link href={"/marketplace"} className="flex items-center gap-x-2 border rounded-md px-4 py-1" target="_blank">
-                <span>Marketplace</span>
+              <Link href={"/marketplace"} className="flex items-center gap-x-2 border rounded-md px-3 py-1.5 text-sm md:px-4" target="_blank">
+                <span className="hidden sm:inline">Marketplace</span>
                 <ExternalLink className="h-4 w-4 text-muted-foreground" />
               </Link>
               <ThemeToggle />
 
-              <Button variant="ghost" size="icon" className="relative">
+              <Button variant="ghost" size="icon" className="relative hidden md:flex">
                 <Bell className="h-5 w-5 text-muted-foreground" />
                 <span className="absolute top-1 right-1 h-2 w-2 rounded-full bg-accent" />
                 <span className="sr-only">Notifications</span>
@@ -171,7 +161,7 @@ export function DashboardHeader() {
                 <DropdownMenuTrigger asChild>
                   <Button
                     variant="ghost"
-                    className="relative h-9 w-9 rounded-full"
+                    className="relative h-9 w-9 rounded-full hidden md:flex"
                   >
                     <Avatar className="h-9 w-9">
                       <AvatarImage
