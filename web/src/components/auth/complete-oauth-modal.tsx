@@ -95,8 +95,8 @@ export function CompleteOAuthModal({ open, onClose, userEmail, firstName = "", l
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl p-0 overflow-hidden border-0 gap-0">
-        <div className="grid md:grid-cols-2 min-h-[600px]">
+      <DialogContent className="sm:max-w-4xl max-h-[800px] p-0 overflow-y-auto custom-scorllbar border-0 gap-0">
+        <div className="grid md:grid-cols-2 ">
           {/* Left Column - Form */}
           <div className="p-8 flex flex-col justify-center">
             <div className="mb-8">

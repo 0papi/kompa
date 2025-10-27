@@ -1,9 +1,8 @@
 import { Router } from "express";
 import { UserController } from "@/controllers/user.controller";
-import { validate } from "@/middleware/validation";
 import { createFirebaseUserSchema, updateUserSchema, completeOAuthRegistrationSchema } from "@/schemas/user.schema";
 import { validateRequest } from "zod-express-middleware";
-import { authenticateUser } from "@/middleware/auth";
+import { authenticateUser, authenticateOauth } from "@/middleware/auth";
 
 const router: ReturnType<typeof Router> = Router();
 
@@ -16,9 +15,10 @@ router.post(
 );
 
 // Complete OAuth registration (Google sign-in)
+// Uses authenticateOauth which only verifies Firebase token without checking database
 router.post(
   "/complete-oauth",
-  authenticateUser,
+  authenticateOauth,
   validateRequest({ body: completeOAuthRegistrationSchema }),
   userController.completeOAuthRegistration,
 );

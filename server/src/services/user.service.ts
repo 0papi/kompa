@@ -22,6 +22,15 @@ export class UserService extends BaseService<typeof userTable> {
     return user;
   }
 
+  async getUserByFirebaseUid(firebaseUid: string) {
+    const [user] = await db
+      .select()
+      .from(userTable)
+      .where(eq(userTable.firebaseUid, firebaseUid))
+      .limit(1);
+    return user;
+  }
+
   async updateUser(userId: string, payload: UpdateUserType) {
     const [updatedUser] = await db
       .update(userTable)

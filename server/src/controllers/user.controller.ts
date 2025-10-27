@@ -54,7 +54,7 @@ export class UserController {
     }
   };
 
-  getProfile = async (req: AuthenticatedRequest, res: Response) => {
+  getProfile = async (_req: AuthenticatedRequest, res: Response) => {
     try {
       const userId = res.locals.uid;
 

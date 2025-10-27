@@ -134,3 +134,80 @@ export async function optionalAuth(
 
 	next();
 }
+
+
+
+/**
+ * OAuth authentication middleware
+ * Verifies Firebase token but does NOT check if user exists in database
+ * Used for OAuth registration flow where user doesn't exist yet
+ */
+export async function authenticateOauth(
+	req: AuthenticatedRequest,
+	res: Response,
+	next: NextFunction,
+): Promise<void> {
+	try {
+		const authHeader = req.headers.authorization;
+
+		if (!authHeader?.startsWith("Bearer ")) {
+			res.status(401).json({
+				success: false,
+				error: {
+					message: "Missing or invalid authorization header",
+					code: "UNAUTHORIZED",
+				},
+			});
+			return;
+		}
+
+		const token = authHeader.substring(7);
+
+		try {
+			const decodedToken = await auth().verifyIdToken(token);
+
+			if (!decodedToken || !decodedToken.uid) {
+				logger.warn("Invalid decoded token", { decodedToken });
+				res.status(401).json({
+					success: false,
+					error: {
+						message: "Invalid token",
+						code: "INVALID_TOKEN",
+					},
+				});
+				return;
+			}
+
+			// Store Firebase info in res.locals for controller to access
+			// Do NOT check database - user doesn't exist yet for OAuth registration
+			res.locals.firebaseUid = decodedToken.uid;
+			res.locals.email = decodedToken.email;
+			res.locals.name = decodedToken.name;
+
+			logger.info("OAuth token verified", {
+				firebaseUid: decodedToken.uid,
+				email: decodedToken.email
+			});
+
+			next();
+		} catch (error) {
+			logger.warn("Invalid Firebase token", { error });
+			res.status(401).json({
+				success: false,
+				error: {
+					message: "Invalid or expired token",
+					code: "INVALID_TOKEN",
+				},
+			});
+		}
+	} catch (error) {
+		logger.error("OAuth authentication middleware error", { error });
+		res.status(500).json({
+			success: false,
+			error: {
+				message: "Internal server error",
+				code: "INTERNAL_ERROR",
+			},
+		});
+	}
+}
