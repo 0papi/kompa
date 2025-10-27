@@ -13,7 +13,7 @@ export function QuickActions() {
       </CardHeader>
       <CardContent className="space-y-2">
         <Link
-          href="/dashboard/listings/create"
+          href="/dashboard/listings/new"
           className="block w-full text-left px-4 py-3 rounded-lg border border-border hover:bg-accent/5 transition-colors group"
         >
           <div className="flex items-center gap-2">
