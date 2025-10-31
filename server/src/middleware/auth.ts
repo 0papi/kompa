@@ -39,6 +39,8 @@ export async function authenticateUser(
 				.where(eq(users.firebaseUid, decodedToken.uid))
 				.limit(1);
 
+				console.log('user record', user)
+
 			
 
 			if (!user) {
@@ -69,6 +71,7 @@ export async function authenticateUser(
 
 			next();
 		} catch (error) {
+			console.log('log in failure', error)
 			logger.warn("Invalid Firebase token", { error });
 			res.status(401).json({
 				success: false,

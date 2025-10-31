@@ -177,7 +177,6 @@ export function MobileBottomNav() {
             );
           })()}
 
-          {/* More button */}
           <Sheet open={moreOpen} onOpenChange={setMoreOpen}>
             <SheetTrigger asChild>
               <button

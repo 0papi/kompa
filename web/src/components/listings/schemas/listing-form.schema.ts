@@ -10,8 +10,8 @@ export const listingFormSchema = z.object({
   street: z.string().min(3, "Street address is required"),
   city: z.string().min(2, "City is required"),
   state: z.string().min(2, "State is required"),
-  zipCode: z.string().regex(/^\d{5}(-\d{4})?$/, "Invalid ZIP code format"),
-  county: z.string().min(2, "County is required").optional(),
+  zipCode: z.string().optional(),
+  county: z.string().optional(),
 
   // Property Type
   propertyCategory: z.string().min(1, "Property category is required"),

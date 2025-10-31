@@ -38,6 +38,10 @@
 - [x] Implement a dynamic marketplace header component that will show that user is logged in when they are browsing marketpace while logged in. otherwise it would show a sign in button
 - [x] Implement marketplace listing detail page (url should be marketplace?listingId=<id>)
 - [x] Implement a feature where on the marketing listing details when the user clicks bookmark we check if the user is logged in and add to bookmarks (check the server i have added the bookmarks table) and implement the full seamless bookmarking experience
+- [x] Implement partial preview UI pattern for marketplace (lock sensitive data behind purchase)
+- [ ] Fix bookmarks view error
+- [x] Allow property images to be uploaded during listing creation (Cloudinary - max 10 images, 10MB each)
+- [ ] Hide comparable data until purchased (pricing model TBD)
 
 ## User Preferences & Payment System
 ### Backend
@@ -59,6 +63,8 @@
 - [ ] Create CRUD endpoints for /users/payment-methods
 - [ ] Implement payment method verification flow
 - [ ] Add middleware to validate user account_type for payment methods (PROVIDER or CONSUMER_PROVIDER only)
+- [ ] Set up file uploads via gcp
+- [ ] Set up database to allow comparable search and comparison with subject property
 
 ### Frontend
 - [ ] Create user preferences tab in profile settings
@@ -69,12 +75,14 @@
 - [ ] Add payment method verification status indicators
 
 ## Pending Tasks
-- [ ] Apply database migrations to production
+- [ ] Apply database migrations to production (including listing_images table)
 - [ ] Implement listing edit page
 - [ ] Implement listing detail/view page
-- [ ] Add image upload functionality for listings
+- [x] Add image upload functionality for listings (Cloudinary - completed with drag & drop UI)
 - [ ] Add loading states for all mutations
 - [ ] Implement optimistic updates for status changes
+- [ ] Add comparable pricing field (pending pricing model discussion)
+- [ ] Fetch and display actual images on marketplace (infrastructure ready, needs integration)
 
 ## Infra, Logging Etc
 - [ ] Implement slack logging for all server actions

@@ -19,6 +19,7 @@ import {
   Loader2,
   Bookmark,
   Wallet,
+  Lock,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import {
@@ -30,10 +31,61 @@ import { ReviewsSection } from "./reviews-section";
 import { useSession } from "@/lib/hooks/useSession";
 import { toast } from "sonner";
 import { SignInModal } from "@/components/auth/sign-in-modal";
+import { ListingImageGallery } from "@/components/listings/listing-image-gallery";
 import { useState } from "react";
 
 interface MarketplaceListingDetailProps {
   listingId: string;
+}
+
+/**
+ * Reusable component for locked sections that require purchase
+ */
+function LockedSection({
+  title,
+  children,
+  isLocked = true,
+}: {
+  title: string;
+  children: React.ReactNode;
+  isLocked?: boolean;
+}) {
+  if (!isLocked) {
+    return (
+      <div className="rounded-lg border bg-card p-6">
+        <h2 className="text-base font-semibold mb-4">{title}</h2>
+        {children}
+      </div>
+    );
+  }
+
+  return (
+    <div className="rounded-lg border bg-card p-6 relative overflow-hidden">
+      <h2 className="text-base font-semibold mb-4">{title}</h2>
+
+      {/* Blurred Content */}
+      <div className="blur-md select-none pointer-events-none">
+        {children}
+      </div>
+
+      {/* Overlay */}
+      <div className="absolute inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center">
+        <div className="text-center space-y-3 p-6">
+          <div className="flex justify-center">
+            <div className="rounded-full bg-primary/10 p-3">
+              <Lock className="h-6 w-6 text-primary" />
+            </div>
+          </div>
+          <div>
+            <p className="font-semibold text-lg">Purchase to Unlock</p>
+            <p className="text-sm text-muted-foreground mt-1">
+              Get full access to detailed property data
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 }
 
 export function MarketplaceListingDetail({
@@ -158,9 +210,12 @@ export function MarketplaceListingDetail({
             <div className="flex items-center gap-2 text-muted-foreground mt-1">
               <MapPin className="h-4 w-4" />
               <span>
-                {listing.street}, {listing.city}, {listing.state}{" "}
-                {listing.zipCode}
+                {listing.city}, {listing.state}
               </span>
+              <Badge variant="secondary" className="ml-2 gap-1">
+                <Lock className="h-3 w-3" />
+                <span className="text-xs">Full address locked</span>
+              </Badge>
             </div>
           </div>
           <PropertyCategoryBadge category={listing.propertyCategory} />
@@ -182,10 +237,8 @@ export function MarketplaceListingDetail({
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.3, delay: 0.1 }}
         >
-          {/* Image Placeholder */}
-          <div className="rounded-lg border bg-gradient-to-br from-primary/20 to-primary/5 h-96 flex items-center justify-center">
-            <div className="text-9xl opacity-20">🏠</div>
-          </div>
+          {/* Image Gallery */}
+          <ListingImageGallery listingId={listingId} />
 
           {/* Property Overview */}
           <div className="rounded-lg border bg-card p-6">
@@ -220,13 +273,6 @@ export function MarketplaceListingDetail({
             </div>
           </div>
 
-          {/* Description */}
-          <div className="rounded-lg border bg-card p-6">
-            <h2 className="text-base font-semibold mb-4">Description</h2>
-            <p className="text-muted-foreground leading-relaxed">
-              {listing.description}
-            </p>
-          </div>
 
           {/* Property Details */}
           <div className="rounded-lg border bg-card p-6">
@@ -258,6 +304,15 @@ export function MarketplaceListingDetail({
             </div>
           </div>
 
+          
+          {/* Description */}
+          <div className="rounded-lg border bg-card p-6">
+            <h2 className="text-base font-semibold mb-4">Description</h2>
+            <p className="text-muted-foreground leading-relaxed">
+              {listing.description}
+            </p>
+          </div>
+
           {/* Features */}
           {listing.features && listing.features.length > 0 && (
             <div className="rounded-lg border bg-card p-6">
@@ -274,12 +329,11 @@ export function MarketplaceListingDetail({
 
           {/* Comparable Notes */}
           {listing.comparableNotes && (
-            <div className="rounded-lg border bg-card p-6">
-              <h3 className="font-semibold mb-4">Comparable Notes</h3>
+            <LockedSection title="Comparable Notes" isLocked={true}>
               <p className="text-sm text-muted-foreground leading-relaxed">
                 {listing.comparableNotes}
               </p>
-            </div>
+            </LockedSection>
           )}
 
           {/* Property Condition */}
@@ -311,47 +365,76 @@ export function MarketplaceListingDetail({
               ${parseFloat(listing.price).toLocaleString()}
             </div>
             {listing.pricePerSquareFoot && (
-              <div className="text-sm text-muted-foreground">
-                ${parseFloat(listing.pricePerSquareFoot).toLocaleString()} per
-                sq ft
+              <div className="flex items-center gap-2 mt-2 pt-2 border-t">
+                <Lock className="h-3.5 w-3.5 text-muted-foreground" />
+                <div className="text-sm text-muted-foreground">
+                  Price per sq ft locked
+                </div>
               </div>
             )}
           </div>
 
-          {/* Contact CTA */}
-          <div className="rounded-lg border bg-card p-6">
-            <h3 className="font-semibold mb-4">
-              Interested in this comparable ?
-            </h3>
-            <Button className="w-full mb-3 gap-x-3">
-              <Wallet />
-              Purchase
-            </Button>
-            <Button
-              variant="outline"
-              className="w-full gap-x-2"
-              onClick={handleBookmarkClick}
-              disabled={toggleBookmarkMutation.isPending}
-            >
-              {toggleBookmarkMutation.isPending ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
-              ) : (
-                <Bookmark
-                  className={isBookmarked ? "fill-current" : ""}
-                />
-              )}
-              {isBookmarked ? "Saved" : "Save For Later"}
-            </Button>
+          {/* Unlock Data CTA */}
+          <div className="rounded-lg border bg-card p-6 space-y-4">
+            <div className="space-y-2">
+              <h3 className="font-semibold text-lg">Unlock Full Data</h3>
+              <p className="text-sm text-muted-foreground">
+                Get access to complete property information including:
+              </p>
+              <ul className="text-sm text-muted-foreground space-y-1 ml-4">
+                <li className="flex items-center gap-2">
+                  <Lock className="h-3 w-3" />
+                  Exact address & location
+                </li>
+                <li className="flex items-center gap-2">
+                  <Lock className="h-3 w-3" />
+                  Financial details & costs
+                </li>
+                <li className="flex items-center gap-2">
+                  <Lock className="h-3 w-3" />
+                  Sale history & market data
+                </li>
+                <li className="flex items-center gap-2">
+                  <Lock className="h-3 w-3" />
+                  Comparable analysis notes
+                </li>
+              </ul>
+            </div>
+
+            <div className="pt-2 border-t">
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-sm text-muted-foreground">Price</span>
+                <span className="text-2xl font-bold">$49</span>
+              </div>
+              <Button className="w-full mb-3 gap-x-2" size="lg">
+                <Wallet className="h-4 w-4" />
+                Purchase Full Data
+              </Button>
+              <Button
+                variant="outline"
+                className="w-full gap-x-2"
+                onClick={handleBookmarkClick}
+                disabled={toggleBookmarkMutation.isPending}
+              >
+                {toggleBookmarkMutation.isPending ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Bookmark
+                    className={isBookmarked ? "fill-current" : ""}
+                  />
+                )}
+                {isBookmarked ? "Saved" : "Save For Later"}
+              </Button>
+            </div>
           </div>
 
-          {/* Quick Stats */}
-          {/* <div className="rounded-lg border bg-card p-6">
-            <h3 className="font-semibold mb-4">Quick Stats</h3>
+          {/* Sale History Stats - Locked */}
+          <LockedSection title="Sale History" isLocked={true}>
             <div className="space-y-3">
               <div className="flex items-center justify-between">
                 <span className="text-sm text-muted-foreground flex items-center gap-2">
                   <Calendar className="h-4 w-4" />
-                  Listed
+                  List Date
                 </span>
                 <span className="text-sm font-medium">
                   {listing.listDate
@@ -359,6 +442,17 @@ export function MarketplaceListingDetail({
                     : "Not set"}
                 </span>
               </div>
+              {listing.saleDate && (
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-muted-foreground flex items-center gap-2">
+                    <Calendar className="h-4 w-4" />
+                    Sale Date
+                  </span>
+                  <span className="text-sm font-medium">
+                    {new Date(listing.saleDate).toLocaleDateString()}
+                  </span>
+                </div>
+              )}
               {listing.daysOnMarket && (
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-muted-foreground">
@@ -369,23 +463,14 @@ export function MarketplaceListingDetail({
                   </span>
                 </div>
               )}
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">
-                  Property Type
-                </span>
-                <span className="text-sm font-medium">
-                  {listing.propertyType}
-                </span>
-              </div>
             </div>
-          </div> */}
+          </LockedSection>
 
           {/* Financial Information */}
           {(listing.hoaFees ||
             listing.propertyTaxes ||
             listing.annualInsurance) && (
-            <div className="rounded-lg border bg-card p-6">
-              <h3 className="font-semibold mb-4">Financial Information</h3>
+            <LockedSection title="Financial Information" isLocked={true}>
               <div className="space-y-3">
                 {listing.hoaFees && (
                   <div className="flex items-center justify-between">
@@ -418,7 +503,7 @@ export function MarketplaceListingDetail({
                   </div>
                 )}
               </div>
-            </div>
+            </LockedSection>
           )}
 
           <CommentsSection listingId={listingId} listingOwnerId={listing.userId} />

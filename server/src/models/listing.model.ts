@@ -38,7 +38,7 @@ export const listings = pgTable("listings", {
   street: text("street").notNull(),
   city: text("city").notNull(),
   state: text("state").notNull(),
-  zipCode: text("zip_code").notNull(),
+  zipCode: text("zip_code"),
   county: text("county"),
 
   // Property Type

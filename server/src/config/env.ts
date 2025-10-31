@@ -27,6 +27,11 @@ const envSchema = z.object({
 	FIREBASE_PRIVATE_KEY: z.string().min(1),
 	FIREBASE_CLIENT_EMAIL: z.string().email(),
 
+	// Cloudinary
+	CLOUDINARY_CLOUD_NAME: z.string().min(1),
+	CLOUDINARY_API_KEY: z.string().min(1),
+	CLOUDINARY_API_SECRET: z.string().min(1),
+
 	// Security
 	RATE_LIMIT_WINDOW_MS: z
 		.string()

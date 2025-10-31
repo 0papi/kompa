@@ -28,8 +28,8 @@ import { cn } from "@/lib/utils";
 import PhoneInput from "react-phone-number-input";
 import "react-phone-number-input/style.css";
 import { isValidPhoneNumber } from "libphonenumber-js";
-import { useSignInWithGoogle } from "react-firebase-hooks/auth";
-import { auth } from "@/lib/firebase";
+import { signInWithPopup } from "firebase/auth";
+import { auth, googleProvider } from "@/lib/firebase";
 import { CompleteOAuthModal } from "@/components/auth/complete-oauth-modal";
 import { userApi } from "@/lib/api/user";
 
@@ -74,7 +74,7 @@ export default function SignUp() {
     lastName: string;
   } | null>(null);
 
-  const [signInWithGoogle, googleUser, googleLoading, googleError] = useSignInWithGoogle(auth);
+  const [googleLoading, setGoogleLoading] = useState(false);
 
   const {
     register,
@@ -133,8 +133,9 @@ export default function SignUp() {
   };
 
   const handleGoogleSignIn = async () => {
+    setGoogleLoading(true);
     try {
-      const result = await signInWithGoogle();
+      const result = await signInWithPopup(auth, googleProvider);
 
       if (!result) {
         throw new Error("Google sign-in failed");
@@ -177,6 +178,8 @@ export default function SignUp() {
       toast.error("Google sign-in failed", {
         description: error?.message || "Please try again",
       });
+    } finally {
+      setGoogleLoading(false);
     }
   };
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { listingsApi } from "@/lib/api/listings";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -19,14 +19,28 @@ import {
   Home,
   MessageSquare,
   Star,
+  Loader2,
 } from "lucide-react";
 import { ListingActionsDropdown } from "@/components/listings";
+import { ListingImageGallery } from "@/components/listings/listing-image-gallery";
 import { motion } from "framer-motion";
+import { toast } from "sonner";
+import { useState } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 export default function ListingDetailsPage() {
   const params = useParams();
   const router = useRouter();
+  const queryClient = useQueryClient();
   const listingId = params.id as string;
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
   const { data: response, isLoading, error } = useQuery({
     queryKey: ["listing", listingId],
@@ -34,6 +48,89 @@ export default function ListingDetailsPage() {
   });
 
   const listing = response?.data;
+
+  // Update status mutation
+  const updateStatusMutation = useMutation({
+    mutationFn: (status: "DRAFT" | "PUBLISHED" | "ARCHIVED") =>
+      listingsApi.updateStatus(listingId, status),
+    onSuccess: (response, status) => {
+      queryClient.invalidateQueries({ queryKey: ["listing", listingId] });
+      queryClient.invalidateQueries({ queryKey: ["listings"] });
+      const statusLabels = {
+        DRAFT: "unpublished",
+        PUBLISHED: "published",
+        ARCHIVED: "archived",
+      };
+      toast.success(`Listing ${statusLabels[status]} successfully!`);
+    },
+    onError: () => {
+      toast.error("Failed to update listing status");
+    },
+  });
+
+  // Delete mutation
+  const deleteMutation = useMutation({
+    mutationFn: () => listingsApi.delete(listingId),
+    onSuccess: () => {
+      toast.success("Listing deleted successfully!");
+      router.push("/dashboard/listings");
+    },
+    onError: () => {
+      toast.error("Failed to delete listing");
+    },
+  });
+
+  // Duplicate mutation (creates a copy with DRAFT status)
+  const duplicateMutation = useMutation({
+    mutationFn: async () => {
+      if (!listing) return;
+      const duplicateData = {
+        ...listing,
+        title: `${listing.title} (Copy)`,
+        status: "DRAFT" as const,
+      };
+      // Remove fields that shouldn't be copied
+      const { id, userId, createdAt, updatedAt, deletedAt, ...dataToCreate } = duplicateData;
+      return listingsApi.create(dataToCreate as any);
+    },
+    onSuccess: (response) => {
+      queryClient.invalidateQueries({ queryKey: ["listings"] });
+      toast.success("Listing duplicated successfully!");
+      router.push(`/dashboard/listings/${response?.data.id}/edit`);
+    },
+    onError: () => {
+      toast.error("Failed to duplicate listing");
+    },
+  });
+
+  // Action handlers
+  const handlePublish = () => {
+    updateStatusMutation.mutate("PUBLISHED");
+  };
+
+  const handleUnpublish = () => {
+    updateStatusMutation.mutate("DRAFT");
+  };
+
+  const handleArchive = () => {
+    updateStatusMutation.mutate("ARCHIVED");
+  };
+
+  const handleUnarchive = () => {
+    updateStatusMutation.mutate("PUBLISHED");
+  };
+
+  const handleDelete = () => {
+    setShowDeleteDialog(true);
+  };
+
+  const confirmDelete = () => {
+    deleteMutation.mutate();
+  };
+
+  const handleDuplicate = () => {
+    duplicateMutation.mutate();
+  };
 
   if (isLoading) {
     return (
@@ -89,19 +186,24 @@ export default function ListingDetailsPage() {
               </span>
             </div>
           </div>
-          <Badge className={statusColors[listing.status]}>
-            {listing.status}
-          </Badge>
+          <div className="flex items-center gap-2">
+            {updateStatusMutation.isPending && (
+              <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+            )}
+            <Badge className={statusColors[listing.status]}>
+              {listing.status}
+            </Badge>
+          </div>
           <ListingActionsDropdown
             listing={listing}
             onView={() => {}}
             onEdit={(id) => router.push(`/dashboard/listings/${id}/edit`)}
-            onDelete={() => router.push("/dashboard/listings")}
-            onPublish={() => window.location.reload()}
-            onUnpublish={() => window.location.reload()}
-            onArchive={() => window.location.reload()}
-            onUnarchive={() => window.location.reload()}
-            onDuplicate={() => window.location.reload()}
+            onDelete={handleDelete}
+            onPublish={handlePublish}
+            onUnpublish={handleUnpublish}
+            onArchive={handleArchive}
+            onUnarchive={handleUnarchive}
+            onDuplicate={handleDuplicate}
           />
         </div>
       </motion.div>
@@ -117,6 +219,9 @@ export default function ListingDetailsPage() {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.3, delay: 0.1 }}
         >
+          {/* Image Gallery */}
+          <ListingImageGallery listingId={listingId} />
+
           {/* Property Overview */}
           <div className="rounded-lg border bg-card p-6">
             <h2 className="text-xl font-semibold mb-4">Property Overview</h2>
@@ -391,6 +496,34 @@ export default function ListingDetailsPage() {
           )}
         </motion.div>
       </div>
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Are you sure?</DialogTitle>
+            <DialogDescription>
+              This will permanently delete this listing. This action cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setShowDeleteDialog(false)}
+              disabled={deleteMutation.isPending}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={confirmDelete}
+              disabled={deleteMutation.isPending}
+            >
+              {deleteMutation.isPending ? "Deleting..." : "Delete"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

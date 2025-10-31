@@ -8,7 +8,7 @@ import { Separator } from "@/components/ui/separator";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { listingsApi, type Listing } from "@/lib/api/listings";
 import { toast } from "sonner";
-import { useEffect } from "react";
+
 
 export default function EditListingPage() {
   const router = useRouter();
@@ -56,15 +56,6 @@ export default function EditListingPage() {
     router.back();
   };
 
-  // Handle error state
-  useEffect(() => {
-    if (error) {
-      toast.error("Failed to load listing. Redirecting...");
-      setTimeout(() => {
-        router.push("/dashboard/listings");
-      }, 2000);
-    }
-  }, [error, router]);
 
   // Loading state
   if (isLoading) {

@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { type Listing } from "@/lib/api/listings";
 // Import 'Home' for the new placeholder icon
-import { Bed, Bath, Maximize, Home } from "lucide-react";
+import { Bed, Bath, Maximize, Home, Lock } from "lucide-react";
 
 interface MarketplaceListingCardProps {
   listing: Listing;
@@ -58,52 +58,40 @@ export function MarketplaceListingCard({
         >
           Active
         </div>
-        {/*<StatusBadge status={listing.status} />*/}
 
-        {/* Professional Placeholder */}
-        <div className="relative aspect-[4/3] w-full overflow-hidden bg-muted/60">
+        {/* Image or Placeholder */}
+        <div className="relative aspect-[4/3] w-full overflow-hidden bg-gradient-to-br from-muted/80 to-muted/40">
           <div className="absolute inset-0 flex items-center justify-center">
             <Home
-              className="h-20 w-20 text-muted-foreground/30
+              className="h-20 w-20 text-muted-foreground/20
                          transition-all duration-300
-                         group-hover:scale-110 group-hover:text-muted-foreground/40"
+                         group-hover:scale-110 group-hover:text-muted-foreground/30"
             />
           </div>
+          {/* TODO: Replace with actual image when images are loaded */}
+          {/* <img src={primaryImage} alt={listing.title} className="w-full h-full object-cover" /> */}
         </div>
       </div>
 
       {/* Content */}
       <div className="p-4 space-y-3">
-        {/* Price */}
-        <div>
-          <p className="flex items-baseline gap-1">
-            <span className="text-2xl font-bold">
-              ${parseFloat(listing.price).toLocaleString()}
-            </span>
-            {listing.pricePerSquareFoot && (
-              <span className="text-sm font-medium text-muted-foreground">
-                (${parseFloat(listing.pricePerSquareFoot).toLocaleString()}
-                /sqft)
-              </span>
-            )}
-          </p>
-        </div>
-
-        {/* Address & Title */}
+        {/* Property Type & Year */}
         <div className="space-y-0.5">
           <p className="font-semibold text-foreground truncate">
-            {listing.street}
+            {listing.propertyType}
           </p>
           <p className="text-sm text-muted-foreground">
-            {listing.city}, {listing.state} {listing.zipCode}
+            {listing.city}, {listing.state}
           </p>
-          <p className="text-sm text-muted-foreground line-clamp-1 pt-1">
-            {listing.title}
-          </p>
+          {listing.yearBuilt && (
+            <p className="text-xs text-muted-foreground">
+              Built in {listing.yearBuilt}
+            </p>
+          )}
         </div>
 
         {/* Details / Comps */}
-        <div className="flex items-center justify-between text-sm pt-3 border-t">
+        <div className="flex items-center justify-between text-sm pt-2">
           <span className="flex items-center gap-1.5">
             <Bed className="h-4 w-4 text-muted-foreground" />
             <span className="font-medium">{listing.bedrooms}</span>
@@ -121,6 +109,15 @@ export function MarketplaceListingCard({
             </span>
             <span className="text-muted-foreground">sqft</span>
           </span>
+        </div>
+
+        {/* Locked Data Banner */}
+        <div className="flex items-center justify-between pt-3 border-t bg-muted/30 -mx-4 px-4 py-2.5 mt-3">
+          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+            <Lock className="h-3.5 w-3.5" />
+            <span>Full data locked</span>
+          </div>
+          <span className="text-xs font-medium text-primary">View details</span>
         </div>
       </div>
     </div>

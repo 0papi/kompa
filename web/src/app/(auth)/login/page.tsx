@@ -6,8 +6,9 @@ import { Mail, Lock, Eye, EyeOff, ArrowRight, Search } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { useSignInWithEmailAndPassword, useSignInWithGoogle } from "react-firebase-hooks/auth";
-import { auth } from "@/lib/firebase";
+import { useSignInWithEmailAndPassword } from "react-firebase-hooks/auth";
+import { signInWithPopup } from "firebase/auth";
+import { auth, googleProvider } from "@/lib/firebase";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
@@ -33,7 +34,7 @@ export default function Login() {
   } | null>(null);
 
   const [signInWithEmailAndPassword, user, loading, error] = useSignInWithEmailAndPassword(auth);
-  const [signInWithGoogle, googleUser, googleLoading, googleError] = useSignInWithGoogle(auth);
+  const [googleLoading, setGoogleLoading] = useState(false);
 
   const {
     register,
@@ -59,8 +60,9 @@ export default function Login() {
   };
 
   const handleGoogleSignIn = async () => {
+    setGoogleLoading(true);
     try {
-      const result = await signInWithGoogle();
+      const result = await signInWithPopup(auth, googleProvider);
 
       if (!result) {
         throw new Error("Google sign-in failed");
@@ -69,11 +71,11 @@ export default function Login() {
       // Check if user exists in our database
       try {
         await userApi.getProfile();
-        // User exists, redirect to dashboard
+  
         toast.success("Welcome back!");
         router.replace("/dashboard");
       } catch (error: any) {
-        // User doesn't exist (404), show completion modal
+       
         if (error?.response?.status === 404) {
           // Parse displayName into first and last names
           const displayName = result.user.displayName || "";
@@ -101,6 +103,8 @@ export default function Login() {
       toast.error("Google sign-in failed", {
         description: error?.message || "Please try again",
       });
+    } finally {
+      setGoogleLoading(false);
     }
   };
 
@@ -172,9 +176,9 @@ export default function Login() {
             </div>
 
             <div className="text-right">
-              <a href="/forgot-password" className="text-sm font-semibold text-blue-600 hover:text-blue-500 transition-colors">
+              <Link href="/forgot-password" className="text-sm font-semibold text-blue-600 hover:text-blue-500 transition-colors">
                 Forgot password?
-              </a>
+              </Link>
             </div>
 
             <button

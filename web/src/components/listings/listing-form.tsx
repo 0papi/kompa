@@ -26,8 +26,9 @@ import {
 import { toast } from "sonner";
 import { Textarea } from "../ui/textarea";
 import { PROPERTY_TYPES, PROPERTY_CATEGORIES } from "@/lib/consts";
-import { format } from "date-fns";
+import { format, differenceInDays } from "date-fns";
 import { cn } from "@/lib/utils";
+import { useEffect } from "react";
 
 interface ListingFormProps {
   onSubmit: (data: ListingFormData) => void | Promise<void>;
@@ -47,6 +48,7 @@ export function ListingForm({
     handleSubmit,
     control,
     watch,
+    setValue,
     formState: { errors },
   } = useForm<ListingFormData>({
     resolver: zodResolver(listingFormSchema) as any,
@@ -61,6 +63,24 @@ export function ListingForm({
   });
 
   const selectedCategory = watch("propertyCategory");
+  const listDate = watch("listDate");
+  const saleDate = watch("saleDate");
+
+  // Auto-calculate days on market when both dates are present
+  useEffect(() => {
+    if (listDate && saleDate) {
+      try {
+        const list = new Date(listDate);
+        const sale = new Date(saleDate);
+        const days = differenceInDays(sale, list);
+        if (days >= 0) {
+          setValue("daysOnMarket", days);
+        }
+      } catch (error) {
+        console.error("Error calculating days on market:", error);
+      }
+    }
+  }, [listDate, saleDate, setValue]);
 
   const onFormSubmit = async (data: ListingFormData) => {
     try {
@@ -363,7 +383,7 @@ export function ListingForm({
             <Label htmlFor="zipCode" className="w-full md:w-1/3 md:pt-2 text-start md:shrink-0">
               <div>
                 <div>
-                  ZIP Code <span className="text-destructive">*</span>
+                  Location Code 
                 </div>
                 <div className="text-xs text-muted-foreground font-normal mt-0.5">
                   Postal code for the location
@@ -388,7 +408,7 @@ export function ListingForm({
           <div className="flex flex-col gap-2 md:flex-row md:items-start md:gap-6">
             <Label htmlFor="county" className="w-full md:w-1/3 md:pt-2 text-start md:shrink-0">
               <div>
-                <div>County</div>
+                <div>County / Locality</div>
                 <div className="text-xs text-muted-foreground font-normal mt-0.5">
                   County or district name
                 </div>
@@ -1002,7 +1022,9 @@ export function ListingForm({
               <div>
                 <div>Days on Market</div>
                 <div className="text-xs text-muted-foreground font-normal mt-0.5">
-                  How long property was listed
+                  {listDate && saleDate
+                    ? "Auto-calculated from dates"
+                    : "How long property was listed"}
                 </div>
               </div>
             </Label>
@@ -1012,7 +1034,13 @@ export function ListingForm({
                 type="number"
                 {...register("daysOnMarket")}
                 placeholder="30"
-                disabled={isLoading}
+                // @ts-ignore
+                disabled={isLoading || (listDate && saleDate)}
+                // @ts-ignore
+                readOnly={listDate && saleDate}
+                className={cn(
+                  listDate && saleDate && "bg-muted cursor-not-allowed"
+                )}
               />
               {errors.daysOnMarket && (
                 <p className="text-sm text-destructive mt-1">
@@ -1117,7 +1145,7 @@ export function ListingForm({
       <Separator className="my-2" />
 
       {/* Form Actions */}
-      <div className="flex flex-col-reverse gap-3 sm:flex-row sm:flex-row-reverse p-4 md:p-0">
+      <div className="flex flex-col-reverse gap-3 sm:flex-row-reverse p-4 md:p-0">
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4">
           {onCancel && (
             <Button
