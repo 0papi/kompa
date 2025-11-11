@@ -1,19 +1,50 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { Label } from "@/components/ui/label"
-import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Skeleton } from "@/components/ui/skeleton"
-import { Alert, AlertDescription } from "@/components/ui/alert"
-import { paymentMethodsApi, type PaymentMethodType, type PaymentMethod, type CreatePaymentMethodData } from "@/lib/api/payment-methods"
-import { userApi } from "@/lib/api/user"
-import { toast } from "sonner"
+import { useEffect, useState } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import {
+  paymentMethodsApi,
+ 
+  type CreatePaymentMethodData,
+ 
+  type PaymentMethod,
+  type PaymentMethodType,
+  
+} from "@/lib/api/payment-methods";
+
+import { userApi } from "@/lib/api/user";
+import { toast } from "sonner";
 import {
   CreditCard,
   Plus,
@@ -22,122 +53,131 @@ import {
   AlertCircle,
   Wallet,
   Building,
-  Mail,
   Phone,
   Loader2,
   Star,
-  StarOff
-} from "lucide-react"
+  StarOff,
+  Smartphone,
+} from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@/components/ui/dropdown-menu";
+import {
+  FormField,
+  FormItem,
+  FormLabel,
+  FormControl,
+  FormMessage,
+  Form,
+} from "@/components/ui/form";
+import { useSession } from "@/lib/hooks/useSession";
+import { createPayoutMethodSchema, type BankAccountDetails, type MobileMoneyDetails, type PayoutMethodType } from "@/schema/payment-method.schema";
 
-const PAYMENT_METHOD_ICONS: Record<PaymentMethodType, React.ElementType> = {
-  BANK_ACCOUNT: Building,
-  PAYPAL: Mail,
-  STRIPE: CreditCard,
-  VENMO: Wallet,
-  CASHAPP: Wallet,
-  ZELLE: Phone,
-}
+const PAYMENT_METHOD_ICONS: Record<PayoutMethodType, React.ElementType> = {
+  BANK_TRANSFER: Building,
+  MOBILE_MONEY: Smartphone,
+};
 
-const PAYMENT_METHOD_LABELS: Record<PaymentMethodType, string> = {
-  BANK_ACCOUNT: "Bank Account",
-  PAYPAL: "PayPal",
-  STRIPE: "Stripe",
-  VENMO: "Venmo",
-  CASHAPP: "Cash App",
-  ZELLE: "Zelle",
-}
+const PAYMENT_METHOD_LABELS: Record<PayoutMethodType, string> = {
+  BANK_TRANSFER: "Bank Transfer",
+  MOBILE_MONEY: "Mobile Money",
+};
+
+const MOBILE_MONEY_PROVIDERS = ["MTN", "VODAFONE", "AIRTEL", "OTHER"] as const;
 
 export function PaymentMethodsTab() {
-  const queryClient = useQueryClient()
-  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
-  const [deleteId, setDeleteId] = useState<string | null>(null)
+  const queryClient = useQueryClient();
+  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const [deleteId, setDeleteId] = useState<string | null>(null);
 
   // Check if user is a provider
   const { data: userData } = useQuery({
     queryKey: ["user-profile"],
     queryFn: () => userApi.getProfile(),
-  })
+  });
 
-  const user = userData?.data
-  const isProvider = user?.account_type === "PROVIDER" || user?.account_type === "CONSUMER_PROVIDER"
+  const user = userData?.data;
+  const isProvider =
+    user?.account_type === "PROVIDER" ||
+    user?.account_type === "CONSUMER_PROVIDER";
 
   // Fetch payment methods
   const { data, isLoading } = useQuery({
     queryKey: ["payment-methods"],
     queryFn: () => paymentMethodsApi.getAllPaymentMethods(),
     enabled: isProvider,
-  })
+  });
 
-  const paymentMethods = data?.data || []
+  const paymentMethods = data?.data || [];
 
   // Delete mutation
   const deleteMutation = useMutation({
     mutationFn: (id: string) => paymentMethodsApi.deletePaymentMethod(id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["payment-methods"] })
-      toast.success("Payment method deleted successfully")
-      setDeleteId(null)
+      queryClient.invalidateQueries({ queryKey: ["payment-methods"] });
+      toast.success("Payment method deleted successfully");
+      setDeleteId(null);
     },
     onError: (error: any) => {
-      toast.error(error?.message || "Failed to delete payment method")
+      toast.error(error?.message || "Failed to delete payment method");
     },
-  })
+  });
 
   // Set preferred mutation
   const setPreferredMutation = useMutation({
-    mutationFn: (id: string) => paymentMethodsApi.updatePaymentMethod(id, { isPreferred: true }),
+    mutationFn: (id: string) =>
+      paymentMethodsApi.updatePaymentMethod(id, { isPreferred: true }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["payment-methods"] })
-      toast.success("Preferred payment method updated")
+      queryClient.invalidateQueries({ queryKey: ["payment-methods"] });
+      toast.success("Preferred payment method updated");
     },
     onError: (error: any) => {
-      toast.error(error?.message || "Failed to update preferred method")
+      toast.error(error?.message || "Failed to update preferred method");
     },
-  })
+  });
 
   // Remove preferred mutation
   const removePreferredMutation = useMutation({
-    mutationFn: (id: string) => paymentMethodsApi.updatePaymentMethod(id, { isPreferred: false }),
+    mutationFn: (id: string) =>
+      paymentMethodsApi.updatePaymentMethod(id, { isPreferred: false }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["payment-methods"] })
-      toast.success("Preferred status removed")
+      queryClient.invalidateQueries({ queryKey: ["payment-methods"] });
+      toast.success("Preferred status removed");
     },
     onError: (error: any) => {
-      toast.error(error?.message || "Failed to remove preferred status")
+      toast.error(error?.message || "Failed to remove preferred status");
     },
-  })
+  });
 
   const handleDelete = (id: string) => {
-    deleteMutation.mutate(id)
-  }
+    deleteMutation.mutate(id);
+  };
 
   const handleSetPreferred = (id: string) => {
-    setPreferredMutation.mutate(id)
-  }
+    setPreferredMutation.mutate(id);
+  };
 
   const handleRemovePreferred = (id: string) => {
-    removePreferredMutation.mutate(id)
-  }
+    removePreferredMutation.mutate(id);
+  };
 
   if (!isProvider) {
     return (
       <Alert>
         <AlertCircle className="h-4 w-4" />
         <AlertDescription>
-          Payment methods are only available for Provider accounts. Upgrade your account to manage payment methods.
+          Payment methods are only available for Provider accounts. Upgrade your
+          account to manage payment methods.
         </AlertDescription>
       </Alert>
-    )
+    );
   }
 
   if (isLoading) {
-    return <PaymentMethodsLoading />
+    return <PaymentMethodsLoading />;
   }
 
   return (
@@ -145,7 +185,7 @@ export function PaymentMethodsTab() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-lg font-medium">Payment Methods</h3>
+          <h3 className="text-lg font-medium">Payout Methods</h3>
           <p className="text-sm text-muted-foreground">
             Manage how you receive payments for your comparables
           </p>
@@ -154,7 +194,7 @@ export function PaymentMethodsTab() {
           <DialogTrigger asChild>
             <Button>
               <Plus className="mr-2 h-4 w-4" />
-              Add Payment Method
+              Add Payout Method
             </Button>
           </DialogTrigger>
           <AddPaymentMethodDialog onClose={() => setIsAddDialogOpen(false)} />
@@ -166,22 +206,28 @@ export function PaymentMethodsTab() {
         <Card>
           <CardContent className="flex flex-col items-center justify-center py-12">
             <Wallet className="h-12 w-12 text-muted-foreground mb-4" />
-            <h3 className="text-lg font-medium mb-2">No payment methods yet</h3>
+            <h3 className="text-lg font-medium mb-2">No payout methods yet</h3>
             <p className="text-sm text-muted-foreground mb-4 text-center max-w-sm">
-              Add a payment method to start receiving payments for your property comparables
+              Add a payout method to start receiving earnings from your property
+              comparables
             </p>
             <Button onClick={() => setIsAddDialogOpen(true)}>
               <Plus className="mr-2 h-4 w-4" />
-              Add Your First Payment Method
+              Add Your First Payout Method
             </Button>
           </CardContent>
         </Card>
       ) : (
         <div className="grid gap-4">
           {paymentMethods.map((method) => {
-            const Icon = PAYMENT_METHOD_ICONS[method.methodType]
+            const Icon = PAYMENT_METHOD_ICONS[method.methodType];
+            const displayDetails = getDisplayDetails(method);
+
             return (
-              <Card key={method.id} className={method.isPreferred ? "border-primary" : ""}>
+              <Card
+                key={method.id}
+                className={method.isPreferred ? "border-primary" : ""}
+              >
                 <CardContent className="flex items-center justify-between p-6">
                   <div className="flex items-center gap-4">
                     <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-muted">
@@ -189,7 +235,9 @@ export function PaymentMethodsTab() {
                     </div>
                     <div>
                       <div className="flex items-center gap-2">
-                        <h4 className="font-medium">{PAYMENT_METHOD_LABELS[method.methodType]}</h4>
+                        <h4 className="font-medium">
+                          {PAYMENT_METHOD_LABELS[method.methodType]}
+                        </h4>
                         {method.isPreferred && (
                           <Badge variant="default" className="gap-1">
                             <Star className="h-3 w-3 fill-current" />
@@ -204,12 +252,7 @@ export function PaymentMethodsTab() {
                         )}
                       </div>
                       <p className="text-sm text-muted-foreground">
-                        {method.accountDetails.email ||
-                          method.accountDetails.phone ||
-                          (method.accountDetails.accountNumber &&
-                            `****${method.accountDetails.accountNumber}`) ||
-                          method.accountDetails.accountHolderName ||
-                          "No details"}
+                        {displayDetails}
                       </p>
                     </div>
                   </div>
@@ -276,18 +319,22 @@ export function PaymentMethodsTab() {
                   </div>
                 </CardContent>
               </Card>
-            )
+            );
           })}
         </div>
       )}
 
       {/* Delete Confirmation Dialog */}
-      <Dialog open={!!deleteId} onOpenChange={(open) => !open && setDeleteId(null)}>
+      <Dialog
+        open={!!deleteId}
+        onOpenChange={(open) => !open && setDeleteId(null)}
+      >
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Delete Payment Method</DialogTitle>
+            <DialogTitle>Delete Payout Method</DialogTitle>
             <DialogDescription>
-              Are you sure you want to delete this payment method? This action cannot be undone.
+              Are you sure you want to delete this payout method? This action
+              cannot be undone.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
@@ -317,206 +364,480 @@ export function PaymentMethodsTab() {
         <CardContent className="flex gap-3 pt-6">
           <AlertCircle className="h-5 w-5 flex-shrink-0 text-blue-600 dark:text-blue-500" />
           <div>
-            <p className="font-medium text-blue-900 dark:text-blue-200">Payment Information</p>
+            <p className="font-medium text-blue-900 dark:text-blue-200">
+              Payout Information
+            </p>
             <p className="text-sm text-blue-800 dark:text-blue-300">
-              Payment methods are used to receive earnings from property comparable purchases. Set a preferred method
-              for faster payouts.
+              Payout methods are used to receive earnings from property
+              comparable purchases. Set a preferred method for faster payouts.
             </p>
           </div>
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }
 
-function AddPaymentMethodDialog({ onClose }: { onClose: () => void }) {
-  const queryClient = useQueryClient()
-  const [methodType, setMethodType] = useState<PaymentMethodType>("PAYPAL")
-  const [formData, setFormData] = useState({
-    email: "",
-    phone: "",
-    accountHolderName: "",
-    accountNumber: "",
-    routingNumber: "",
-  })
-  const [isPreferred, setIsPreferred] = useState(false)
+interface AddPaymentMethodDialogProps {
+  onClose: () => void;
+}
+
+function AddPaymentMethodDialog({ onClose }: AddPaymentMethodDialogProps) {
+  const { user: firebaseUser } = useSession();
+  const queryClient = useQueryClient();
+  const [selectedMethod, setSelectedMethod] = useState<PayoutMethodType>(
+    "BANK_TRANSFER"
+  );
+
+  const form = useForm({
+    resolver: zodResolver(createPayoutMethodSchema),
+    defaultValues: {
+      methodType: "BANK_TRANSFER",
+      accountDetails: {
+        methodType: "BANK_TRANSFER",
+        details: {
+          accountHolderName: "",
+          accountNumber: "",
+          bankCode: "",
+          bankName: "",
+        },
+      },
+      isPreferred: false,
+    },
+  });
 
   const createMutation = useMutation({
-    mutationFn: (data: CreatePaymentMethodData) => paymentMethodsApi.createPaymentMethod(data),
+    mutationFn: (data: CreatePaymentMethodData) =>
+      paymentMethodsApi.createPaymentMethod(data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["payment-methods"] })
-      toast.success("Payment method added successfully")
-      onClose()
+      queryClient.invalidateQueries({ queryKey: ["payment-methods"] });
+      toast.success("Payout method added successfully");
+      form.reset();
+      onClose();
     },
     onError: (error: any) => {
-      toast.error(error?.message || "Failed to add payment method")
+      toast.error(error?.message || "Failed to add payout method");
     },
-  })
+  });
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
+  const onSubmit = (data: CreatePaymentMethodData) => {
+    createMutation.mutate(data);
+  };
 
-    const accountDetails: any = {}
+  const handleMethodTypeChange = (value: PaymentMethodType) => {
+    setSelectedMethod(value);
+    form.setValue("methodType", value);
 
-    if (methodType === "BANK_ACCOUNT") {
-      accountDetails.accountHolderName = formData.accountHolderName
-      accountDetails.accountNumber = formData.accountNumber
-      accountDetails.routingNumber = formData.routingNumber
-    } else if (methodType === "PAYPAL" || methodType === "STRIPE") {
-      accountDetails.email = formData.email
-    } else if (methodType === "VENMO" || methodType === "CASHAPP" || methodType === "ZELLE") {
-      accountDetails.phone = formData.phone
-      accountDetails.email = formData.email
+    if (value === "BANK_TRANSFER") {
+      form.setValue("accountDetails", {
+        methodType: "BANK_TRANSFER",
+        details: {
+          accountHolderName: "",
+          accountNumber: "",
+          bankCode: "",
+          bankName: "",
+        },
+      });
+    } else if (value === "MOBILE_MONEY") {
+      form.setValue("accountDetails", {
+        methodType: "MOBILE_MONEY",
+        details: {
+          phoneNumber: "",
+          provider: "MTN",
+          accountHolderName: "",
+        },
+      });
     }
+  };
 
-    createMutation.mutate({
-      methodType,
-      accountDetails,
-      isPreferred,
-    })
-  }
+  useEffect(() => {
+    if (firebaseUser?.email) {
+      // Pre-fill account holder name if available from user profile
+      const defaultAccountHolder = firebaseUser.displayName || "";
+      if (selectedMethod === "BANK_TRANSFER") {
+        form.setValue("accountDetails", {
+          methodType: "BANK_TRANSFER",
+          details: {
+            accountHolderName: defaultAccountHolder,
+            accountNumber: "",
+            bankCode: "",
+            bankName: "",
+          },
+        });
+      }
+    }
+  }, [firebaseUser, form, selectedMethod]);
 
   return (
     <DialogContent className="sm:max-w-[500px]">
-      <form onSubmit={handleSubmit}>
-        <DialogHeader>
-          <DialogTitle>Add Payment Method</DialogTitle>
-          <DialogDescription>
-            Add a new payment method to receive earnings from your comparables
-          </DialogDescription>
-        </DialogHeader>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)}>
+          <DialogHeader>
+            <DialogTitle>Add Payout Method</DialogTitle>
+            <DialogDescription>
+              Add a new payout method to receive earnings from your comparables
+            </DialogDescription>
+          </DialogHeader>
 
-        <div className="space-y-4 py-4">
-          {/* Payment Method Type */}
-          <div className="space-y-2">
-            <Label htmlFor="methodType">Payment Method Type</Label>
-            <Select value={methodType} onValueChange={(value) => setMethodType(value as PaymentMethodType)}>
-              <SelectTrigger id="methodType" className="w-full">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="PAYPAL">PayPal</SelectItem>
-                <SelectItem value="BANK_ACCOUNT">Bank Account</SelectItem>
-                <SelectItem value="STRIPE">Stripe</SelectItem>
-                <SelectItem value="VENMO">Venmo</SelectItem>
-                <SelectItem value="CASHAPP">Cash App</SelectItem>
-                <SelectItem value="ZELLE">Zelle</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          {/* Dynamic Fields Based on Type */}
-          {(methodType === "PAYPAL" || methodType === "STRIPE") && (
-            <div className="space-y-2">
-              <Label htmlFor="email">Email Address</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="your@email.com"
-                value={formData.email}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                required
-              />
-            </div>
-          )}
-
-          {(methodType === "VENMO" || methodType === "CASHAPP" || methodType === "ZELLE") && (
-            <>
-              <div className="space-y-2">
-                <Label htmlFor="phone">Phone Number</Label>
-                <Input
-                  id="phone"
-                  type="tel"
-                  placeholder="+1234567890"
-                  value={formData.phone}
-                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                  required
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="email-alt">Email (Optional)</Label>
-                <Input
-                  id="email-alt"
-                  type="email"
-                  placeholder="your@email.com"
-                  value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                />
-              </div>
-            </>
-          )}
-
-          {methodType === "BANK_ACCOUNT" && (
-            <>
-              <div className="space-y-2">
-                <Label htmlFor="accountHolderName">Account Holder Name</Label>
-                <Input
-                  id="accountHolderName"
-                  placeholder="John Doe"
-                  value={formData.accountHolderName}
-                  onChange={(e) => setFormData({ ...formData, accountHolderName: e.target.value })}
-                  required
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="accountNumber">Account Number (Last 4 digits)</Label>
-                <Input
-                  id="accountNumber"
-                  placeholder="1234"
-                  maxLength={4}
-                  value={formData.accountNumber}
-                  onChange={(e) => setFormData({ ...formData, accountNumber: e.target.value })}
-                  required
-                />
-                <p className="text-xs text-muted-foreground">Only enter the last 4 digits for security</p>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="routingNumber">Routing Number</Label>
-                <Input
-                  id="routingNumber"
-                  placeholder="123456789"
-                  maxLength={9}
-                  value={formData.routingNumber}
-                  onChange={(e) => setFormData({ ...formData, routingNumber: e.target.value })}
-                  required
-                />
-              </div>
-            </>
-          )}
-
-          {/* Set as Preferred */}
-          <div className="flex items-center space-x-2">
-            <input
-              type="checkbox"
-              id="isPreferred"
-              checked={isPreferred}
-              onChange={(e) => setIsPreferred(e.target.checked)}
-              className="h-4 w-4 rounded border-gray-300"
+          <div className="space-y-4 py-4">
+            {/* Payment Method Type */}
+            <FormField
+              control={form.control}
+              name="methodType"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Method Type</FormLabel>
+                  <Select
+                    value={field.value}
+                    onValueChange={handleMethodTypeChange}
+                  >
+                    <FormControl>
+                      <SelectTrigger className="w-full">
+                        <SelectValue />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="BANK_TRANSFER">
+                        Bank Transfer
+                      </SelectItem>
+                      <SelectItem value="MOBILE_MONEY">
+                        Mobile Money
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-            <Label htmlFor="isPreferred" className="text-sm font-normal">
-              Set as preferred payment method
-            </Label>
-          </div>
-        </div>
 
-        <DialogFooter>
-          <Button type="button" variant="outline" onClick={onClose}>
-            Cancel
-          </Button>
-          <Button type="submit" disabled={createMutation.isPending}>
-            {createMutation.isPending ? (
+            {/* Bank Transfer Fields */}
+            {selectedMethod === "BANK_TRANSFER" && (
               <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Adding...
+                <FormField
+                  control={form.control}
+                  name="accountDetails"
+                  render={({ field }) => {
+                    const details = (
+                      field.value as {
+                        methodType: "BANK_TRANSFER";
+                        details: BankAccountDetails;
+                      }
+                    )?.details;
+
+                    return (
+                      <FormItem>
+                        <FormLabel>Account Holder Name</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="John Doe"
+                            value={details?.accountHolderName || ""}
+                            onChange={(e) => {
+                              field.onChange({
+                                methodType: "BANK_TRANSFER",
+                                details: {
+                                  ...details,
+                                  accountHolderName: e.target.value,
+                                },
+                              });
+                            }}
+                          />
+                        </FormControl>
+                        <FormMessage>
+                          {form.formState.errors.accountDetails?.message}
+                        </FormMessage>
+                      </FormItem>
+                    );
+                  }}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="accountDetails"
+                  render={({ field }) => {
+                    const details = (
+                      field.value as {
+                        methodType: "BANK_TRANSFER";
+                        details: BankAccountDetails;
+                      }
+                    )?.details;
+
+                    return (
+                      <FormItem>
+                        <FormLabel>Account Number</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="1234567890"
+                            value={details?.accountNumber || ""}
+                            onChange={(e) => {
+                              field.onChange({
+                                methodType: "BANK_TRANSFER",
+                                details: {
+                                  ...details,
+                                  accountNumber: e.target.value,
+                                },
+                              });
+                            }}
+                          />
+                        </FormControl>
+                        <FormMessage>
+                          {form.formState.errors.accountDetails?.message}
+                        </FormMessage>
+                      </FormItem>
+                    );
+                  }}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="accountDetails"
+                  render={({ field }) => {
+                    const details = (
+                      field.value as {
+                        methodType: "BANK_TRANSFER";
+                        details: BankAccountDetails;
+                      }
+                    )?.details;
+
+                    return (
+                      <FormItem>
+                        <FormLabel>Bank Code</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="GTBank (058)"
+                            value={details?.bankCode || ""}
+                            onChange={(e) => {
+                              field.onChange({
+                                methodType: "BANK_TRANSFER",
+                                details: {
+                                  ...details,
+                                  bankCode: e.target.value,
+                                },
+                              });
+                            }}
+                          />
+                        </FormControl>
+                        <FormMessage>
+                          {form.formState.errors.accountDetails?.message}
+                        </FormMessage>
+                      </FormItem>
+                    );
+                  }}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="accountDetails"
+                  render={({ field }) => {
+                    const details = (
+                      field.value as {
+                        methodType: "BANK_TRANSFER";
+                        details: BankAccountDetails;
+                      }
+                    )?.details;
+
+                    return (
+                      <FormItem>
+                        <FormLabel>Bank Name</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="Guaranty Trust Bank"
+                            value={details?.bankName || ""}
+                            onChange={(e) => {
+                              field.onChange({
+                                methodType: "BANK_TRANSFER",
+                                details: {
+                                  ...details,
+                                  bankName: e.target.value,
+                                },
+                              });
+                            }}
+                          />
+                        </FormControl>
+                        <FormMessage>
+                          {form.formState.errors.accountDetails?.message}
+                        </FormMessage>
+                      </FormItem>
+                    );
+                  }}
+                />
               </>
-            ) : (
-              "Add Payment Method"
             )}
-          </Button>
-        </DialogFooter>
-      </form>
+
+            {/* Mobile Money Fields */}
+            {selectedMethod === "MOBILE_MONEY" && (
+              <>
+                <FormField
+                  control={form.control}
+                  name="accountDetails"
+                  render={({ field }) => {
+                    const details = (
+                      field.value as {
+                        methodType: "MOBILE_MONEY";
+                        details: MobileMoneyDetails;
+                      }
+                    )?.details;
+
+                    return (
+                      <FormItem>
+                        <FormLabel>Account Holder Name</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="John Doe"
+                            value={details?.accountHolderName || ""}
+                            onChange={(e) => {
+                              field.onChange({
+                                methodType: "MOBILE_MONEY",
+                                details: {
+                                  ...details,
+                                  accountHolderName: e.target.value,
+                                },
+                              });
+                            }}
+                          />
+                        </FormControl>
+                        <FormMessage>
+                          {form.formState.errors.accountDetails?.message}
+                        </FormMessage>
+                      </FormItem>
+                    );
+                  }}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="accountDetails"
+                  render={({ field }) => {
+                    const details = (
+                      field.value as {
+                        methodType: "MOBILE_MONEY";
+                        details: MobileMoneyDetails;
+                      }
+                    )?.details;
+
+                    return (
+                      <FormItem>
+                        <FormLabel>Phone Number</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="tel"
+                            placeholder="+233501234567"
+                            value={details?.phoneNumber || ""}
+                            onChange={(e) => {
+                              field.onChange({
+                                methodType: "MOBILE_MONEY",
+                                details: {
+                                  ...details,
+                                  phoneNumber: e.target.value,
+                                },
+                              });
+                            }}
+                          />
+                        </FormControl>
+                        <small className="text-muted-foreground">
+                          Include country code (e.g., +233 for Ghana)
+                        </small>
+                        <FormMessage>
+                          {form.formState.errors.accountDetails?.message}
+                        </FormMessage>
+                      </FormItem>
+                    );
+                  }}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="accountDetails"
+                  render={({ field }) => {
+                    const details = (
+                      field.value as {
+                        methodType: "MOBILE_MONEY";
+                        details: MobileMoneyDetails;
+                      }
+                    )?.details;
+
+                    return (
+                      <FormItem>
+                        <FormLabel>Mobile Money Provider</FormLabel>
+                        <Select
+                          value={details?.provider || "MTN"}
+                          onValueChange={(value) => {
+                            field.onChange({
+                              methodType: "MOBILE_MONEY",
+                              details: {
+                                ...details,
+                                provider: value as
+                                  | "MTN"
+                                  | "VODAFONE"
+                                  | "AIRTEL"
+                                  | "OTHER",
+                              },
+                            });
+                          }}
+                        >
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {MOBILE_MONEY_PROVIDERS.map((provider) => (
+                              <SelectItem key={provider} value={provider}>
+                                {provider}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage>
+                          {form.formState.errors.accountDetails?.message}
+                        </FormMessage>
+                      </FormItem>
+                    );
+                  }}
+                />
+              </>
+            )}
+
+            {/* Set as Preferred */}
+            <FormField
+              control={form.control}
+              name="isPreferred"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-center space-x-3 space-y-0">
+                  <FormControl>
+                    <input
+                      type="checkbox"
+                      checked={field.value}
+                      onChange={field.onChange}
+                      className="h-4 w-4 rounded border-gray-300"
+                    />
+                  </FormControl>
+                  <FormLabel className="text-sm font-normal cursor-pointer">
+                    Set as preferred payout method
+                  </FormLabel>
+                </FormItem>
+              )}
+            />
+          </div>
+
+          <DialogFooter>
+            <Button type="button" variant="outline" onClick={onClose}>
+              Cancel
+            </Button>
+            <Button type="submit" disabled={createMutation.isPending}>
+              {createMutation.isPending ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Adding...
+                </>
+              ) : (
+                "Add Payout Method"
+              )}
+            </Button>
+          </DialogFooter>
+        </form>
+      </Form>
     </DialogContent>
-  )
+  );
 }
 
 function PaymentMethodsLoading() {
@@ -541,5 +862,22 @@ function PaymentMethodsLoading() {
         </Card>
       ))}
     </div>
-  )
+  );
+}
+
+/**
+ * Helper function to display payment method details
+ */
+function getDisplayDetails(method: PaymentMethod): string {
+  const details = method.accountDetails;
+
+  if (method.methodType === "BANK_TRANSFER") {
+    return `${details.details.bankName} - ••••${details.details.accountNumber?.slice(-4) || ""}`;
+  }
+
+  if (method.methodType === "MOBILE_MONEY") {
+    return `${details.details.provider} - ${details.details.phoneNumber}`;
+  }
+
+  return "Payment method";
 }

@@ -4,6 +4,9 @@ export * from "./listing-image.model";
 export * from "./comment.model";
 export * from "./review.model";
 export * from "./review-comment.model";
-export * from './favorite.model';
-export * from './user-preferences.model';
-export * from './payment-methods.model';
+export * from "./favorite.model";
+export * from "./user-preferences.model";
+export * from "./payment-methods.model";
+export * from "./payment-log.model";
+export * from "./purchase.model";
+export * from './payouts.model'

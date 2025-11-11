@@ -4,6 +4,7 @@ import {
   Archive,
   CheckCircle,
   Copy,
+  DollarSign,
   Edit,
   Eye,
   MoreVertical,
@@ -19,6 +20,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import type { Listing } from "@/lib/api/listings";
+import { useShowSetPriceModalStore } from "./hooks";
 
 interface ListingActionsDropdownProps {
   listing: Listing;
@@ -43,14 +45,22 @@ export function ListingActionsDropdown({
   onUnarchive,
   onDuplicate,
 }: ListingActionsDropdownProps) {
+  const { setIsOpen, setListing } = useShowSetPriceModalStore();
   const { id, status } = listing;
+  console.log("listing", listing);
+  const priceSet = !!listing?.comparablePrice;
 
-  const handleAction = (
-    e: React.MouseEvent,
-    action: (id: string) => void,
-  ) => {
+  console.log("price is not set", priceSet);
+
+  const handleAction = (e: React.MouseEvent, action: (id: string) => void) => {
     e.stopPropagation();
     action(id);
+  };
+
+  const handleSetPrice = () => {
+    setIsOpen(true);
+    setListing(listing);
+    return;
   };
 
   return (
@@ -85,6 +95,11 @@ export function ListingActionsDropdown({
             Duplicate
           </DropdownMenuItem>
         )}
+
+        <DropdownMenuItem onClick={handleSetPrice}>
+          <DollarSign className="h-4 w-4 mr-2" />
+          {priceSet ? "Update Price" : "Set Price"}
+        </DropdownMenuItem>
 
         <DropdownMenuSeparator />
 

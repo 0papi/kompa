@@ -20,6 +20,7 @@ import {
   MessageSquare,
   Star,
   Loader2,
+  Wallet,
 } from "lucide-react";
 import { ListingActionsDropdown } from "@/components/listings";
 import { ListingImageGallery } from "@/components/listings/listing-image-gallery";
@@ -34,6 +35,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import ComparablePriceModal from "@/components/listings/ComparablePriceModal";
 
 export default function ListingDetailsPage() {
   const params = useParams();
@@ -42,7 +44,11 @@ export default function ListingDetailsPage() {
   const listingId = params.id as string;
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
-  const { data: response, isLoading, error } = useQuery({
+  const {
+    data: response,
+    isLoading,
+    error,
+  } = useQuery({
     queryKey: ["listing", listingId],
     queryFn: () => listingsApi.getById(listingId),
   });
@@ -90,7 +96,8 @@ export default function ListingDetailsPage() {
         status: "DRAFT" as const,
       };
       // Remove fields that shouldn't be copied
-      const { id, userId, createdAt, updatedAt, deletedAt, ...dataToCreate } = duplicateData;
+      const { id, userId, createdAt, updatedAt, deletedAt, ...dataToCreate } =
+        duplicateData;
       return listingsApi.create(dataToCreate as any);
     },
     onSuccess: (response) => {
@@ -275,9 +282,7 @@ export default function ListingDetailsPage() {
               <DetailRow
                 label="Lot Size"
                 value={
-                  listing.lotSize
-                    ? `${listing.lotSize} acres`
-                    : "Not specified"
+                  listing.lotSize ? `${listing.lotSize} acres` : "Not specified"
                 }
               />
               <DetailRow
@@ -380,18 +385,32 @@ export default function ListingDetailsPage() {
           {/* Price Card */}
           <div className="rounded-lg border bg-card p-6">
             <div className="flex items-center gap-2 text-muted-foreground mb-2">
-              <DollarSign className="h-4 w-4" />
+              <Wallet className="h-4 w-4" />
               <span className="text-sm">Listing Price</span>
             </div>
             <div className="text-3xl font-bold mb-1">
-              ${parseFloat(listing.price).toLocaleString()}
+              GH₵ {parseFloat(listing.price).toLocaleString()}
             </div>
             {listing.pricePerSquareFoot && (
               <div className="text-sm text-muted-foreground">
-                ${parseFloat(listing.pricePerSquareFoot).toLocaleString()} per
-                sq ft
+                GH₵ {parseFloat(listing.pricePerSquareFoot).toLocaleString()}{" "}
+                per sq ft
               </div>
             )}
+
+            <Separator className="my-2" />
+
+            <div>
+              <div className="flex items-center gap-2 text-muted-foreground mb-2">
+                <Wallet className="h-4 w-4" />
+                <span className="text-sm">Comparable Price</span>
+              </div>
+              <div className="text-3xl font-bold mb-1">
+                GH₵{" "}
+                {parseFloat(listing.comparablePrice).toLocaleString() ??
+                  "Unset"}
+              </div>
+            </div>
           </div>
 
           {/* Quick Stats */}
@@ -503,7 +522,8 @@ export default function ListingDetailsPage() {
           <DialogHeader>
             <DialogTitle>Are you sure?</DialogTitle>
             <DialogDescription>
-              This will permanently delete this listing. This action cannot be undone.
+              This will permanently delete this listing. This action cannot be
+              undone.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
@@ -524,6 +544,8 @@ export default function ListingDetailsPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <ComparablePriceModal />
     </div>
   );
 }

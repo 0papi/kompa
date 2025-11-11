@@ -1,0 +1,1 @@
+ALTER TYPE "public"."payment_method_types" ADD VALUE 'PAYSTACK';

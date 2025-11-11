@@ -1,0 +1,1 @@
+ALTER TABLE "listings" ALTER COLUMN "comparablePrice" DROP NOT NULL;

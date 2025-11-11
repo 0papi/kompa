@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { PaymentMethodsController } from "@/controllers/payment-methods.controller";
 import { validateRequest } from "zod-express-middleware";
-import { createPaymentMethodSchema, updatePaymentMethodSchema } from "@/schemas/payment-methods.schema";
+import { createPayoutMethodSchema, updatePayoutMethodSchema } from "@/schemas/payment-methods.schema";
 import { authenticateUser } from "@/middleware/auth";
 
 const router: ReturnType<typeof Router> = Router();
@@ -25,7 +25,7 @@ router.get(
 // POST /users/payment-methods - Create a new payment method
 router.post(
   "/",
-  validateRequest({ body: createPaymentMethodSchema }),
+  validateRequest({ body: createPayoutMethodSchema }),
   paymentMethodsController.createPaymentMethod,
 );
 
@@ -38,7 +38,7 @@ router.get(
 // PATCH /users/payment-methods/:id - Update a payment method
 router.patch(
   "/:id",
-  validateRequest({ body: updatePaymentMethodSchema }),
+  validateRequest({ body: updatePayoutMethodSchema }),
   paymentMethodsController.updatePaymentMethod,
 );
 

@@ -79,7 +79,7 @@ export function DashboardHeader() {
     try {
       setIsSigningOut(true);
       await signOut(auth);
-      localStorage.removeItem(DISMISSAL_KEY)
+      localStorage.removeItem(DISMISSAL_KEY);
       toast.success("Signed out successfully");
       router.push("/login");
     } catch (error) {
@@ -91,10 +91,9 @@ export function DashboardHeader() {
     }
   };
 
-
   const userInitials = getInitials(
     user?.displayName || null,
-    user?.email || null
+    user?.email || null,
   );
   const userName = user?.displayName || user?.email?.split("@")[0] || "User";
   const userEmail = user?.email || "";
@@ -119,7 +118,12 @@ export function DashboardHeader() {
 
               {/* Desktop Navigation */}
               <nav className="hidden md:flex items-center gap-1 ml-6">
-                <Button variant="ghost" size="sm" className="gap-2 text-sm" onClick={() => router.push('/dashboard')}>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="gap-2 cursor-pointer text-sm"
+                  onClick={() => router.push("/dashboard")}
+                >
                   <LayoutDashboard className="h-4 w-4 text-muted-foreground" />
                   Overview
                 </Button>
@@ -129,11 +133,11 @@ export function DashboardHeader() {
                   const id = `${link.label}+${link.href}`;
                   return (
                     <Button
-                    key={id}
+                      key={id}
                       id={id}
                       variant="ghost"
                       size="sm"
-                      className="gap-2 "
+                      className="gap-2 cursor-pointer"
                       onClick={() => router.push(link.href as any)}
                     >
                       <Icon className="h-4 w-4 text-muted-foreground" />
@@ -145,13 +149,21 @@ export function DashboardHeader() {
             </div>
 
             <div className="flex items-center gap-2">
-              <Link href={"/marketplace"} className="flex items-center gap-x-2 border rounded-md px-3 py-1.5 text-sm md:px-4" target="_blank">
+              <Link
+                href={"/marketplace"}
+                className="flex items-center gap-x-2 border rounded-md px-3 py-1.5 text-sm md:px-4"
+                target="_blank"
+              >
                 <span className="hidden sm:inline">Marketplace</span>
                 <ExternalLink className="h-4 w-4 text-muted-foreground" />
               </Link>
               <ThemeToggle />
 
-              <Button variant="ghost" size="icon" className="relative hidden md:flex">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="relative hidden md:flex"
+              >
                 <Bell className="h-5 w-5 text-muted-foreground" />
                 <span className="absolute top-1 right-1 h-2 w-2 rounded-full bg-accent" />
                 <span className="sr-only">Notifications</span>
@@ -199,11 +211,21 @@ export function DashboardHeader() {
                       </Badge>
                     )}
                   </DropdownMenuItem>
-                  <DropdownMenuItem className="cursor-pointer" onClick={() => router.push('/dashboard/settings?tab=profile')}>
+                  <DropdownMenuItem
+                    className="cursor-pointer"
+                    onClick={() =>
+                      router.push("/dashboard/settings?tab=profile")
+                    }
+                  >
                     <User className="mr-2 h-4 w-4 text-muted-foreground" />
                     <span>Profile</span>
                   </DropdownMenuItem>
-                  <DropdownMenuItem className="cursor-pointer" onClick={() => router.push('/dashboard/settings?tab=profile')}>
+                  <DropdownMenuItem
+                    className="cursor-pointer"
+                    onClick={() =>
+                      router.push("/dashboard/settings?tab=profile")
+                    }
+                  >
                     <Settings className="mr-2 h-4 w-4 text-muted-foreground" />
                     <span>Settings</span>
                   </DropdownMenuItem>

@@ -1,7 +1,7 @@
 import { Response } from "express";
 import { PaymentMethodsService } from "@/services/payment-methods.service";
 import { UserService } from "@/services/user.service";
-import { CreatePaymentMethodType, UpdatePaymentMethodType } from "@/schemas/payment-methods.schema";
+import {CreatePayoutMethodType, UpdatePayoutMethodType } from "@/schemas/payment-methods.schema";
 import { logger } from "@/config/logger";
 import { failure, success } from "@/utils/api-response";
 import type { AuthenticatedRequest } from "@/types/index";
@@ -73,7 +73,7 @@ export class PaymentMethodsController {
   createPaymentMethod = async (req: AuthenticatedRequest, res: Response) => {
     try {
       const userId = res.locals.uid;
-      const payload = req.body as CreatePaymentMethodType;
+      const payload = req.body as CreatePayoutMethodType;
 
       if (!userId) {
         return res.status(401).json(failure("User not authenticated"));
@@ -109,7 +109,7 @@ export class PaymentMethodsController {
     try {
       const userId = res.locals.uid;
       const { id } = req.params;
-      const payload = req.body as UpdatePaymentMethodType;
+      const payload = req.body as UpdatePayoutMethodType;
 
       if (!userId) {
         return res.status(401).json(failure("User not authenticated"));

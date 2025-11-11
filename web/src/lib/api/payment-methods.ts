@@ -1,6 +1,8 @@
 import apiClient from "@/lib/apiClient";
 
-export type PaymentMethodType = "BANK_ACCOUNT" | "PAYPAL" | "STRIPE" | "VENMO" | "CASHAPP" | "ZELLE";
+export type PaymentMethodType =
+  | "BANK_TRANSFER"
+  | "MOBILE_MONEY"
 
 export interface AccountDetails {
   accountHolderName?: string;
@@ -42,32 +44,53 @@ export interface ApiResponse<T> {
 
 export const paymentMethodsApi = {
   getAllPaymentMethods: async (): Promise<ApiResponse<PaymentMethod[]>> => {
-    const response = await apiClient.get<ApiResponse<PaymentMethod[]>>("/users/payment-methods");
+    const response = await apiClient.get<ApiResponse<PaymentMethod[]>>(
+      "/users/payment-methods",
+    );
     return response.data;
   },
 
   getPaymentMethod: async (id: string): Promise<ApiResponse<PaymentMethod>> => {
-    const response = await apiClient.get<ApiResponse<PaymentMethod>>(`/users/payment-methods/${id}`);
+    const response = await apiClient.get<ApiResponse<PaymentMethod>>(
+      `/users/payment-methods/${id}`,
+    );
     return response.data;
   },
 
   getPreferredPaymentMethod: async (): Promise<ApiResponse<PaymentMethod>> => {
-    const response = await apiClient.get<ApiResponse<PaymentMethod>>("/users/payment-methods/preferred");
+    const response = await apiClient.get<ApiResponse<PaymentMethod>>(
+      "/users/payment-methods/preferred",
+    );
     return response.data;
   },
 
-  createPaymentMethod: async (data: CreatePaymentMethodData): Promise<ApiResponse<PaymentMethod>> => {
-    const response = await apiClient.post<ApiResponse<PaymentMethod>>("/users/payment-methods", data);
+  createPaymentMethod: async (
+    data: CreatePaymentMethodData,
+  ): Promise<ApiResponse<PaymentMethod>> => {
+    const response = await apiClient.post<ApiResponse<PaymentMethod>>(
+      "/users/payment-methods",
+      data,
+    );
     return response.data;
   },
 
-  updatePaymentMethod: async (id: string, data: UpdatePaymentMethodData): Promise<ApiResponse<PaymentMethod>> => {
-    const response = await apiClient.patch<ApiResponse<PaymentMethod>>(`/users/payment-methods/${id}`, data);
+  updatePaymentMethod: async (
+    id: string,
+    data: UpdatePaymentMethodData,
+  ): Promise<ApiResponse<PaymentMethod>> => {
+    const response = await apiClient.patch<ApiResponse<PaymentMethod>>(
+      `/users/payment-methods/${id}`,
+      data,
+    );
     return response.data;
   },
 
-  deletePaymentMethod: async (id: string): Promise<ApiResponse<{ message: string }>> => {
-    const response = await apiClient.delete<ApiResponse<{ message: string }>>(`/users/payment-methods/${id}`);
+  deletePaymentMethod: async (
+    id: string,
+  ): Promise<ApiResponse<{ message: string }>> => {
+    const response = await apiClient.delete<ApiResponse<{ message: string }>>(
+      `/users/payment-methods/${id}`,
+    );
     return response.data;
   },
 };

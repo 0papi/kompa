@@ -33,7 +33,7 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
     <div className="min-h-screen flex flex-col">
       <DashboardHeader />
       <EmailVerificationBanner />
-      <main className="flex-1 overflow-y-auto bg-background/90 custom-scrollbar pb-20 md:pb-0">
+      <main className="flex-1 overflow-y-auto dark:bg-background/90 bg-gray-50 custom-scrollbar pb-20 md:pb-0">
         <div className="container mx-auto p-6 md:p-8 lg:p-10 custom-scrollbar">
           {children}
         </div>

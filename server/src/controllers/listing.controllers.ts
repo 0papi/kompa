@@ -258,7 +258,7 @@ export class ListingController {
 
       return res
         .status(200)
-        .json(success(updatedListing, "Listing status updated successfully"));
+        .json(success(updatedListing));
     } catch (error: any) {
       logger.error("Updating listing status failed", error);
       return res.status(400).json(failure(error.message));

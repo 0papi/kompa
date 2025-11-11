@@ -64,9 +64,7 @@ function LockedSection({
       <h2 className="text-base font-semibold mb-4">{title}</h2>
 
       {/* Blurred Content */}
-      <div className="blur-md select-none pointer-events-none">
-        {children}
-      </div>
+      <div className="blur-md select-none pointer-events-none">{children}</div>
 
       {/* Overlay */}
       <div className="absolute inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center">
@@ -105,11 +103,7 @@ export function MarketplaceListingDetail({
     queryFn: () => listingsApi.getById(listingId),
   });
 
-
-  const {
-    data: bookmarkResponse,
-    isLoading: isCheckingBookmark,
-  } = useQuery({
+  const { data: bookmarkResponse, isLoading: isCheckingBookmark } = useQuery({
     queryKey: ["bookmark-check", listingId],
     queryFn: () => favoritesApi.checkBookmark(listingId),
     enabled: !!user && !!listingId,
@@ -122,8 +116,13 @@ export function MarketplaceListingDetail({
     mutationFn: () => favoritesApi.toggleBookmark(listingId),
     onMutate: async () => {
       // Optimistic update
-      await queryClient.cancelQueries({ queryKey: ["bookmark-check", listingId] });
-      const previousBookmark = queryClient.getQueryData(["bookmark-check", listingId]);
+      await queryClient.cancelQueries({
+        queryKey: ["bookmark-check", listingId],
+      });
+      const previousBookmark = queryClient.getQueryData([
+        "bookmark-check",
+        listingId,
+      ]);
 
       queryClient.setQueryData(["bookmark-check", listingId], (old: any) => ({
         ...old,
@@ -135,7 +134,10 @@ export function MarketplaceListingDetail({
     onError: (_error, _variables, context) => {
       // Revert on error
       if (context?.previousBookmark) {
-        queryClient.setQueryData(["bookmark-check", listingId], context.previousBookmark);
+        queryClient.setQueryData(
+          ["bookmark-check", listingId],
+          context.previousBookmark,
+        );
       }
       toast.error("Failed to update bookmark");
     },
@@ -145,7 +147,9 @@ export function MarketplaceListingDetail({
       queryClient.invalidateQueries({ queryKey: ["user-bookmarks"] });
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["bookmark-check", listingId] });
+      queryClient.invalidateQueries({
+        queryKey: ["bookmark-check", listingId],
+      });
     },
   });
 
@@ -273,7 +277,6 @@ export function MarketplaceListingDetail({
             </div>
           </div>
 
-
           {/* Property Details */}
           <div className="rounded-lg border bg-card p-6">
             <h2 className="text-base font-semibold mb-4">Property Details</h2>
@@ -304,7 +307,6 @@ export function MarketplaceListingDetail({
             </div>
           </div>
 
-          
           {/* Description */}
           <div className="rounded-lg border bg-card p-6">
             <h2 className="text-base font-semibold mb-4">Description</h2>
@@ -404,7 +406,9 @@ export function MarketplaceListingDetail({
             <div className="pt-2 border-t">
               <div className="flex items-center justify-between mb-3">
                 <span className="text-sm text-muted-foreground">Price</span>
-                <span className="text-2xl font-bold">$49</span>
+                <span className="text-2xl font-bold">
+                  GH₵ {listing?.comparablePrice}
+                </span>
               </div>
               <Button className="w-full mb-3 gap-x-2" size="lg">
                 <Wallet className="h-4 w-4" />
@@ -419,9 +423,7 @@ export function MarketplaceListingDetail({
                 {toggleBookmarkMutation.isPending ? (
                   <Loader2 className="h-4 w-4 animate-spin" />
                 ) : (
-                  <Bookmark
-                    className={isBookmarked ? "fill-current" : ""}
-                  />
+                  <Bookmark className={isBookmarked ? "fill-current" : ""} />
                 )}
                 {isBookmarked ? "Saved" : "Save For Later"}
               </Button>
@@ -506,7 +508,10 @@ export function MarketplaceListingDetail({
             </LockedSection>
           )}
 
-          <CommentsSection listingId={listingId} listingOwnerId={listing.userId} />
+          <CommentsSection
+            listingId={listingId}
+            listingOwnerId={listing.userId}
+          />
         </motion.div>
       </div>
 

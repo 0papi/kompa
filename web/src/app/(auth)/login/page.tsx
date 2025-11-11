@@ -50,6 +50,8 @@ export default function Login() {
     try {
       const user = await signInWithEmailAndPassword(email, password);
 
+      console.log('user error', user)
+
       if (!user) {
         throw new Error("Invalid email or password");
       }

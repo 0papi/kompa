@@ -1,6 +1,7 @@
 "use client";
 
 import { ListingsHeader, ListingsTable } from "@/components/listings";
+import ComparablePriceModal from "@/components/listings/ComparablePriceModal";
 import { Separator } from "@/components/ui/separator";
 import { useRouter } from "next/navigation";
 
@@ -14,6 +15,7 @@ export default function Page() {
       />
       <Separator />
       <ListingsTable />
+      <ComparablePriceModal />
     </div>
   );
 }

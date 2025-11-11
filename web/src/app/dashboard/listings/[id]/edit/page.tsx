@@ -9,7 +9,6 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { listingsApi, type Listing } from "@/lib/api/listings";
 import { toast } from "sonner";
 
-
 export default function EditListingPage() {
   const router = useRouter();
   const params = useParams();
@@ -32,11 +31,10 @@ export default function EditListingPage() {
 
   // Update mutation
   const updateListingMutation = useMutation({
-    mutationFn: (data: ListingFormData) =>
-      listingsApi.update(listingId, data),
+    mutationFn: (data: ListingFormData) => listingsApi.update(listingId, data),
     onSuccess: (response) => {
       toast.success("Listing updated successfully!");
-      // Invalidate relevant queries
+
       queryClient.invalidateQueries({ queryKey: ["listing", listingId] });
       queryClient.invalidateQueries({ queryKey: ["listings"] });
       router.push("/dashboard/listings");
@@ -55,7 +53,6 @@ export default function EditListingPage() {
   const handleCancel = () => {
     router.back();
   };
-
 
   // Loading state
   if (isLoading) {
@@ -95,7 +92,9 @@ export default function EditListingPage() {
     propertyCategory: listing.propertyCategory,
     propertyType: listing.propertyType,
     price: Number(listing.price),
-    pricePerSquareFoot: listing.pricePerSquareFoot ? Number(listing.pricePerSquareFoot) : undefined,
+    pricePerSquareFoot: listing.pricePerSquareFoot
+      ? Number(listing.pricePerSquareFoot)
+      : undefined,
     bedrooms: listing.bedrooms,
     bathrooms: Number(listing.bathrooms),
     squareFeet: listing.squareFeet,
@@ -106,9 +105,17 @@ export default function EditListingPage() {
     parkingSpaces: listing.parkingSpaces || undefined,
     condition: listing.condition,
     hoaFees: listing.hoaFees ? Number(listing.hoaFees) : undefined,
-    propertyTaxes: listing.propertyTaxes ? Number(listing.propertyTaxes) : undefined,
-    annualInsurance: listing.annualInsurance ? Number(listing.annualInsurance) : undefined,
-    valuationMethod: listing.valuationMethod as "SALES_COMPARISON" | "COST_APPROACH" | "INCOME_APPROACH" | "MIXED",
+    propertyTaxes: listing.propertyTaxes
+      ? Number(listing.propertyTaxes)
+      : undefined,
+    annualInsurance: listing.annualInsurance
+      ? Number(listing.annualInsurance)
+      : undefined,
+    valuationMethod: listing.valuationMethod as
+      | "SALES_COMPARISON"
+      | "COST_APPROACH"
+      | "INCOME_APPROACH"
+      | "MIXED",
     listDate: listing.listDate
       ? new Date(listing.listDate).toISOString().split("T")[0]
       : undefined,

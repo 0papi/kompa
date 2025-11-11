@@ -15,6 +15,48 @@
       "when": 1761892782506,
       "tag": "0001_many_fantastic_four",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1762161836748,
+      "tag": "0002_premium_nightmare",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1762161891589,
+      "tag": "0003_slim_hulk",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1762848811904,
+      "tag": "0004_tense_doctor_strange",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1762855298420,
+      "tag": "0005_colossal_lilith",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1762893591489,
+      "tag": "0006_white_celestials",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1762895488711,
+      "tag": "0007_lucky_praxagora",
+      "breakpoints": true
     }
   ]
 }

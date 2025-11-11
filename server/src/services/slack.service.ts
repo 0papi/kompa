@@ -339,6 +339,332 @@ class SlackService {
 
     await this.log(level, "API Performance Alert", `Slow or failed request detected`, fields);
   }
+
+
+  /**
+ * ============= PURCHASE LOGGING =============
+ */
+
+/**
+ * Log purchase initiated by buyer
+ */
+async logPurchaseInitiated(
+  buyerId: string,
+  listingId: string,
+  listingTitle: string,
+  sellerId: string,
+  buyerEmail: string,
+  amount: number,
+  currency: string,
+  reference: string
+): Promise<void> {
+  const fields: SlackField[] = [
+    { title: "Buyer ID", value: buyerId, short: true },
+    { title: "Seller ID", value: sellerId, short: true },
+    { title: "Listing ID", value: listingId, short: true },
+    { title: "Listing Title", value: listingTitle, short: false },
+    { title: "Buyer Email", value: buyerEmail, short: true },
+    { title: "Amount", value: `${amount} ${currency}`, short: true },
+    { title: "Reference", value: reference, short: false },
+  ];
+
+  await this.log(
+    SlackLogLevel.INFO,
+    "Purchase Initiated",
+    `Buyer ${buyerEmail} initiated purchase of "${listingTitle}"`,
+    fields
+  );
+}
+
+/**
+ * Log purchase record created in database
+ */
+async logPurchaseCreated(
+  purchaseId: string,
+  buyerId: string,
+  sellerId: string,
+  listingId: string,
+  listingTitle: string,
+  reference: string,
+  buyerEmail: string,
+  amount: number,
+  currency: string
+): Promise<void> {
+  const fields: SlackField[] = [
+    { title: "Purchase ID", value: purchaseId, short: true },
+    { title: "Buyer ID", value: buyerId, short: true },
+    { title: "Seller ID", value: sellerId, short: true },
+    { title: "Listing ID", value: listingId, short: true },
+    { title: "Listing Title", value: listingTitle, short: false },
+    { title: "Reference", value: reference, short: false },
+    { title: "Buyer Email", value: buyerEmail, short: true },
+    { title: "Amount", value: `${amount} ${currency}`, short: true },
+  ];
+
+  await this.log(
+    SlackLogLevel.SUCCESS,
+    "Purchase Record Created",
+    `Purchase record created for listing "${listingTitle}"`,
+    fields
+  );
+}
+
+/**
+ * Log purchase verified/payment successful
+ */
+async logPurchaseVerified(
+  purchaseId: string,
+  buyerId: string,
+  sellerId: string,
+  listingId: string,
+  listingTitle: string,
+  reference: string,
+  buyerEmail: string,
+  amount: number,
+  currency: string,
+  paymentMethod?: string,
+  authorizationCode?: string
+): Promise<void> {
+  const fields: SlackField[] = [
+    { title: "Purchase ID", value: purchaseId, short: true },
+    { title: "Buyer ID", value: buyerId, short: true },
+    { title: "Seller ID", value: sellerId, short: true },
+    { title: "Listing ID", value: listingId, short: true },
+    { title: "Listing Title", value: listingTitle, short: false },
+    { title: "Reference", value: reference, short: false },
+    { title: "Buyer Email", value: buyerEmail, short: true },
+    { title: "Amount", value: `${amount} ${currency}`, short: true },
+  ];
+
+  if (paymentMethod) {
+    fields.push({ title: "Payment Method", value: paymentMethod, short: true });
+  }
+
+  if (authorizationCode) {
+    fields.push({
+      title: "Authorization Code",
+      value: authorizationCode,
+      short: true,
+    });
+  }
+
+  await this.log(
+    SlackLogLevel.SUCCESS,
+    "Purchase Verified",
+    `Payment verified for purchase of "${listingTitle}"`,
+    fields
+  );
+}
+
+/**
+ * Log purchase failed
+ */
+async logPurchaseFailed(
+  buyerId: string,
+  listingId: string,
+  listingTitle: string,
+  reference: string,
+  buyerEmail: string,
+  amount: number,
+  currency: string,
+  reason: string,
+  errorDetails?: Record<string, any>
+): Promise<void> {
+  const fields: SlackField[] = [
+    { title: "Buyer ID", value: buyerId, short: true },
+    { title: "Listing ID", value: listingId, short: true },
+    { title: "Listing Title", value: listingTitle, short: false },
+    { title: "Reference", value: reference, short: false },
+    { title: "Buyer Email", value: buyerEmail, short: true },
+    { title: "Amount", value: `${amount} ${currency}`, short: true },
+    { title: "Reason", value: reason, short: false },
+  ];
+
+  if (errorDetails) {
+    fields.push({
+      title: "Error Details",
+      value: JSON.stringify(errorDetails, null, 2).substring(0, 500),
+      short: false,
+    });
+  }
+
+  await this.log(
+    SlackLogLevel.ERROR,
+    "Purchase Failed",
+    `Purchase failed for listing "${listingTitle}"`,
+    fields
+  );
+}
+
+/**
+ * ============= PAYOUT LOGGING =============
+ */
+
+/**
+ * Log payout requested by seller
+ */
+async logPayoutRequested(
+  payoutId: string,
+  sellerId: string,
+  sellerEmail: string,
+  amount: number,
+  netAmount: number,
+  currency: string,
+  platformFee: number,
+  payoutMethod: string,
+  reference: string
+): Promise<void> {
+  const fields: SlackField[] = [
+    { title: "Payout ID", value: payoutId, short: true },
+    { title: "Seller ID", value: sellerId, short: true },
+    { title: "Seller Email", value: sellerEmail, short: true },
+    { title: "Gross Amount", value: `${amount} ${currency}`, short: true },
+    { title: "Platform Fee", value: `${platformFee} ${currency}`, short: true },
+    { title: "Net Amount", value: `${netAmount} ${currency}`, short: true },
+    { title: "Payout Method", value: payoutMethod, short: true },
+    { title: "Reference", value: reference, short: false },
+  ];
+
+  await this.log(
+    SlackLogLevel.INFO,
+    "Payout Requested",
+    `Seller ${sellerEmail} requested payout of ${netAmount} ${currency}`,
+    fields
+  );
+}
+
+/**
+ * Log payout approved/processing
+ */
+async logPayoutProcessing(
+  payoutId: string,
+  sellerId: string,
+  sellerEmail: string,
+  amount: number,
+  netAmount: number,
+  currency: string,
+  payoutMethod: string,
+  approvedByAdminId: string,
+  reference: string
+): Promise<void> {
+  const fields: SlackField[] = [
+    { title: "Payout ID", value: payoutId, short: true },
+    { title: "Seller ID", value: sellerId, short: true },
+    { title: "Seller Email", value: sellerEmail, short: true },
+    { title: "Gross Amount", value: `${amount} ${currency}`, short: true },
+    { title: "Net Amount", value: `${netAmount} ${currency}`, short: true },
+    { title: "Payout Method", value: payoutMethod, short: true },
+    { title: "Approved By Admin", value: approvedByAdminId, short: true },
+    { title: "Reference", value: reference, short: false },
+  ];
+
+  await this.log(
+    SlackLogLevel.SUCCESS,
+    "Payout Processing",
+    `Payout of ${netAmount} ${currency} to seller ${sellerEmail} is being processed`,
+    fields
+  );
+}
+
+/**
+ * Log payout completed
+ */
+async logPayoutCompleted(
+  payoutId: string,
+  sellerId: string,
+  sellerEmail: string,
+  netAmount: number,
+  currency: string,
+  payoutMethod: string,
+  reference: string,
+  linkedPurchaseCount: number
+): Promise<void> {
+  const fields: SlackField[] = [
+    { title: "Payout ID", value: payoutId, short: true },
+    { title: "Seller ID", value: sellerId, short: true },
+    { title: "Seller Email", value: sellerEmail, short: true },
+    { title: "Amount Paid", value: `${netAmount} ${currency}`, short: true },
+    { title: "Payout Method", value: payoutMethod, short: true },
+    { title: "Reference", value: reference, short: false },
+    { title: "Linked Purchases", value: linkedPurchaseCount.toString(), short: true },
+  ];
+
+  await this.log(
+    SlackLogLevel.SUCCESS,
+    "Payout Completed",
+    `Payout of ${netAmount} ${currency} completed for seller ${sellerEmail}`,
+    fields
+  );
+}
+
+/**
+ * Log payout failed
+ */
+async logPayoutFailed(
+  payoutId: string,
+  sellerId: string,
+  sellerEmail: string,
+  netAmount: number,
+  currency: string,
+  payoutMethod: string,
+  reference: string,
+  failureReason: string,
+  errorDetails?: Record<string, any>
+): Promise<void> {
+  const fields: SlackField[] = [
+    { title: "Payout ID", value: payoutId, short: true },
+    { title: "Seller ID", value: sellerId, short: true },
+    { title: "Seller Email", value: sellerEmail, short: true },
+    { title: "Amount", value: `${netAmount} ${currency}`, short: true },
+    { title: "Payout Method", value: payoutMethod, short: true },
+    { title: "Reference", value: reference, short: false },
+    { title: "Failure Reason", value: failureReason, short: false },
+  ];
+
+  if (errorDetails) {
+    fields.push({
+      title: "Error Details",
+      value: JSON.stringify(errorDetails, null, 2).substring(0, 500),
+      short: false,
+    });
+  }
+
+  await this.log(
+    SlackLogLevel.ERROR,
+    "Payout Failed",
+    `Payout failed for seller ${sellerEmail}`,
+    fields
+  );
+}
+
+/**
+ * Log payout cancelled
+ */
+async logPayoutCancelled(
+  payoutId: string,
+  sellerId: string,
+  sellerEmail: string,
+  netAmount: number,
+  currency: string,
+  reference: string,
+  reason: string
+): Promise<void> {
+  const fields: SlackField[] = [
+    { title: "Payout ID", value: payoutId, short: true },
+    { title: "Seller ID", value: sellerId, short: true },
+    { title: "Seller Email", value: sellerEmail, short: true },
+    { title: "Amount", value: `${netAmount} ${currency}`, short: true },
+    { title: "Reference", value: reference, short: false },
+    { title: "Cancellation Reason", value: reason, short: false },
+  ];
+
+  await this.log(
+    SlackLogLevel.WARNING,
+    "Payout Cancelled",
+    `Payout cancelled for seller ${sellerEmail}`,
+    fields
+  );
+}
 }
 
 export const slackService = new SlackService();

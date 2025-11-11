@@ -21,6 +21,7 @@
 - [x] Add duplicate listing functionality
 - [x] Integrate Firebase authentication tokens with API client
 
+
 ## Frontend - Auth & General
 - [x] Update API client to use Firebase auth tokens instead of localStorage
 - [x] Use shadcn Select component with react-hook-form Controller pattern
@@ -41,7 +42,12 @@
 - [x] Implement partial preview UI pattern for marketplace (lock sensitive data behind purchase)
 - [ ] Fix bookmarks view error
 - [x] Allow property images to be uploaded during listing creation (Cloudinary - max 10 images, 10MB each)
-- [ ] Hide comparable data until purchased (pricing model TBD)
+- [x] Hide comparable data until purchased (pricing model TBD)
+- [ ]  Implement Paystack gateway integration
+
+## Backend - Marketplace
+- [] Implement paystack gateway integration to allow purchasing of comparable listings
+
 
 ## User Preferences & Payment System
 ### Backend

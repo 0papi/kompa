@@ -25,6 +25,7 @@ export interface Listing {
   parkingSpaces?: number;
   condition: string;
   hoaFees?: string;
+  comparablePrice?: string;
   propertyTaxes?: string;
   annualInsurance?: string;
   valuationMethod: string;

@@ -51,6 +51,7 @@ export const listings = pgTable("listings", {
     precision: 10,
     scale: 2,
   }),
+   comparablePrice: numeric("comparablePrice", { precision: 15, scale: 2 }),
 
   // Property Specs
   bedrooms: integer("bedrooms").notNull(),
@@ -58,6 +59,8 @@ export const listings = pgTable("listings", {
   squareFeet: integer("square_feet").notNull(),
   lotSize: numeric("lot_size", { precision: 10, scale: 2 }),
   yearBuilt: integer("year_built"),
+
+
 
   // Property Features
   stories: integer("stories"),
