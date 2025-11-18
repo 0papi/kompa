@@ -36,8 +36,10 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import ComparablePriceModal from "@/components/listings/ComparablePriceModal";
+import { useSession } from "@/lib/hooks/useSession";
 
 export default function ListingDetailsPage() {
+  const { user } = useSession();
   const params = useParams();
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -54,6 +56,9 @@ export default function ListingDetailsPage() {
   });
 
   const listing = response?.data;
+
+  console.log("user id", user?.uid);
+  console.log("listing user id", listing?.userId);
 
   // Update status mutation
   const updateStatusMutation = useMutation({
@@ -407,8 +412,11 @@ export default function ListingDetailsPage() {
               </div>
               <div className="text-3xl font-bold mb-1">
                 GH₵{" "}
-                {parseFloat(listing.comparablePrice).toLocaleString() ??
-                  "Unset"}
+                {listing?.comparablePrice
+                  ? parseFloat(
+                      listing?.comparablePrice as string,
+                    )?.toLocaleString()
+                  : "Unset"}
               </div>
             </div>
           </div>

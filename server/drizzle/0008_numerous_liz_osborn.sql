@@ -1,0 +1,1 @@
+ALTER TABLE "purchases" ADD COLUMN "purchased_at" timestamp;

@@ -1,3 +1,4 @@
+import { PurchaseSelect } from "@/models";
 import axios from "axios";
 
 export enum SlackLogLevel {
@@ -348,16 +349,9 @@ class SlackService {
 /**
  * Log purchase initiated by buyer
  */
-async logPurchaseInitiated(
-  buyerId: string,
-  listingId: string,
-  listingTitle: string,
-  sellerId: string,
-  buyerEmail: string,
-  amount: number,
-  currency: string,
-  reference: string
+async logPurchaseInitiated(purchase:PurchaseSelect, listingTitle:string
 ): Promise<void> {
+  const {amount, buyerId, buyerEmail, listingId, sellerId, currency, reference} = purchase;
   const fields: SlackField[] = [
     { title: "Buyer ID", value: buyerId, short: true },
     { title: "Seller ID", value: sellerId, short: true },
@@ -365,7 +359,8 @@ async logPurchaseInitiated(
     { title: "Listing Title", value: listingTitle, short: false },
     { title: "Buyer Email", value: buyerEmail, short: true },
     { title: "Amount", value: `${amount} ${currency}`, short: true },
-    { title: "Reference", value: reference, short: false },
+    { title: "Reference", value: reference as string, short: false },
+    
   ];
 
   await this.log(
@@ -379,24 +374,15 @@ async logPurchaseInitiated(
 /**
  * Log purchase record created in database
  */
-async logPurchaseCreated(
-  purchaseId: string,
-  buyerId: string,
-  sellerId: string,
-  listingId: string,
-  listingTitle: string,
-  reference: string,
-  buyerEmail: string,
-  amount: number,
-  currency: string
-): Promise<void> {
+async logPurchaseCreated(purchase:PurchaseSelect, listingTitle:string): Promise<void> {
+  const {id: purchaseId, buyerId, sellerId, listingId, reference, amount, buyerEmail, currency } = purchase
   const fields: SlackField[] = [
     { title: "Purchase ID", value: purchaseId, short: true },
     { title: "Buyer ID", value: buyerId, short: true },
     { title: "Seller ID", value: sellerId, short: true },
     { title: "Listing ID", value: listingId, short: true },
     { title: "Listing Title", value: listingTitle, short: false },
-    { title: "Reference", value: reference, short: false },
+    { title: "Reference", value: reference as string, short: false },
     { title: "Buyer Email", value: buyerEmail, short: true },
     { title: "Amount", value: `${amount} ${currency}`, short: true },
   ];
@@ -462,8 +448,6 @@ async logPurchaseVerified(
 async logPurchaseFailed(
   buyerId: string,
   listingId: string,
-  listingTitle: string,
-  reference: string,
   buyerEmail: string,
   amount: number,
   currency: string,
@@ -473,8 +457,6 @@ async logPurchaseFailed(
   const fields: SlackField[] = [
     { title: "Buyer ID", value: buyerId, short: true },
     { title: "Listing ID", value: listingId, short: true },
-    { title: "Listing Title", value: listingTitle, short: false },
-    { title: "Reference", value: reference, short: false },
     { title: "Buyer Email", value: buyerEmail, short: true },
     { title: "Amount", value: `${amount} ${currency}`, short: true },
     { title: "Reason", value: reason, short: false },
@@ -491,7 +473,7 @@ async logPurchaseFailed(
   await this.log(
     SlackLogLevel.ERROR,
     "Purchase Failed",
-    `Purchase failed for listing "${listingTitle}"`,
+    `Purchase failed for listing "${listingId}"`,
     fields
   );
 }

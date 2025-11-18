@@ -52,6 +52,25 @@ export class BaseService<T extends PgTable> {
     return record as TSelect | undefined;
   }
 
+
+ /**
+  * Find one with relation
+  */
+async findOneWithRelation<TSelect = any>(
+  conditions: SQL,
+  joinTable?: any,
+  joinCondition?: SQL
+): Promise<TSelect | undefined> {
+  let query = db.select().from(this.table).where(conditions);
+
+  if (joinTable && joinCondition) {
+    query = query.leftJoin(joinTable, joinCondition);
+  }
+
+  const [record] = await query.limit(1);
+  return record as TSelect | undefined;
+}
+
   /**
    * Find all records matching conditions
    */

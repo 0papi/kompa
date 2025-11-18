@@ -40,6 +40,7 @@ export const transactions = pgTable(
     metadata: jsonb("metadata"),
     paystack_authorization_code: text("paystack_authorization_code"),
     payment_gateway_response: jsonb("payment_gateway_response"),
+    purchasedAt: timestamp("purchased_at"),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at").defaultNow().notNull(),
   },
@@ -57,5 +58,5 @@ export const transactions = pgTable(
 );
 
 
-export type TransactionSelect = typeof transactions.$inferSelect;
+export type PurchaseSelect = typeof transactions.$inferSelect;
 export type NewTransaction = typeof transactions.$inferInsert;

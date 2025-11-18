@@ -1,10 +1,18 @@
 import { MarketplaceListingDetail } from "@/components/marketplace/marketplace-listing-detail";
+import { listingDetailMetadata } from "@/components/marketplace/metadata";
 import { Loader2 } from "lucide-react";
 import { Suspense } from "react";
 
-export const metadata = {
-  title: "Marketplace Listing",
-};
+export async function generateMetadata({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
+  const searchParamsData = await searchParams;
+  return listingDetailMetadata({
+    listingId: searchParamsData.listingId as string,
+  });
+}
 
 export default async function MarketplaceListingPage({
   searchParams,

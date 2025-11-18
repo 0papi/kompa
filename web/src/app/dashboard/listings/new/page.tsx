@@ -36,7 +36,7 @@ export default function NewListingPage() {
           toast.success("Comparable listing and images added successfully!");
         } catch (error) {
           toast.warning(
-            "Listing created but some images failed to upload. You can add them later."
+            "Listing created but some images failed to upload. You can add them later.",
           );
         }
       } else {
@@ -52,7 +52,7 @@ export default function NewListingPage() {
     },
   });
 
-  const handleSubmit = async (data: ListingFormData) => {
+  const onCreateListing = async (data: ListingFormData) => {
     createListingMutation.mutate(data);
   };
 
@@ -60,7 +60,7 @@ export default function NewListingPage() {
     setSelectedImages(files);
   };
 
-  const handleCancel = () => {
+  const onCancelListingCreation = () => {
     router.back();
   };
 
@@ -90,10 +90,15 @@ export default function NewListingPage() {
 
       {/* Form */}
       <ListingForm
-        onSubmit={handleSubmit}
-        onCancel={handleCancel}
+        onSubmit={onCreateListing}
+        onCancel={onCancelListingCreation}
         isLoading={createListingMutation.isPending}
-        defaultValues={{stories: 1, condition: 'The property is in good condition'}}
+        defaultValues={{
+          stories: 1,
+          condition: "The property is in good condition",
+          comparablePrice: 1,
+          price: 1,
+        }}
       />
 
       <Separator />
@@ -102,12 +107,15 @@ export default function NewListingPage() {
       <div className="p-4 md:p-6">
         <h2 className="text-lg font-semibold mb-4 md:mb-6">Property Images</h2>
         <p className="text-sm text-muted-foreground mb-4">
-          Upload images of the property. The first image will be set as the primary image.
+          Upload images of the property. The first image will be set as the
+          primary image.
         </p>
         <ImageUpload
           onImagesSelected={handleImagesSelected}
           maxFiles={10}
-          disabled={createListingMutation.isPending || uploadImagesMutation.isPending}
+          disabled={
+            createListingMutation.isPending || uploadImagesMutation.isPending
+          }
         />
       </div>
     </div>

@@ -10,3 +10,4 @@ export * from "./payment-methods.model";
 export * from "./payment-log.model";
 export * from "./purchase.model";
 export * from './payouts.model'
+export * from './provider-balances.model'

@@ -17,7 +17,7 @@ export class ListingService extends BaseService<typeof listingTable> {
   }
 
   async getListingById(listingId: string, userId?: string) {
-    console.log('listing id', listingId, userId)
+    
     const conditions = userId
       ? and(eq(listingTable.userId, userId), isNull(listingTable.deletedAt))
       : isNull(listingTable.deletedAt);
@@ -29,19 +29,19 @@ export class ListingService extends BaseService<typeof listingTable> {
     console.log("fetching for user", userId);
     return this.findMany<Listing>(
       and(eq(listingTable.userId, userId), isNull(listingTable.deletedAt)),
-      desc(listingTable.createdAt),
+      desc(listingTable.createdAt)
     );
   }
 
   async updateListing(
     listingId: string,
     userId: string,
-    payload: Partial<CreateListingType>,
+    payload: Partial<CreateListingType>
   ) {
     return this.update<Partial<CreateListingType>, Listing>(
       listingId,
       payload,
-      and(eq(listingTable.userId, userId), isNull(listingTable.deletedAt)),
+      and(eq(listingTable.userId, userId), isNull(listingTable.deletedAt))
     );
   }
 
@@ -74,7 +74,7 @@ export class ListingService extends BaseService<typeof listingTable> {
     // Build base conditions
     const baseConditions = and(
       eq(listingTable.status, "PUBLISHED"),
-      isNull(listingTable.deletedAt),
+      isNull(listingTable.deletedAt)
     );
 
     // Build search conditions
@@ -87,14 +87,16 @@ export class ListingService extends BaseService<typeof listingTable> {
           sql`LOWER(${listingTable.title}) LIKE ${searchTerm}`,
           sql`LOWER(${listingTable.description}) LIKE ${searchTerm}`,
           sql`LOWER(${listingTable.city}) LIKE ${searchTerm}`,
-          sql`LOWER(${listingTable.state}) LIKE ${searchTerm}`,
-        ),
+          sql`LOWER(${listingTable.state}) LIKE ${searchTerm}`
+        )
       );
     }
 
     if (searchFilters.city) {
       searchConditions.push(
-        sql`LOWER(${listingTable.city}) LIKE ${`%${searchFilters.city.toLowerCase()}%`}`,
+        sql`LOWER(${
+          listingTable.city
+        }) LIKE ${`%${searchFilters.city.toLowerCase()}%`}`
       );
     }
 
@@ -104,49 +106,49 @@ export class ListingService extends BaseService<typeof listingTable> {
 
     if (searchFilters.propertyCategory) {
       searchConditions.push(
-        eq(listingTable.propertyCategory, searchFilters.propertyCategory),
+        eq(listingTable.propertyCategory, searchFilters.propertyCategory)
       );
     }
 
     if (searchFilters.propertyType) {
       searchConditions.push(
-        eq(listingTable.propertyType, searchFilters.propertyType),
+        eq(listingTable.propertyType, searchFilters.propertyType)
       );
     }
 
     if (searchFilters.minPrice !== undefined) {
       searchConditions.push(
-        gte(listingTable.price, searchFilters.minPrice.toString()),
+        gte(listingTable.price, searchFilters.minPrice.toString())
       );
     }
 
     if (searchFilters.maxPrice !== undefined) {
       searchConditions.push(
-        lte(listingTable.price, searchFilters.maxPrice.toString()),
+        lte(listingTable.price, searchFilters.maxPrice.toString())
       );
     }
 
     if (searchFilters.minBedrooms !== undefined) {
       searchConditions.push(
-        gte(listingTable.bedrooms, searchFilters.minBedrooms),
+        gte(listingTable.bedrooms, searchFilters.minBedrooms)
       );
     }
 
     if (searchFilters.minBathrooms !== undefined) {
       searchConditions.push(
-        gte(listingTable.bathrooms, searchFilters.minBathrooms.toString()),
+        gte(listingTable.bathrooms, searchFilters.minBathrooms.toString())
       );
     }
 
     if (searchFilters.minSquareFeet !== undefined) {
       searchConditions.push(
-        gte(listingTable.squareFeet, searchFilters.minSquareFeet),
+        gte(listingTable.squareFeet, searchFilters.minSquareFeet)
       );
     }
 
     if (searchFilters.maxSquareFeet !== undefined) {
       searchConditions.push(
-        lte(listingTable.squareFeet, searchFilters.maxSquareFeet),
+        lte(listingTable.squareFeet, searchFilters.maxSquareFeet)
       );
     }
 

@@ -10,12 +10,14 @@ import { motion, AnimatePresence } from "framer-motion";
 
 interface ListingImageGalleryProps {
   listingId: string;
+  images?: ListingImage[];
   className?: string;
 }
 
 export function ListingImageGallery({
   listingId,
   className,
+  images: initialImages,
 }: ListingImageGalleryProps) {
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
@@ -27,10 +29,12 @@ export function ListingImageGallery({
   } = useQuery({
     queryKey: ["listing-images", listingId],
     queryFn: () => listingImagesApi.getListingImages(listingId),
-    enabled: !!listingId,
+    enabled: !!listingId && initialImages?.length === 0,
   });
 
-  const images = response?.data || [];
+  console.log("passed in images", initialImages);
+
+  const images = response?.data || initialImages || [];
   const sortedImages = [...images].sort((a, b) => {
     // Primary image first, then by display order
     if (a.isPrimary) return -1;
@@ -40,19 +44,24 @@ export function ListingImageGallery({
 
   const handlePrevious = () => {
     setSelectedImageIndex((prev) =>
-      prev === 0 ? sortedImages.length - 1 : prev - 1
+      prev === 0 ? sortedImages.length - 1 : prev - 1,
     );
   };
 
   const handleNext = () => {
     setSelectedImageIndex((prev) =>
-      prev === sortedImages.length - 1 ? 0 : prev + 1
+      prev === sortedImages.length - 1 ? 0 : prev + 1,
     );
   };
 
   if (isLoading) {
     return (
-      <div className={cn("rounded-lg border bg-muted h-96 flex items-center justify-center", className)}>
+      <div
+        className={cn(
+          "rounded-lg border bg-muted h-96 flex items-center justify-center",
+          className,
+        )}
+      >
         <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
       </div>
     );
@@ -60,7 +69,12 @@ export function ListingImageGallery({
 
   if (error) {
     return (
-      <div className={cn("rounded-lg border bg-muted h-96 flex items-center justify-center", className)}>
+      <div
+        className={cn(
+          "rounded-lg border bg-muted h-96 flex items-center justify-center",
+          className,
+        )}
+      >
         <div className="text-center text-muted-foreground">
           <p>Failed to load images</p>
         </div>
@@ -71,10 +85,17 @@ export function ListingImageGallery({
   // Fallback for no images
   if (sortedImages.length === 0) {
     return (
-      <div className={cn("rounded-lg border bg-gradient-to-br from-primary/20 to-primary/5 h-96 flex items-center justify-center", className)}>
+      <div
+        className={cn(
+          "rounded-lg border bg-gradient-to-br from-primary/20 to-primary/5 h-96 flex items-center justify-center",
+          className,
+        )}
+      >
         <div className="text-center">
           <div className="text-9xl opacity-20">🏠</div>
-          <p className="text-sm text-muted-foreground mt-4">No images available</p>
+          <p className="text-sm text-muted-foreground mt-4">
+            No images available
+          </p>
         </div>
       </div>
     );
@@ -149,7 +170,7 @@ export function ListingImageGallery({
                   "relative aspect-square rounded-lg overflow-hidden border-2 transition-all hover:opacity-100",
                   selectedImageIndex === index
                     ? "border-primary opacity-100 ring-2 ring-primary ring-offset-2"
-                    : "border-transparent opacity-60"
+                    : "border-transparent opacity-60",
                 )}
               >
                 <img
@@ -189,7 +210,10 @@ export function ListingImageGallery({
               <X className="h-6 w-6" />
             </Button>
 
-            <div className="relative max-w-7xl max-h-full" onClick={(e) => e.stopPropagation()}>
+            <div
+              className="relative max-w-7xl max-h-full"
+              onClick={(e) => e.stopPropagation()}
+            >
               <motion.img
                 key={selectedImageIndex}
                 initial={{ opacity: 0, scale: 0.9 }}

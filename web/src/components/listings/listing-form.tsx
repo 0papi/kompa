@@ -92,13 +92,19 @@ export function ListingForm({
   };
 
   return (
-    <form onSubmit={handleSubmit(onFormSubmit)} className="space-y-6 md:space-y-8">
+    <form
+      onSubmit={handleSubmit(onFormSubmit)}
+      className="space-y-6 md:space-y-8"
+    >
       {/* Property Details Section */}
       <div className="p-4 md:p-6">
         <h2 className="text-lg font-semibold mb-4 md:mb-6">Property Details</h2>
         <div className="space-y-4 md:space-y-6">
           <div className="flex flex-col gap-2 md:flex-row md:items-start md:gap-6">
-            <Label htmlFor="title" className="w-full md:w-1/3 md:pt-2 text-start md:shrink-0">
+            <Label
+              htmlFor="title"
+              className="w-full md:w-1/3 md:pt-2 text-start md:shrink-0"
+            >
               <div>
                 <div>
                   Title <span className="text-destructive">*</span>
@@ -299,10 +305,15 @@ export function ListingForm({
 
       {/* Location Section */}
       <div className="p-4 md:p-6">
-        <h2 className="text-lg font-semibold mb-4 md:mb-6">Property Location</h2>
+        <h2 className="text-lg font-semibold mb-4 md:mb-6">
+          Property Location
+        </h2>
         <div className="space-y-4 md:space-y-6">
           <div className="flex flex-col gap-2 md:flex-row md:items-start md:gap-6">
-            <Label htmlFor="street" className="w-full md:w-1/3 md:pt-2 text-start md:shrink-0">
+            <Label
+              htmlFor="street"
+              className="w-full md:w-1/3 md:pt-2 text-start md:shrink-0"
+            >
               <div>
                 <div>
                   Street Address <span className="text-destructive">*</span>
@@ -328,7 +339,10 @@ export function ListingForm({
           </div>
 
           <div className="flex flex-col gap-2 md:flex-row md:items-start md:gap-6">
-            <Label htmlFor="city" className="w-full md:w-1/3 md:pt-2 text-start md:shrink-0">
+            <Label
+              htmlFor="city"
+              className="w-full md:w-1/3 md:pt-2 text-start md:shrink-0"
+            >
               <div>
                 <div>
                   City <span className="text-destructive">*</span>
@@ -354,7 +368,10 @@ export function ListingForm({
           </div>
 
           <div className="flex flex-col gap-2 md:flex-row md:items-start md:gap-6">
-            <Label htmlFor="state" className="w-full md:w-1/3 md:pt-2 text-start md:shrink-0">
+            <Label
+              htmlFor="state"
+              className="w-full md:w-1/3 md:pt-2 text-start md:shrink-0"
+            >
               <div>
                 <div>
                   State <span className="text-destructive">*</span>
@@ -380,11 +397,12 @@ export function ListingForm({
           </div>
 
           <div className="flex flex-col gap-2 md:flex-row md:items-start md:gap-6">
-            <Label htmlFor="zipCode" className="w-full md:w-1/3 md:pt-2 text-start md:shrink-0">
+            <Label
+              htmlFor="zipCode"
+              className="w-full md:w-1/3 md:pt-2 text-start md:shrink-0"
+            >
               <div>
-                <div>
-                  Location Code 
-                </div>
+                <div>Location Code</div>
                 <div className="text-xs text-muted-foreground font-normal mt-0.5">
                   Postal code for the location
                 </div>
@@ -406,7 +424,10 @@ export function ListingForm({
           </div>
 
           <div className="flex flex-col gap-2 md:flex-row md:items-start md:gap-6">
-            <Label htmlFor="county" className="w-full md:w-1/3 md:pt-2 text-start md:shrink-0">
+            <Label
+              htmlFor="county"
+              className="w-full md:w-1/3 md:pt-2 text-start md:shrink-0"
+            >
               <div>
                 <div>County / Locality</div>
                 <div className="text-xs text-muted-foreground font-normal mt-0.5">
@@ -435,16 +456,50 @@ export function ListingForm({
 
       {/* Property Specifications */}
       <div className="p-4 md:p-6">
-        <h2 className="text-lg font-semibold mb-4 md:mb-6">Property Specifications</h2>
+        <h2 className="text-lg font-semibold mb-4 md:mb-6">
+          Property Specifications
+        </h2>
         <div className="space-y-4 md:space-y-6">
           <div className="flex flex-col gap-2 md:flex-row md:items-start md:gap-6">
-            <Label htmlFor="price" className="w-full md:w-1/3 md:pt-2 text-start md:shrink-0">
+            <Label
+              htmlFor="price"
+              className="w-full md:w-1/3 md:pt-2 text-start md:shrink-0"
+            >
               <div>
                 <div>
-                  Price ($) <span className="text-destructive">*</span>
+                  Comparable Price <span className="text-destructive">*</span>
                 </div>
                 <div className="text-xs text-muted-foreground font-normal mt-0.5">
-                  Listing price in dollars
+                  What price are you listing this comparable property at?
+                </div>
+              </div>
+            </Label>
+            <div className="flex-1 md:max-w-xl">
+              <Input
+                id="price"
+                type="number"
+                {...register("comparablePrice")}
+                placeholder="XXXX"
+                disabled={isLoading}
+              />
+              {errors.price && (
+                <p className="text-sm text-destructive mt-1">
+                  {errors.price.message}
+                </p>
+              )}
+            </div>
+          </div>
+          <div className="flex flex-col gap-2 md:flex-row md:items-start md:gap-6">
+            <Label
+              htmlFor="price"
+              className="w-full md:w-1/3 md:pt-2 text-start md:shrink-0"
+            >
+              <div>
+                <div>
+                  Price <span className="text-destructive">*</span>
+                </div>
+                <div className="text-xs text-muted-foreground font-normal mt-0.5">
+                  What price was this property actually sold for?
                 </div>
               </div>
             </Label>
@@ -759,7 +814,9 @@ export function ListingForm({
 
       {/* Financial Details */}
       <div className="p-4 md:p-6">
-        <h2 className="text-lg font-semibold mb-4 md:mb-6">Financial Details</h2>
+        <h2 className="text-lg font-semibold mb-4 md:mb-6">
+          Financial Details
+        </h2>
         <div className="space-y-4 md:space-y-6">
           <div className="flex flex-col gap-2 md:flex-row md:items-start md:gap-6">
             <Label htmlFor="hoaFees" className="w-1/3 pt-2 text-start shrink-0">
@@ -848,7 +905,9 @@ export function ListingForm({
 
       {/* Valuation & Sale Details */}
       <div className="p-4 md:p-6">
-        <h2 className="text-lg font-semibold mb-4 md:mb-6">Valuation & Sale Details</h2>
+        <h2 className="text-lg font-semibold mb-4 md:mb-6">
+          Valuation & Sale Details
+        </h2>
         <div className="space-y-4 md:space-y-6">
           <div className="flex flex-col gap-2 md:flex-row md:items-start md:gap-6">
             <Label
@@ -923,7 +982,7 @@ export function ListingForm({
                         variant="outline"
                         className={cn(
                           "w-full justify-start text-left font-normal",
-                          !field.value && "text-muted-foreground"
+                          !field.value && "text-muted-foreground",
                         )}
                         disabled={isLoading}
                       >
@@ -937,11 +996,15 @@ export function ListingForm({
                     </PopoverTrigger>
                     <PopoverContent className="w-auto p-0" align="start">
                       <Calendar
-                      captionLayout="dropdown"
+                        captionLayout="dropdown"
                         mode="single"
-                        selected={field.value ? new Date(field.value) : undefined}
+                        selected={
+                          field.value ? new Date(field.value) : undefined
+                        }
                         onSelect={(date) => {
-                          field.onChange(date ? format(date, "yyyy-MM-dd") : undefined);
+                          field.onChange(
+                            date ? format(date, "yyyy-MM-dd") : undefined,
+                          );
                         }}
                         initialFocus
                       />
@@ -980,7 +1043,7 @@ export function ListingForm({
                         variant="outline"
                         className={cn(
                           "w-full justify-start text-left font-normal",
-                          !field.value && "text-muted-foreground"
+                          !field.value && "text-muted-foreground",
                         )}
                         disabled={isLoading}
                       >
@@ -996,9 +1059,13 @@ export function ListingForm({
                       <Calendar
                         mode="single"
                         captionLayout="dropdown"
-                        selected={field.value ? new Date(field.value) : undefined}
+                        selected={
+                          field.value ? new Date(field.value) : undefined
+                        }
                         onSelect={(date) => {
-                          field.onChange(date ? format(date, "yyyy-MM-dd") : undefined);
+                          field.onChange(
+                            date ? format(date, "yyyy-MM-dd") : undefined,
+                          );
                         }}
                         initialFocus
                       />
@@ -1039,7 +1106,7 @@ export function ListingForm({
                 // @ts-ignore
                 readOnly={listDate && saleDate}
                 className={cn(
-                  listDate && saleDate && "bg-muted cursor-not-allowed"
+                  listDate && saleDate && "bg-muted cursor-not-allowed",
                 )}
               />
               {errors.daysOnMarket && (

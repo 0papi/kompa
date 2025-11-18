@@ -125,10 +125,9 @@ export const listingFormSchema = z.object({
     .optional(),
 
   // Status
-  //@ts-ignore
   status: z
     .enum(["DRAFT", "PUBLISHED", "ARCHIVED"], {
-      required_error: "Status is required",
+      error: "Status is required",
     })
     .default("DRAFT"),
 });

@@ -14,7 +14,15 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Home, LayoutDashboard, User, LogOut, LogIn, Bookmark } from "lucide-react";
+import {
+  Home,
+  LayoutDashboard,
+  User,
+  LogOut,
+  LogIn,
+  Bookmark,
+  WalletCards,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 import { getInitials } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
@@ -23,10 +31,17 @@ import { useBookmarksDrawer } from "@/components/bookmarks/state";
 import { BookmarksDrawer } from "@/components/bookmarks/bookmarks-drawer";
 
 export function MarketplaceHeader() {
-  const { user, loading, isAuthenticated } = useSession();
- 
+  const { user, loading, isAuthenticated, role } = useSession();
+
+  const showPurchaseDropdown =
+    role === "CONSUMER" || role === "CONSUMER_PROVIDER";
+
   const router = useRouter();
-  const { isOpen: bookmarksDrawerOpen, openDrawer: openBookmarksDrawer, closeDrawer: closeBookmarksDrawer } = useBookmarksDrawer();
+  const {
+    isOpen: bookmarksDrawerOpen,
+    openDrawer: openBookmarksDrawer,
+    closeDrawer: closeBookmarksDrawer,
+  } = useBookmarksDrawer();
 
   // Fetch user's bookmarks count
   const { data: bookmarksData } = useQuery({
@@ -61,54 +76,54 @@ export function MarketplaceHeader() {
           {loading ? (
             <div className="h-8 w-8 rounded-full bg-muted animate-pulse" />
           ) : user ? (
-          <>
-            <Button variant="outline" onClick={openBookmarksDrawer}>
-              <Bookmark className="mr-2 h-4 w-4 group-hover:text-foreground transition-colors" />
-                  <span className="flex-1">Saved Items</span>
-                  {bookmarksCount > 0 && (
-                    <Badge
-                      variant="secondary"
-                      className="ml-2 h-5 min-w-[20px] px-1.5 text-xs font-semibold tabular-nums"
-                    >
-                      {bookmarksCount > 99 ? "99+" : bookmarksCount}
-                    </Badge>
-                  )}
-             </Button>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="ghost"
-                  className="relative h-9 w-9 rounded-full"
-                >
-                  <Avatar className="h-9 w-9">
-                    <AvatarFallback className="text-sm">
-                      {getInitials(user.displayName, user?.email)}
-                    </AvatarFallback>
-                  </Avatar>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56">
-                <div className="flex items-center justify-start gap-2 p-2">
-                  <div className="flex flex-col space-y-1 leading-none">
-                    {user.displayName && (
-                      <p className="font-medium">{user.displayName}</p>
-                    )}
-                    <p className="w-[200px] truncate text-sm text-muted-foreground">
-                      {user.email}
-                    </p>
-                  </div>
-                </div>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem asChild>
-                  <Link
-                    href="/dashboard"
-                    className="flex items-center cursor-pointer"
+            <>
+              <Button variant="outline" onClick={openBookmarksDrawer}>
+                <Bookmark className="mr-2 h-4 w-4 group-hover:text-foreground transition-colors" />
+                <span className="flex-1">Saved Items</span>
+                {bookmarksCount > 0 && (
+                  <Badge
+                    variant="secondary"
+                    className="ml-2 h-5 min-w-[20px] px-1.5 text-xs font-semibold tabular-nums"
                   >
-                    <LayoutDashboard className="mr-2 h-4 w-4" />
-                    Dashboard
-                  </Link>
-                </DropdownMenuItem>
-                {/* <DropdownMenuItem
+                    {bookmarksCount > 99 ? "99+" : bookmarksCount}
+                  </Badge>
+                )}
+              </Button>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    className="relative h-9 w-9 rounded-full"
+                  >
+                    <Avatar className="h-9 w-9">
+                      <AvatarFallback className="text-sm">
+                        {getInitials(user.displayName, user?.email)}
+                      </AvatarFallback>
+                    </Avatar>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56">
+                  <div className="flex items-center justify-start gap-2 p-2">
+                    <div className="flex flex-col space-y-1 leading-none">
+                      {user.displayName && (
+                        <p className="font-medium">{user.displayName}</p>
+                      )}
+                      <p className="w-[200px] truncate text-sm text-muted-foreground">
+                        {user.email}
+                      </p>
+                    </div>
+                  </div>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem asChild>
+                    <Link
+                      href="/dashboard"
+                      className="flex items-center cursor-pointer"
+                    >
+                      <LayoutDashboard className="mr-2 h-4 w-4" />
+                      Dashboard
+                    </Link>
+                  </DropdownMenuItem>
+                  {/* <DropdownMenuItem
                   onClick={openBookmarksDrawer}
                   className="cursor-pointer group"
                 >
@@ -123,26 +138,46 @@ export function MarketplaceHeader() {
                     </Badge>
                   )}
                 </DropdownMenuItem> */}
-                <DropdownMenuItem asChild>
-                  <Link
-                    href="/dashboard/profile"
-                    className="flex items-center cursor-pointer"
+                  <DropdownMenuItem asChild>
+                    <Link
+                      href="/dashboard/profile"
+                      className="flex items-center cursor-pointer"
+                    >
+                      <User className="mr-2 h-4 w-4" />
+                      Profile
+                    </Link>
+                  </DropdownMenuItem>
+                  {showPurchaseDropdown && (
+                    <DropdownMenuItem asChild>
+                      <Link
+                        href="/dashboard/purchases"
+                        className="flex items-center cursor-pointer"
+                      >
+                        <WalletCards className="mr-2 h-4 w-4" />
+                        Purchases
+                      </Link>
+                    </DropdownMenuItem>
+                  )}
+                  <DropdownMenuItem asChild>
+                    <Link
+                      href="/dashboard/profile"
+                      className="flex items-center cursor-pointer"
+                    >
+                      <User className="mr-2 h-4 w-4" />
+                      Profile
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    onClick={handleSignOut}
+                    className="text-destructive cursor-pointer"
                   >
-                    <User className="mr-2 h-4 w-4" />
-                    Profile
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem
-                  onClick={handleSignOut}
-                  className="text-destructive cursor-pointer"
-                >
-                  <LogOut className="mr-2 h-4 w-4" />
-                  Sign Out
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </>
+                    <LogOut className="mr-2 h-4 w-4" />
+                    Sign Out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </>
           ) : (
             <div className="flex items-center gap-2">
               <Button asChild variant="ghost" size="sm">

@@ -77,8 +77,8 @@ import { useSession } from "@/lib/hooks/useSession";
 import { createPayoutMethodSchema, type BankAccountDetails, type MobileMoneyDetails, type PayoutMethodType } from "@/schema/payment-method.schema";
 
 const PAYMENT_METHOD_ICONS: Record<PayoutMethodType, React.ElementType> = {
-  BANK_TRANSFER: Building,
-  MOBILE_MONEY: Smartphone,
+  "BANK_TRANSFER": Building,
+  "MOBILE_MONEY": Smartphone,
 };
 
 const PAYMENT_METHOD_LABELS: Record<PayoutMethodType, string> = {
@@ -220,6 +220,7 @@ export function PaymentMethodsTab() {
       ) : (
         <div className="grid gap-4">
           {paymentMethods.map((method) => {
+            console.log('method', method)
             const Icon = PAYMENT_METHOD_ICONS[method.methodType];
             const displayDetails = getDisplayDetails(method);
 
@@ -449,6 +450,8 @@ function AddPaymentMethodDialog({ onClose }: AddPaymentMethodDialogProps) {
       });
     }
   };
+
+  console.log('form logs', form.formState)
 
   useEffect(() => {
     if (firebaseUser?.email) {
@@ -775,7 +778,7 @@ function AddPaymentMethodDialog({ onClose }: AddPaymentMethodDialogProps) {
                           }}
                         >
                           <FormControl>
-                            <SelectTrigger>
+                            <SelectTrigger className="w-full">
                               <SelectValue />
                             </SelectTrigger>
                           </FormControl>

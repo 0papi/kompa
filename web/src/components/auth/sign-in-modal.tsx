@@ -16,6 +16,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import Link from "next/link";
+import { Input } from "../ui/input";
 
 const loginSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
@@ -95,7 +96,7 @@ export function SignInModal({ open, onOpenChange, onSuccess }: SignInModalProps)
               <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                 <Mail className="h-5 w-5 text-gray-400" />
               </div>
-              <input
+              <Input
                 id="email"
                 type="email"
                 autoComplete="email"
@@ -124,7 +125,7 @@ export function SignInModal({ open, onOpenChange, onSuccess }: SignInModalProps)
               <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                 <Lock className="h-5 w-5 text-gray-400" />
               </div>
-              <input
+              <Input
                 id="password"
                 type={showPassword ? "text" : "password"}
                 autoComplete="current-password"

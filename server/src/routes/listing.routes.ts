@@ -21,6 +21,7 @@ router.post(
 router.get("/my-listings", authenticateUser, listingController.getUserListings);
 
 router.get("/:id", optionalAuth, listingController.getById);
+router.get("/public/:id", listingController.getPublicListingById);
 
 router.put(
   "/:id",

@@ -33,6 +33,11 @@ import { toast } from "sonner";
 import { SignInModal } from "@/components/auth/sign-in-modal";
 import { ListingImageGallery } from "@/components/listings/listing-image-gallery";
 import { useState } from "react";
+import { useShowSetPriceModalStore } from "../listings/hooks";
+import { useConfirmPurchaseModalStore } from "./state";
+import { PurchaseConfirmationDialog } from "./molecules/PurchaseConfirmationModal";
+import ShareListingCard from "./share-listing-card";
+import NoListings from "../listings/empty-state";
 
 interface MarketplaceListingDetailProps {
   listingId: string;
@@ -89,10 +94,14 @@ function LockedSection({
 export function MarketplaceListingDetail({
   listingId,
 }: MarketplaceListingDetailProps) {
+  const { setOpen, setListing } = useConfirmPurchaseModalStore();
   const router = useRouter();
   const queryClient = useQueryClient();
   const { user, isAuthenticated } = useSession();
   const [showSignInModal, setShowSignInModal] = useState(false);
+  const [signInActionRef, setSignInActionRef] = useState<
+    "bookmark" | "purchase"
+  >("bookmark");
 
   const {
     data: response,
@@ -100,8 +109,10 @@ export function MarketplaceListingDetail({
     error,
   } = useQuery({
     queryKey: ["marketplace-listing", listingId],
-    queryFn: () => listingsApi.getById(listingId),
+    queryFn: () => listingsApi.getPublicListingById(listingId),
   });
+
+  console.log("listing details", response);
 
   const { data: bookmarkResponse, isLoading: isCheckingBookmark } = useQuery({
     queryKey: ["bookmark-check", listingId],
@@ -156,18 +167,37 @@ export function MarketplaceListingDetail({
   const handleBookmarkClick = () => {
     if (!isAuthenticated) {
       setShowSignInModal(true);
+      setSignInActionRef("bookmark");
       return;
     }
 
     toggleBookmarkMutation.mutate();
   };
 
+  const handlePurchase = () => {
+    if (!isAuthenticated) {
+      setShowSignInModal(true);
+      setSignInActionRef("purchase");
+
+      return;
+    }
+
+    setOpen(true);
+    setListing(listing!);
+  };
+
   const handleSignInSuccess = () => {
-    // After successful sign in, automatically bookmark the listing
+    if (signInActionRef === "purchase") {
+      setOpen(true);
+      setListing(listing!);
+      return;
+    }
     toggleBookmarkMutation.mutate();
   };
 
   const listing = response?.data;
+
+  console.log("listing information is here", listing);
 
   const handleBack = () => {
     router.push("/marketplace");
@@ -183,10 +213,7 @@ export function MarketplaceListingDetail({
 
   if (error || !listing) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[400px] gap-4">
-        <div className="text-destructive">Failed to load listing</div>
-        <Button onClick={handleBack}>Go Back</Button>
-      </div>
+      <NoListings subText="Listing information could not be found. Please try again later" />
     );
   }
 
@@ -222,11 +249,16 @@ export function MarketplaceListingDetail({
               </Badge>
             </div>
           </div>
-          <PropertyCategoryBadge category={listing.propertyCategory} />
-          <PropertySubcategoryBadge
-            subcategory={listing.propertyType}
-            category={listing.propertyCategory}
-          />
+
+          <div className="flex items-center gap-x-2">
+            {/*<PropertyCategoryBadge category={listing.propertyCategory} />
+            <PropertySubcategoryBadge
+              subcategory={listing.propertyType}
+              category={listing.propertyCategory}
+            />*/}
+
+            <ShareListingCard listing={listing} />
+          </div>
         </div>
       </motion.div>
 
@@ -242,7 +274,7 @@ export function MarketplaceListingDetail({
           transition={{ duration: 0.3, delay: 0.1 }}
         >
           {/* Image Gallery */}
-          <ListingImageGallery listingId={listingId} />
+          <ListingImageGallery listingId={listingId} images={listing?.images} />
 
           {/* Property Overview */}
           <div className="rounded-lg border bg-card p-6">
@@ -410,7 +442,11 @@ export function MarketplaceListingDetail({
                   GH₵ {listing?.comparablePrice}
                 </span>
               </div>
-              <Button className="w-full mb-3 gap-x-2" size="lg">
+              <Button
+                className="w-full mb-3 gap-x-2"
+                size="lg"
+                onClick={handlePurchase}
+              >
                 <Wallet className="h-4 w-4" />
                 Purchase Full Data
               </Button>
@@ -521,6 +557,7 @@ export function MarketplaceListingDetail({
         onOpenChange={setShowSignInModal}
         onSuccess={handleSignInSuccess}
       />
+      <PurchaseConfirmationDialog />
     </div>
   );
 }

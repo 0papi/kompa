@@ -11,8 +11,10 @@ import listingImageRouter from "./routes/listing-image.routes";
 import favoriteRouter from "./routes/favorite.routes";
 import commentRouter from "./routes/comments.route";
 import reviewRouter from "./routes/review.routes";
+import purchaseRouter from "./routes/purchase.routes";
 import userPreferencesRouter from "./routes/user-preferences.routes";
 import paymentMethodsRouter from "./routes/payment-methods.routes";
+import queueRoute from "./routes/queue.route";
 
 // Initialize Firebase
 initializeFirebase();
@@ -42,10 +44,12 @@ app.use("/api/v1/users", userRouter);
 app.use("/api/v1/users/preferences", userPreferencesRouter);
 app.use("/api/v1/users/payment-methods", paymentMethodsRouter);
 app.use("/api/v1/listings", listingRouter);
+app.use("/api/v1/purchases", purchaseRouter);
 app.use("/api/v1", listingImageRouter);
 app.use("/api/v1/favorites", favoriteRouter);
 app.use("/api/v1", commentRouter);
 app.use("/api/v1", reviewRouter);
+app.use("/api/v1", queueRoute);
 
 app.get("/", (_req, res) => {
   res.status(200).json({

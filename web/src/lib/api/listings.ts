@@ -1,5 +1,6 @@
 import apiClient from "@/lib/apiClient";
 import { type ListingFormData } from "@/components/listings";
+import type { ListingImage } from "./listing-images";
 
 export interface Listing {
   id: string;
@@ -38,6 +39,10 @@ export interface Listing {
   createdAt: string;
   updatedAt: string;
   deletedAt?: string | null;
+}
+
+export interface ListingWithImages extends Listing {
+  images: ListingImage[];
 }
 
 export interface ApiResponse<T> {
@@ -127,6 +132,18 @@ export const listingsApi = {
   getById: async (id: string): Promise<ApiResponse<Listing>> => {
     const response = await apiClient.get<ApiResponse<Listing>>(
       `/listings/${id}`,
+    );
+    return response.data;
+  },
+
+  /**
+   * Get a single listing by ID
+   */
+  getPublicListingById: async (
+    id: string,
+  ): Promise<ApiResponse<ListingWithImages>> => {
+    const response = await apiClient.get<ApiResponse<ListingWithImages>>(
+      `/listings/public/${id}`,
     );
     return response.data;
   },

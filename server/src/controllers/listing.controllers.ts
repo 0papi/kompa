@@ -4,12 +4,17 @@ import { ListingService } from "@/services/listing.service";
 import { logger } from "@/config/logger";
 import { failure, success } from "@/utils/api-response";
 import { slackService } from "@/services/slack.service";
+import { emailQueueService } from "@/services/email-queue.service";
+import { env } from "@/config/env";
+import { ListingImageService } from "@/services/listing-image.service";
 
 export class ListingController {
   private listingService: ListingService;
+  private listingImageService: ListingImageService;
 
   constructor() {
     this.listingService = new ListingService();
+    this.listingImageService = new ListingImageService();
   }
 
   create = async (req: Request, res: Response) => {
@@ -18,6 +23,11 @@ export class ListingController {
       const payload = req.body as CreateListingType;
 
       const listing = await this.listingService.createListing(userId, payload);
+
+      await emailQueueService.enqueueEmail("LISTING_PUBLISHED", {
+        listingTitle: listing.title,
+        listingUrl: `${env.CORS_ORIGIN}/dashboard/listings/${listing.id}`,
+      });
 
       // Log to Slack
       await slackService.logListing(
@@ -29,7 +39,7 @@ export class ListingController {
           Status: listing.status,
           Price: `$${listing.price}`,
           Location: `${listing.city}, ${listing.state}`,
-        }
+        },
       );
 
       return res.status(201).json(success(listing));
@@ -42,9 +52,9 @@ export class ListingController {
   getById = async (req: Request, res: Response) => {
     try {
       const { id } = req.params;
-      const userId = res.locals.uid as string | undefined;
+      // const userId = res.locals.uid as string | undefined;
 
-      const listing = await this.listingService.getListingById(id, userId);
+      const listing = await this.listingService.getListingById(id);
 
       if (!listing) {
         return res.status(404).json(failure("Listing not found"));
@@ -57,7 +67,36 @@ export class ListingController {
     }
   };
 
-  getUserListings = async (req: Request, res: Response) => {
+  getPublicListingById = async (req: Request, res: Response) => {
+    try {
+      const { id } = req.params;
+
+      const listing = await this.listingService.getListingById(id);
+
+      if (!listing) {
+        return res.status(404).json(failure("Listing not found"));
+      }
+
+      const images = await this.listingImageService.getListingImages(
+        listing.id,
+      );
+
+      let foundListing: any = {
+        ...listing,
+      };
+
+      if (images) {
+        foundListing["images"] = images;
+      }
+
+      return res.status(200).json(success(foundListing));
+    } catch (error: any) {
+      logger.error("Getting listing failed", error);
+      return res.status(400).json(failure(error.message));
+    }
+  };
+
+  getUserListings = async (_req: Request, res: Response) => {
     try {
       const userId = res.locals.uid as string;
 
@@ -101,7 +140,7 @@ export class ListingController {
         updatedListing.id,
         userId,
         updatedListing.title,
-        additionalInfo
+        additionalInfo,
       );
 
       return res.status(200).json(success(updatedListing));
@@ -135,7 +174,7 @@ export class ListingController {
         deletedListing.title,
         {
           "Deleted At": new Date().toISOString(),
-        }
+        },
       );
 
       return res.status(200).json(success(deletedListing));
@@ -173,7 +212,9 @@ export class ListingController {
         propertyType: propertyType as string | undefined,
         minPrice: minPrice ? parseFloat(minPrice as string) : undefined,
         maxPrice: maxPrice ? parseFloat(maxPrice as string) : undefined,
-        minBedrooms: minBedrooms ? parseInt(minBedrooms as string, 10) : undefined,
+        minBedrooms: minBedrooms
+          ? parseInt(minBedrooms as string, 10)
+          : undefined,
         minBathrooms: minBathrooms
           ? parseInt(minBathrooms as string, 10)
           : undefined,
@@ -253,12 +294,10 @@ export class ListingController {
         updatedListing.title,
         {
           "New Status": status,
-        }
+        },
       );
 
-      return res
-        .status(200)
-        .json(success(updatedListing));
+      return res.status(200).json(success(updatedListing));
     } catch (error: any) {
       logger.error("Updating listing status failed", error);
       return res.status(400).json(failure(error.message));
